@@ -1,5 +1,3 @@
-# summary
-
 = Introdução =
 
 Projeto jogo do carrinho para exposição na unidade SEVEN - Niterói
