@@ -8,21 +8,28 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using TangoGames.RoadFighter.Components;
+using TangoGames.RoadFighter.Scenes;
 
-namespace WindowsGame1
+namespace TangoGames.RoadFighter
 {
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class MainGame : Microsoft.Xna.Framework.Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        public enum Scenes { Intro, End }
 
-        public Game1()
+        GraphicsDeviceManager _graphics;
+        SpriteBatch _spriteBatch;
+
+        public MainGame()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            sceneManager = new SceneManager<Scenes>(this);
+            
         }
 
         /// <summary>
@@ -33,7 +40,12 @@ namespace WindowsGame1
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            // Registering the scenes
+            sceneManager[Scenes.Intro] = new Intro(this);
+            sceneManager[Scenes.End] = new End(this);
+
+            // Starting at INTRO
+            sceneManager.GoTo(Scenes.Intro);
 
             base.Initialize();
         }
@@ -45,7 +57,7 @@ namespace WindowsGame1
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
         }
@@ -81,11 +93,11 @@ namespace WindowsGame1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
-
             base.Draw(gameTime);
         }
+
+        #region Properties & Fields
+        private SceneManager<Scenes> sceneManager;
+        #endregion
     }
 }
