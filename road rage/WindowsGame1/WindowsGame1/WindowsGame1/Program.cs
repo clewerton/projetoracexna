@@ -1,6 +1,6 @@
 using System;
 
-namespace WindowsGame1
+namespace TangoGames.RoadFighter
 {
 #if WINDOWS || XBOX
     static class Program
@@ -10,7 +10,7 @@ namespace WindowsGame1
         /// </summary>
         static void Main(string[] args)
         {
-            using (Game1 game = new Game1())
+            using (MainGame game = new MainGame())
             {
                 game.Run();
             }
