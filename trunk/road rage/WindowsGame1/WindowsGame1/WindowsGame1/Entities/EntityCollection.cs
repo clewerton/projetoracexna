@@ -14,8 +14,8 @@ namespace TangoGames.RoadFighter.Entities
 {
     public interface IEntity
     {
-        Vector2 GetBounds { get; set; }
-        Rectangle Location { get; set; }
+        Rectangle GetBounds { get; set; }
+        Vector2 Location { get; set; }
         Vector2 Orientation { get; set; }
         void Update(GameTime gameTime);
         void Enable();

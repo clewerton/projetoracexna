@@ -9,11 +9,12 @@ namespace TangoGames.RoadFighter.Entities
     /// </summary>
     public class BasicEntity : GameComponent, IEntity
     {
-        private Vector2 bounds;
-        private Rectangle location;
+        private Rectangle bounds;
+        private Vector2 location;
         private Vector2 orientation;
 
-        public BasicEntity(Game game, Vector2 bounds): base(game)
+        public BasicEntity(Game game, Rectangle bounds)
+            : base(game)
         {
             game.Components.Add(this);
             this.bounds = bounds;
@@ -41,7 +42,7 @@ namespace TangoGames.RoadFighter.Entities
             base.Update(gameTime);
         }
 
-        public Vector2 GetBounds 
+        public Rectangle GetBounds 
         {
             get {
                 return bounds;
@@ -51,7 +52,7 @@ namespace TangoGames.RoadFighter.Entities
             }
         }
 
-        public Rectangle Location
+        public Vector2 Location
         {
             get {
                 return location;
@@ -71,6 +72,17 @@ namespace TangoGames.RoadFighter.Entities
 
             }
         }
+
+        public void Enable()
+        {
+            Enabled = true;
+        }
+
+        public void Disable()
+        {
+            Enabled = false;
+        }
+
 
     }
 }
