@@ -28,8 +28,12 @@ namespace TangoGames.RoadFighter
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            sceneManager = new SceneManager<Scenes>(this);
+            // crie o gerenciador de telas
+            sceneManager = new SceneManager<Scenes>();
             
+            // registre-o como provedor do serviço ISceneManagerService<Scenes>
+            Services.AddService(typeof(ISceneManagerService<Scenes>), sceneManager);
+
         }
 
         /// <summary>
@@ -56,9 +60,6 @@ namespace TangoGames.RoadFighter
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-
             // TODO: use this.Content to load your game content here
         }
 

@@ -1,29 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TangoGames.RoadFighter.Components;
+﻿using TangoGames.RoadFighter.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using TangoGames.RoadFighter.Utils;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TangoGames.RoadFighter.Scenes
 {
-    public class Intro : IScene, ISimpleUpdateable, ISimpleDrawable
+    public class Intro : DrawableScene
     {
-        public Intro(Game game) 
-        {
-            Game = game;
+        public Intro(Game game) : base(game) {}
 
-            _arial = game.Content.Load<SpriteFont>("arial");
+        protected override void LoadContent()
+        {
+            base.LoadContent();
+
+            _arial = Game.Content.Load<SpriteFont>("arial");
+            SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
         }
 
-        public void Enter() {}
-
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            var sceneManager = (ISceneManager<MainGame.Scenes>) Game.Services.GetService(typeof(ISceneManager<MainGame.Scenes>));
+            var sceneManager = (ISceneManagerService<MainGame.Scenes>) Game.Services.GetService(typeof(ISceneManagerService<MainGame.Scenes>));
         
             if(Keyboard.GetState().IsKeyDown(Keys.Space))
             {
@@ -31,20 +27,18 @@ namespace TangoGames.RoadFighter.Scenes
             }
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime)
         {
             Game.GraphicsDevice.Clear(Color.Azure);
 
-            spriteBatch.DrawString(_arial, "In INTRO; press SPACE to go to END", new Vector2(100), Color.BurlyWood);
+            SpriteBatch.Begin();
+            SpriteBatch.DrawString(_arial, "In INTRO; press SPACE to go to END", new Vector2(100), Color.BurlyWood);
+            SpriteBatch.End();
         }
 
-        public void Leave() {}
-
         #region Properties & Fields
-
-        public Game Game { get; private set; }
-
         private SpriteFont _arial;
+        private SpriteBatch SpriteBatch { get; set; }
         #endregion
     }
 }
