@@ -39,6 +39,7 @@ namespace TangoGames.RoadFighter
             base.Initialize();
         }
 
+        // prepara o gerenciamento de cenas do jogo
         private void StartSceneManager()
         {
             // cria o gerenciador de telas

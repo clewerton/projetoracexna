@@ -5,7 +5,7 @@ using TangoGames.RoadFighter.Scenes;
 
 namespace TangoGames.RoadFighter.Levels
 {
-    public class Intro : DrawableScene
+    public class Intro : Scene
     {
         public Intro(Game game) : base(game) {}
 

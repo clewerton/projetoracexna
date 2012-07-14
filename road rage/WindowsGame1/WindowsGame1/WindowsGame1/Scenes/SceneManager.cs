@@ -4,23 +4,6 @@ using System.Collections.Generic;
 namespace TangoGames.RoadFighter.Scenes
 {
     /// <summary>
-    /// Representa cenas. Cenas são geridas pelo gerenciador de cenas, e podem ser ativadas ou 
-    /// desativadas.
-    /// </summary>
-    public interface IScene
-    {
-        /// <summary>
-        /// Chamada quando esta cena é ativada.
-        /// </summary>
-        void Enter();
-
-        /// <summary>
-        /// Chamada quando esta cena é desativada.
-        /// </summary>
-        void Leave();
-    }
-
-    /// <summary>
     /// Representa um gerenciador de cenas. 
     /// 
     /// <p>
