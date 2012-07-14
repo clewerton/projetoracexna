@@ -59,7 +59,7 @@ namespace TangoGames.RoadFighter
         private void StartEntityFactory()
         {
 	        EntityFactory<EntityTypes> _entityFactory = new EntityFactory<EntityTypes>(); 
-            _entityFactory[EntityTypes.Basic] = new BasicEntity(this);
+            _entityFactory[EntityTypes.Basic] = new BasicEntity(this, new Rectangle(0, 0, 100, 100));
             Services.AddService(typeof(IEntityFactory<EntityTypes>), _entityFactory);
 
         }
