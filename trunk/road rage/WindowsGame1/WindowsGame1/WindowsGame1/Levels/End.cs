@@ -1,13 +1,13 @@
-﻿using TangoGames.RoadFighter.Components;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using TangoGames.RoadFighter.Scenes;
 
-namespace TangoGames.RoadFighter.Scenes
+namespace TangoGames.RoadFighter.Levels
 {
-    public class Intro : DrawableScene
+    public class End : DrawableScene
     {
-        public Intro(Game game) : base(game) {}
+        public End(Game game) : base(game) {}
 
         protected override void LoadContent()
         {
@@ -19,20 +19,20 @@ namespace TangoGames.RoadFighter.Scenes
 
         public override void Update(GameTime gameTime)
         {
-            var sceneManager = (ISceneManagerService<MainGame.Scenes>) Game.Services.GetService(typeof(ISceneManagerService<MainGame.Scenes>));
+            var sceneManagerService = (ISceneManagerService<MainGame.Scenes>) Game.Services.GetService(typeof(ISceneManagerService<MainGame.Scenes>));
         
-            if(Keyboard.GetState().IsKeyDown(Keys.Space))
+            if(Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
-               sceneManager.GoTo(MainGame.Scenes.End); 
+               sceneManagerService.GoTo(MainGame.Scenes.Intro); 
             }
         }
 
         public override void Draw(GameTime gameTime)
         {
-            Game.GraphicsDevice.Clear(Color.Azure);
+            Game.GraphicsDevice.Clear(Color.DarkGoldenrod);
 
             SpriteBatch.Begin();
-            SpriteBatch.DrawString(_arial, "In INTRO; press SPACE to go to END", new Vector2(100), Color.BurlyWood);
+            SpriteBatch.DrawString(_arial, "In END; click the LEFT BUTTON to go to INTRO", new Vector2(100), Color.Bisque);
             SpriteBatch.End();
         }
 

@@ -107,13 +107,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\Scene.cs" />
-    <Compile Include="Components\SceneManager.cs" />
+    <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="MainGame.cs" />
-    <Compile Include="Scenes\End.cs" />
-    <Compile Include="Scenes\Intro.cs" />
+    <Compile Include="Levels\End.cs" />
+    <Compile Include="Levels\Intro.cs" />
+    <Compile Include="Scenes\SceneManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
