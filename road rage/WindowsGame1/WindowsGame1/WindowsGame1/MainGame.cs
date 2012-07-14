@@ -16,36 +16,39 @@ namespace TangoGames.RoadFighter
 
         public MainGame()
         {
-            _graphics = new GraphicsDeviceManager(this); // XXX precisa ficar no construtor
+            // XXX precisa ficar no construtor, pois base.Initialize precisa de um serviço para 
+            // XXX iniciar o GraphicDevice.
+            new GraphicsDeviceManager(this); 
+
             Content.RootDirectory = "Content";
-
-            // crie o gerenciador de telas
-            _sceneManager = new SceneManager<Scenes>();
-            
-            // registre-o como provedor do serviço ISceneManagerService<Scenes>
-            Services.AddService(typeof(ISceneManagerService<Scenes>), _sceneManager);
-
         }
 
         /// <summary>
-        /// Registra todos os GameComponents do jogo e os inicializa junto com o gerenciador de cenas. 
+        /// Registra todos os GameComponents os inicializa junto com o gerenciador de cenas. 
         /// </summary>
         protected override void Initialize()
         {
-            // registra as cenas conhecidas
-            _sceneManager[Scenes.Intro] = new Intro(this);
-            _sceneManager[Scenes.End] = new End(this);
-
-            // a Intro começa como a cena atual
-            _sceneManager.GoTo(Scenes.Intro);
+            // configura o gerenciamento de cenas
+            StartSceneManager();
 
             // inicializa todos os componentes registrados no jogo
             base.Initialize();
         }
 
-        #region Properties & Fields
-        readonly SceneManager<Scenes> _sceneManager;
-        GraphicsDeviceManager _graphics; // XXX base.Initialize precisa de um serviço para iniciar o GraphicDevice
-        #endregion
+        private void StartSceneManager()
+        {
+            // cria o gerenciador de telas
+            var sceneManager = new SceneManager<Scenes>();
+
+            // registra-o como provedor do serviço ISceneManagerService<Scenes>
+            Services.AddService(typeof (ISceneManagerService<Scenes>), sceneManager);
+
+            // registra as cenas conhecidas
+            sceneManager[Scenes.Intro] = new Intro(this);
+            sceneManager[Scenes.End] = new End(this);
+
+            // a Intro começa como a cena atual
+            sceneManager.GoTo(Scenes.Intro);
+        }
     }
 }
