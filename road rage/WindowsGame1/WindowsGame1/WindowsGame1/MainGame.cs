@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using TangoGames.RoadFighter.Levels;
 using TangoGames.RoadFighter.Scenes;
+using TangoGames.RoadFighter.Entities;
 
 namespace TangoGames.RoadFighter
 {
@@ -13,6 +14,7 @@ namespace TangoGames.RoadFighter
         /// Serão usados pelo gerenciador de cenas para identificar as cenas.
         /// </summary>
         public enum Scenes { Intro, End }
+        public enum EntityTypes { Basic }
 
         public MainGame()
         {
@@ -21,6 +23,7 @@ namespace TangoGames.RoadFighter
             new GraphicsDeviceManager(this); 
 
             Content.RootDirectory = "Content";
+
         }
 
         /// <summary>
@@ -30,6 +33,7 @@ namespace TangoGames.RoadFighter
         {
             // configura o gerenciamento de cenas
             StartSceneManager();
+            StartEntityFactory();
 
             // inicializa todos os componentes registrados no jogo
             base.Initialize();
@@ -50,5 +54,15 @@ namespace TangoGames.RoadFighter
             // a Intro começa como a cena atual
             sceneManager.GoTo(Scenes.Intro);
         }
+
+        private void StartEntityFactory()
+        {
+	        EntityFactory<EntityTypes> _entityFactory = new EntityFactory<EntityTypes>(); 
+            _entityFactory[EntityTypes.Basic] = new BasicEntity(this);
+            Services.AddService(typeof(IEntityFactory<EntityTypes>), _entityFactory);
+
+        }
+
+
     }
 }
