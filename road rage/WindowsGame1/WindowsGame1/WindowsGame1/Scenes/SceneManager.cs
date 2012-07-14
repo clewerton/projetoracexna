@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace TangoGames.RoadFighter.Components
+namespace TangoGames.RoadFighter.Scenes
 {
     public interface IScene
     {
         void Enter();
         void Leave();
     }
-    
+
     public interface ISceneManagerService<TId>
     {
         IScene this[TId id] { get; set; }
@@ -26,7 +26,7 @@ namespace TangoGames.RoadFighter.Components
     {
         public SceneManager() {}
 
-        #region ISceneManagerService
+        #region ISceneManagerService Operations
         public new IScene this[TId id] 
         { 
             get { return base[id]; }
