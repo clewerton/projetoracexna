@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System;
 
 
-namespace TangoGames.RoadFighter.Entities
-{
+namespace TangoGames.RoadFighter.Actors {
     public interface IEntityFactory<TId>
     {
-        IEntity this[TId id] { get; set; }
+        IActors this[TId id] { get; set; }
     }
 
     /// <summary>
     /// Factory that provides entities. 
     /// </summary>
-    public class EntityFactory<TId> : Dictionary<TId, IEntity>, IEntityFactory<TId>
+    public class EntityFactory<TId> : Dictionary<TId, IActors>, IEntityFactory<TId>
     {
-        public new IEntity this[TId id]
+        public new IActors this[TId id]
         {
             get { return base[id]; }
             set
