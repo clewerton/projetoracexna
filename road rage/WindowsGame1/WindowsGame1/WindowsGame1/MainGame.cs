@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using TangoGames.RoadFighter.Levels;
 using TangoGames.RoadFighter.Scenes;
 using TangoGames.RoadFighter.Actors;
+using Microsoft.Xna.Framework.Input;
 
 namespace TangoGames.RoadFighter
 {
@@ -37,6 +38,26 @@ namespace TangoGames.RoadFighter
 
             // inicializa todos os componentes registrados no jogo
             base.Initialize();
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            var sceneManager = (ISceneManagerService<MainGame.Scenes>) Services.GetService(typeof(ISceneManagerService<MainGame.Scenes>));
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                var current = sceneManager.Current;
+                if (current.Paused)
+                {
+                    current.Resume();
+                }
+                else
+                {
+                    current.Pause();
+                }
+            }
+
+            base.Update(gameTime);
         }
 
         // prepara o gerenciamento de cenas do jogo
