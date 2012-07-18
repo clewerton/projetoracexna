@@ -12,21 +12,21 @@ using Microsoft.Xna.Framework.Media;
 
 namespace TangoGames.RoadFighter.Actors
 {
-public interface IActors
+public interface IActor
     {
-        Rectangle GetBounds { get; set; }
+        Rectangle Bounds { get; set; }
         Vector2 Location { get; set; }
         Vector2 Orientation { get; set; }
         void Update(GameTime gameTime);
-        void Enable();
-        void Disable();
+        bool Enabled{get; set;}
+        bool Visible{get; set;}
     }
 
     // Encapsulates entity group functionality.
-    public interface IActorGroup
+    public interface IActorGroup: IEnumerable<IActor>
     {
-        void Add(IActors entity);
-        void Remove(IActors entity);
+        void Add(IActor entity);
+        void Remove(IActor entity);
         void Enable();
         void Disable();
     }
@@ -34,9 +34,9 @@ public interface IActors
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class ActorCollection : GameComponent
+    public class ActorCollection : GameComponent, IActorGroup
     {
-        private IList<IActors> entities = new List<IActors>();
+        private IList<IActor> actors = new List<IActor>();
 
         public ActorCollection(Game game)
             : base(game)
@@ -66,23 +66,28 @@ public interface IActors
             base.Update(gameTime);
         }
 
-        public void Add(IActors entity)
+        public IEnumerator<IActor> GetEnumerator()
+        {
+            return actors.GetEnumerator();
+        }
+
+        public void Add(IActor entity)
         {
             if (entity == null) // null is not a valid argument!
             {
                 throw new ArgumentNullException();
             }
-            entities.Add(entity);
+            actors.Add(entity);
         }
 
-        public void Remove(IActors entity)
+        public void Remove(IActor entity)
         {
-            entities.Remove(entity);
+            actors.Remove(entity);
         }
 
         public void Enable()
         {
-            foreach (IActors item in entities)
+            foreach (IActor item in actors)
             {
                 item.Enable();
             }
@@ -90,7 +95,7 @@ public interface IActors
 
         public void Disable()
         {
-            foreach (IActors item in entities)
+            foreach (IActor item in actors)
             {
                 item.Disable();
             }

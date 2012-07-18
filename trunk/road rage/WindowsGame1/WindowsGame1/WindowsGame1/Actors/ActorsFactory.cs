@@ -6,15 +6,15 @@ using System;
 namespace TangoGames.RoadFighter.Actors {
     public interface IEntityFactory<TId>
     {
-        IActors this[TId id] { get; set; }
+        IActor this[TId id] { get; set; }
     }
 
     /// <summary>
     /// Factory that provides entities. 
     /// </summary>
-    public class EntityFactory<TId> : Dictionary<TId, IActors>, IEntityFactory<TId>
+    public class EntityFactory<TId> : Dictionary<TId, IActor>, IEntityFactory<TId>
     {
-        public new IActors this[TId id]
+        public new IActor this[TId id]
         {
             get { return base[id]; }
             set
