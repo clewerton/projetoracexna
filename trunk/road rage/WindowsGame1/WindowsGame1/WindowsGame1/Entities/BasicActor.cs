@@ -1,19 +1,19 @@
 using Microsoft.Xna.Framework;
 
 
-namespace TangoGames.RoadFighter.Entities
+namespace TangoGames.RoadFighter.Actors
 {
 
     /// <summary>
     /// A basic entity implements simple espatial properties. Movement not taken account.
     /// </summary>
-    public class BasicEntity : GameComponent, IEntity
+    public class BasicActor : GameComponent, IActors
     {
         private Rectangle bounds;
         private Vector2 location;
         private Vector2 orientation;
 
-        public BasicEntity(Game game, Rectangle bounds)
+        public BasicActor(Game game, Rectangle bounds)
             : base(game)
         {
             game.Components.Add(this);

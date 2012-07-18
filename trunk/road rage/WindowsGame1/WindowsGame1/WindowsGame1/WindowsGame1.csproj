@@ -107,9 +107,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\BasicEntity.cs" />
-    <Compile Include="Entities\EntityFactory.cs" />
-    <Compile Include="Entities\EntityCollection.cs" />
+    <Compile Include="Entities\BasicActor.cs" />
+    <Compile Include="Entities\ActorsFactory.cs" />
+    <Compile Include="Entities\ActorsCollection.cs" />
     <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

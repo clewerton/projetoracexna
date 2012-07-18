@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using TangoGames.RoadFighter.Levels;
 using TangoGames.RoadFighter.Scenes;
-using TangoGames.RoadFighter.Entities;
+using TangoGames.RoadFighter.Actors;
 
 namespace TangoGames.RoadFighter
 {
@@ -59,7 +59,7 @@ namespace TangoGames.RoadFighter
         private void StartEntityFactory()
         {
 	        EntityFactory<EntityTypes> _entityFactory = new EntityFactory<EntityTypes>(); 
-            _entityFactory[EntityTypes.Basic] = new BasicEntity(this, new Rectangle(0, 0, 100, 100));
+            _entityFactory[EntityTypes.Basic] = new BasicActor(this, new Rectangle(0, 0, 100, 100));
             Services.AddService(typeof(IEntityFactory<EntityTypes>), _entityFactory);
 
         }

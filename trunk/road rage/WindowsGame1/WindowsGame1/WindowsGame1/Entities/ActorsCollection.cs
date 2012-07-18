@@ -10,9 +10,9 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 
-namespace TangoGames.RoadFighter.Entities
+namespace TangoGames.RoadFighter.Actors
 {
-    public interface IEntity
+public interface IActors
     {
         Rectangle GetBounds { get; set; }
         Vector2 Location { get; set; }
@@ -25,8 +25,8 @@ namespace TangoGames.RoadFighter.Entities
     // Encapsulates entity group functionality.
     public interface IEntityGroup
     {
-        void Add(IEntity entity);
-        void Remove(IEntity entity);
+        void Add(IActors entity);
+        void Remove(IActors entity);
         void Enable();
         void Disable();
     }
@@ -36,7 +36,7 @@ namespace TangoGames.RoadFighter.Entities
     /// </summary>
     public class EntityCollection : GameComponent
     {
-        private IList<IEntity> entities = new List<IEntity>();
+        private IList<IActors> entities = new List<IActors>();
 
         public EntityCollection(Game game)
             : base(game)
@@ -66,7 +66,7 @@ namespace TangoGames.RoadFighter.Entities
             base.Update(gameTime);
         }
 
-        public void Add(IEntity entity)
+        public void Add(IActors entity)
         {
             if (entity == null) // null is not a valid argument!
             {
@@ -75,14 +75,14 @@ namespace TangoGames.RoadFighter.Entities
             entities.Add(entity);
         }
 
-        public void Remove(IEntity entity)
+        public void Remove(IActors entity)
         {
             entities.Remove(entity);
         }
 
         public void Enable()
         {
-            foreach (IEntity item in entities)
+            foreach (IActors item in entities)
             {
                 item.Enable();
             }
@@ -90,7 +90,7 @@ namespace TangoGames.RoadFighter.Entities
 
         public void Disable()
         {
-            foreach (IEntity item in entities)
+            foreach (IActors item in entities)
             {
                 item.Disable();
             }
