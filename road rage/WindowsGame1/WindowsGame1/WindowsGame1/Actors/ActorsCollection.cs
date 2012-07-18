@@ -23,7 +23,7 @@ public interface IActors
     }
 
     // Encapsulates entity group functionality.
-    public interface IEntityGroup
+    public interface IActorGroup
     {
         void Add(IActors entity);
         void Remove(IActors entity);
@@ -34,11 +34,11 @@ public interface IActors
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class EntityCollection : GameComponent
+    public class ActorCollection : GameComponent
     {
         private IList<IActors> entities = new List<IActors>();
 
-        public EntityCollection(Game game)
+        public ActorCollection(Game game)
             : base(game)
         {
             // TODO: Construct any child components here
