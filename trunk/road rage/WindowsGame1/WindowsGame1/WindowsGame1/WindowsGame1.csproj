@@ -111,6 +111,8 @@
     <Compile Include="Actors\BasicActor.cs" />
     <Compile Include="Actors\ActorsFactory.cs" />
     <Compile Include="Actors\ActorsCollection.cs" />
+    <Compile Include="Levels\Fase1.cs" />
+    <Compile Include="Levels\HUD.cs" />
     <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
