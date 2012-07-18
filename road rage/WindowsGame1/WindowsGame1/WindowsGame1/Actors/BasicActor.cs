@@ -7,7 +7,7 @@ namespace TangoGames.RoadFighter.Actors
     /// <summary>
     /// A basic entity implements simple espatial properties. Movement not taken account.
     /// </summary>
-    public class BasicActor : GameComponent, IActors
+    public class BasicActor : GameComponent, IActor
     {
         private Rectangle bounds;
         private Vector2 location;
@@ -16,7 +16,6 @@ namespace TangoGames.RoadFighter.Actors
         public BasicActor(Game game, Rectangle bounds)
             : base(game)
         {
-            game.Components.Add(this);
             this.bounds = bounds;
         }
 
@@ -42,7 +41,7 @@ namespace TangoGames.RoadFighter.Actors
             base.Update(gameTime);
         }
 
-        public Rectangle GetBounds 
+        public Rectangle Bounds 
         {
             get {
                 return bounds;
