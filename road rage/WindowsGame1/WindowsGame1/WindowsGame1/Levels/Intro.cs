@@ -27,7 +27,7 @@ namespace TangoGames.RoadFighter.Levels
         
             if(Keyboard.GetState().IsKeyDown(Keys.Enter))
             {
-               sceneManager.GoTo(MainGame.Scenes.End);
+               sceneManager.GoTo(MainGame.Scenes.Fase);
                return;
             }
         }
@@ -39,7 +39,7 @@ namespace TangoGames.RoadFighter.Levels
             Game.GraphicsDevice.Clear(Color.Azure);
 
             SpriteBatch.Begin();
-            SpriteBatch.DrawString(_arial, "In INTRO; press ENTER to go to END", new Vector2(100), Color.BurlyWood);
+            SpriteBatch.DrawString(_arial, "In INTRO; press ENTER to go to FASE", new Vector2(100), Color.BurlyWood);
             SpriteBatch.DrawString(_arial, "In INTRO; press SPACE to " + (Paused ? "resume" : "pause"), new Vector2(100, 130), Color.BurlyWood);
             SpriteBatch.DrawString(_arial, "Time: " + _timeElapsed, new Vector2(100, 160), Color.BurlyWood);
             SpriteBatch.End();
