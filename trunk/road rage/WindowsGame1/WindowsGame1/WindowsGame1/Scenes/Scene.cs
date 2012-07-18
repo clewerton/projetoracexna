@@ -9,14 +9,29 @@ namespace TangoGames.RoadFighter.Scenes
     public interface IScene
     {
         /// <summary>
-        /// Chamada quando esta cena é ativada.
+        /// Chamado quando esta cena é ativada.
         /// </summary>
         void Enter();
 
         /// <summary>
-        /// Chamada quando esta cena é desativada.
+        /// Chamado quando esta cena é desativada.
         /// </summary>
         void Leave();
+
+        /// <summary>
+        /// Chamado quando esta cena é pausada.
+        /// </summary>
+        void Pause();
+
+        /// <summary>
+        /// Chamado quando esta cena é resumida.
+        /// </summary>
+        void Resume();
+
+        /// <summary>
+        /// Retorna verdadeiro se esta cena estiver pausada.
+        /// </summary>
+        bool Paused { get; }
     }
 
     /// <summary>
@@ -42,6 +57,7 @@ namespace TangoGames.RoadFighter.Scenes
             game.Components.Add(this);
         }
 
+        #region IScene Operations
         public virtual void Enter()
         {
             Enable();
@@ -52,17 +68,30 @@ namespace TangoGames.RoadFighter.Scenes
             Disable();
         }
 
+        public virtual void Pause()
+        {
+            Enabled = false; // desabilita o Update
+        }
+
+        public virtual void Resume()
+        {
+            Enabled = true; // habilita o Update
+        }
+
+        public bool Paused { get { return ! Enabled; } }
+        #endregion
+
         // habilita o componente no ciclo de vida do XNA
         private void Enable()
         {
-            Enabled = true; // habilita o Update
+            Resume();
             Visible = true; // habilita o Draw
         }
 
         // desabilita o componente no ciclo de vida do XNA
         private void Disable()
         {
-            Enabled = false; // desabilita o Update
+            Pause();
             Visible = false; // desabilita o Draw
         }
     }
