@@ -41,12 +41,6 @@ namespace TangoGames.RoadFighter.Actors
             base.Update(gameTime);
         }
 
-        public bool Visible
-        {
-            get { throw new System.NotImplementedException(); }
-            set { throw new System.NotImplementedException(); }
-        }
-
         public Rectangle Bounds 
         {
             get {
@@ -77,17 +71,6 @@ namespace TangoGames.RoadFighter.Actors
 
             }
         }
-
-        public void Enable()
-        {
-            Enabled = true;
-        }
-
-        public void Disable()
-        {
-            Enabled = false;
-        }
-
 
     }
 }

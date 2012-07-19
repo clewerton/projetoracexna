@@ -15,12 +15,11 @@ namespace TangoGames.RoadFighter.Actors
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Map : Microsoft.Xna.Framework.GameComponent
+    public class Map : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        private IActorGroup actors;
-        private IActorGroup visibleActors;
-        private IActorGroup activeActors;
-        private IActor stage;
+        private IDrawableActorGroup actors;
+        private IDrawableActorGroup visibleActors;
+        private IDrawableActorGroup activeActors;
 
         public Map(Game game)
             : base(game)
@@ -46,30 +45,67 @@ namespace TangoGames.RoadFighter.Actors
         public override void Update(GameTime gameTime)
         {
             Rectangle screenBounds = Game.Window.ClientBounds;
-            foreach (IActor actor in actors)
+            foreach (IDrawableActor actor in actors)
             {
-                if(actor.Bounds.Intersects(screenBounds))
+                if (actor.Bounds.Intersects(screenBounds))
                 {
-
-                };
+                    actor.Visible = true;
+                }
+                else if (goingAway(screenBounds, actor))
+                {
+                    actor.Visible = false;
+                }
+                else
+                {
+                    actor.Visible = true;
+                }
+                Configure(actor);
             }
 
             base.Update(gameTime);
         }
 
-        public void Add(IActor actor)
+        public override void Draw(GameTime gameTime)
         {
-            actors.Add(actor);
-            
-            visibleActors.Add(actor);
-            activeActors.Add(actor);
+            foreach (IDrawableActor actor in visibleActors)
+            {
+                actor.Draw(gameTime);
+            }
+
         }
 
-        public void Remove(IActor actor)
+        public void Add(IDrawableActor actor)
+        {
+            actors.Add(actor);
+            Configure(actor);
+        }
+
+        public void Remove(IDrawableActor actor)
         {
             actors.Add(actor);
             visibleActors.Add(actor);
             activeActors.Remove(actor);
+        }
+
+        private void Configure(IDrawableActor actor)
+        {
+            if (actor.Enabled && !visibleActors.Contains(actor))
+            {
+                activeActors.Add(actor);
+            }
+            if (actor.Visible && !activeActors.Contains(actor))
+            {
+                visibleActors.Add(actor);
+            }
+        }
+
+        private bool goingAway(Rectangle bounds, IActor actor)
+        {
+            return
+                (actor.Location.X > bounds.Right) && (actor.Orientation.X > 0) ||
+                (actor.Location.Y > bounds.Bottom) && (actor.Orientation.Y > 0) ||
+                (actor.Location.X < bounds.Left) && (actor.Orientation.X < 0) ||
+                (actor.Location.Y < bounds.Top) && (actor.Orientation.Y < 0);
         }
 
     }
