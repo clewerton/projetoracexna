@@ -27,7 +27,7 @@ namespace TangoGames.RoadFighter.Levels
         
             if(Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
-               sceneManager.GoTo(MainGame.Scenes.Intro); 
+               sceneManager.GoTo(MainGame.Scenes.Menu); 
             }
         }
 
@@ -36,7 +36,7 @@ namespace TangoGames.RoadFighter.Levels
             Game.GraphicsDevice.Clear(Color.DarkGoldenrod);
 
             SpriteBatch.Begin();
-            SpriteBatch.DrawString(_arial, "In END; click the LEFT BUTTON to go to INTRO", new Vector2(100), Color.Bisque);
+            SpriteBatch.DrawString(_arial, "In END; click the LEFT BUTTON to go to MENU", new Vector2(100), Color.Bisque);
             SpriteBatch.DrawString(_arial, "In END; press SPACE to " + (Paused ? "resume" : "pause"), new Vector2(100, 130), Color.Bisque);
             SpriteBatch.DrawString(_arial, "Time: " + _timeElapsed, new Vector2(100, 160), Color.Bisque);
             SpriteBatch.End();

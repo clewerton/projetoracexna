@@ -28,7 +28,7 @@ namespace TangoGames.RoadFighter.Levels
 
             if (Keyboard.GetState().IsKeyDown(Keys.K))
             {
-                sceneManager.GoTo(MainGame.Scenes.End);
+                sceneManager.GoTo(MainGame.Scenes.Menu);
             }
 
             hudteste.Update(gameTime);
@@ -41,7 +41,7 @@ namespace TangoGames.RoadFighter.Levels
 
             SpriteBatch.Begin();
 
-            SpriteBatch.DrawString(_arial, "In INTRO; press K to go to END", new Vector2(100), Color.BurlyWood);
+            SpriteBatch.DrawString(_arial, "In INTRO; press K to go to MENU", new Vector2(100), Color.BurlyWood);
 
             hudteste.Draw(gameTime, SpriteBatch);
 

@@ -1,8 +1,8 @@
 ﻿namespace TangoGames.RoadFighter.States
 {
-    public class Transition<TStateId, TInput>
+    public class Transition<TState, TInput>
     {
-        public Transition(TStateId state, TInput input)
+        public Transition(TState state, TInput input)
         {
             State = state;
             Input = input;
@@ -13,7 +13,7 @@
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
 
-            var other = obj as Transition<TStateId, TInput>;
+            var other = obj as Transition<TState, TInput>;
             return other != null && object.Equals(State, other.State) && object.Equals(Input, other.Input);
         }
 
@@ -25,7 +25,7 @@
             }
         }
 
-        public TStateId State { get; private set; }
+        public TState State { get; private set; }
         public TInput Input { get; private set; } 
     }
 }
