@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using TangoGames.RoadFighter.Scenes;
 using System;
+using TangoGames.RoadFighter.Widgets;
 
 namespace TangoGames.RoadFighter.Levels
 {
@@ -14,13 +15,32 @@ namespace TangoGames.RoadFighter.Levels
         {
             base.LoadContent();
 
+            Game.IsMouseVisible = true;
+
             _arial = Game.Content.Load<SpriteFont>("arial");
             _timeElapsed = TimeSpan.Zero;
             SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
+
+            // XXX textura vazia para preencher o botão
+            var dummyTexture = new Texture2D(GraphicsDevice, 1, 1);
+            dummyTexture.SetData(new Color[] { Color.White });
+
+            _button = new Button(dummyTexture, _arial);
+            _button.Location = new Point(200, 300);
+
+            _button.OnClick += 
+                (sender, args) =>
+                {
+                    var sceneManager = (ISceneManagerService<MainGame.Scenes>) Game.Services.GetService(typeof(ISceneManagerService<MainGame.Scenes>));
+
+                    sceneManager.GoTo(MainGame.Scenes.End);
+                };
         }
 
         public override void Update(GameTime gameTime)
         {
+            _button.Update(gameTime);
+            
             _timeElapsed += gameTime.ElapsedGameTime;
  
             var sceneManager = (ISceneManagerService<MainGame.Scenes>) Game.Services.GetService(typeof(ISceneManagerService<MainGame.Scenes>));
@@ -34,21 +54,23 @@ namespace TangoGames.RoadFighter.Levels
 
         public override void Draw(GameTime gameTime)
         {
-            var sceneManager = (ISceneManagerService<MainGame.Scenes>) Game.Services.GetService(typeof(ISceneManagerService<MainGame.Scenes>));
-
             Game.GraphicsDevice.Clear(Color.Azure);
 
             SpriteBatch.Begin();
             SpriteBatch.DrawString(_arial, "In INTRO; press ENTER to go to FASE", new Vector2(100), Color.BurlyWood);
             SpriteBatch.DrawString(_arial, "In INTRO; press SPACE to " + (Paused ? "resume" : "pause"), new Vector2(100, 130), Color.BurlyWood);
             SpriteBatch.DrawString(_arial, "Time: " + _timeElapsed, new Vector2(100, 160), Color.BurlyWood);
+
+            _button.Draw(gameTime, SpriteBatch);
+
             SpriteBatch.End();
         }
 
         #region Properties & Fields
+        private SpriteBatch SpriteBatch { get; set; }
         private SpriteFont _arial;
         private TimeSpan _timeElapsed;
-        private SpriteBatch SpriteBatch { get; set; }
+        private Button _button;
         #endregion
     }
 }

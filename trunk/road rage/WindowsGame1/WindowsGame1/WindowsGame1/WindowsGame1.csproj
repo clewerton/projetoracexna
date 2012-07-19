@@ -121,6 +121,7 @@
     <Compile Include="Levels\End.cs" />
     <Compile Include="Levels\Intro.cs" />
     <Compile Include="Scenes\SceneManager.cs" />
+    <Compile Include="Widgets\Button.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
