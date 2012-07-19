@@ -94,5 +94,15 @@ namespace TangoGames.RoadFighter.Scenes
             Pause();
             Visible = false; // desabilita o Draw
         }
+
+        /// <summary>
+        /// Retorna o gerenciador de cenas do jogo.
+        /// </summary>
+        /// <typeparam name="TId">O tipo dos identificadores de cenas no gerenciador.</typeparam>
+        /// <returns>O gerenciador de cenas do jogo.</returns>
+        public ISceneManagerService<TId> GetSceneManager<TId>()
+        {
+            return (ISceneManagerService<TId>) Game.Services.GetService(typeof(ISceneManagerService<TId>));
+        }
     }
 }
