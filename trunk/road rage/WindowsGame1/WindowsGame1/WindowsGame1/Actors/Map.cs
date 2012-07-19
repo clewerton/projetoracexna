@@ -60,7 +60,7 @@ namespace TangoGames.RoadFighter.Actors
         public void Add(IActor actor)
         {
             actors.Add(actor);
-            if(actor.Enable
+            
             visibleActors.Add(actor);
             activeActors.Add(actor);
         }
