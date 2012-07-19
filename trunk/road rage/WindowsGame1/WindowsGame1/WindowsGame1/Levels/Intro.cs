@@ -27,6 +27,7 @@ namespace TangoGames.RoadFighter.Levels
 
             _button = new Button(dummyTexture, _arial);
             _button.Location = new Point(200, 300);
+            _button.Size = new Vector2(120, 60);
 
             _button.OnClick += 
                 (sender, args) =>
