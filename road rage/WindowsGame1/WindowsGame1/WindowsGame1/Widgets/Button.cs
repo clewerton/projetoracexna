@@ -100,6 +100,16 @@ namespace TangoGames.RoadFighter.Widgets
             set { _bounds.Location = value; }
         }
 
+        public Vector2 Size
+        {
+            get { return new Vector2(_bounds.Width, _bounds.Height); }
+            set 
+            { 
+                _bounds.Width = (int) value.X;
+                _bounds.Height = (int) value.Y;
+            }
+        }
+
         public Color Background { get; set; }
         public Color Foreground { get; set; }
         public SpriteFont Font { get; set; }
