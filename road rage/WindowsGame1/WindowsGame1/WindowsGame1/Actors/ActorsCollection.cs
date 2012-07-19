@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -89,7 +90,7 @@ public interface IActor
         {
             foreach (IActor item in actors)
             {
-                item.Enable();
+                
             }
         }
 
@@ -97,9 +98,13 @@ public interface IActor
         {
             foreach (IActor item in actors)
             {
-                item.Disable();
+                
             }
         }
 
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }
