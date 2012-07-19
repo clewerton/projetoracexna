@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TangoGames.RoadFighter.States;
 
 namespace TangoGames.RoadFighter.Widgets
 {
@@ -10,7 +11,12 @@ namespace TangoGames.RoadFighter.Widgets
         /// <summary>
         /// Registra eventos de clique.
         /// </summary>
-        public event EventHandler<ClickEventArgs> OnClick; 
+        public event EventHandler<ClickEventArgs> OnClick;
+
+        public enum Input
+        {
+            CursorOnTop, CursorOffTop, Pressed, Released
+        }
 
         public Button(Texture2D texture, SpriteFont font)
         {
@@ -21,27 +27,50 @@ namespace TangoGames.RoadFighter.Widgets
             Background = Color.Gray;
             Foreground = Color.White;
             Text = "OK";
+
+            var normal = new Normal(this);
+            var hovered = new Hovered(this);
+            var pressed = new Pressed(this);
+
+            StateMachine = new StateMachine<IButtonState, Input>(normal);
+            StateMachine[new Transition<IButtonState, Input>(normal, Input.CursorOnTop)] = hovered;
+            StateMachine[new Transition<IButtonState, Input>(hovered, Input.CursorOffTop)] = normal;
+            StateMachine[new Transition<IButtonState, Input>(hovered, Input.Pressed)] = pressed;
+            StateMachine[new Transition<IButtonState, Input>(pressed, Input.CursorOffTop)] = normal;
+            StateMachine[new Transition<IButtonState, Input>(pressed, Input.Released)] = normal;
         }
 
         public void Update(GameTime gameTime)
         {
             var currentState = Mouse.GetState();
-
+            
             if (Bounds.Contains(currentState.X, currentState.Y))
             {
-                if (_lastMouseState.LeftButton == ButtonState.Pressed
-                    && currentState.LeftButton == ButtonState.Released)
+                StateMachine.Process(Input.CursorOnTop);
+
+                if (currentState.LeftButton == ButtonState.Pressed)
                 {
+                    StateMachine.Process(Input.Pressed);
+                } 
+                else if (_lastMouseState.LeftButton == ButtonState.Pressed)
+                {
+                    StateMachine.Process(Input.Released);
+
                     OnClick(this, new ClickEventArgs(gameTime));
                 }
+            } 
+            else
+            {
+                StateMachine.Process(Input.CursorOffTop);
             }
+
             _lastMouseState = currentState;
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             // desenhando o fundo
-            spriteBatch.Draw(Texture, Bounds, Background);
+            spriteBatch.Draw(Texture, Bounds, StateMachine.Current.Background);
             
             // centralizando o texto
             Vector2 size = Font.MeasureString(Text);
@@ -50,10 +79,12 @@ namespace TangoGames.RoadFighter.Widgets
                 Location.Y + (Bounds.Height - size.Y)/2
             );
 
-            spriteBatch.DrawString(Font, Text, location, Foreground);
+            spriteBatch.DrawString(Font, Text, location, StateMachine.Current.Foreground);
         }
 
         #region Properties & Fields
+        public StateMachine<IButtonState, Input> StateMachine { get; private set; }
+
         public Rectangle Bounds 
         { 
             get { return _bounds; }
@@ -75,6 +106,67 @@ namespace TangoGames.RoadFighter.Widgets
         private Rectangle _bounds;
         private MouseState _lastMouseState;
         #endregion
+    }
+
+    public interface IButtonState
+    {
+        Button Button { get; }
+        Color Background { get; }
+        Color Foreground { get; }
+    }
+
+    public class Normal : IButtonState
+    {
+        public Normal(Button button)
+        {
+            Button = button;
+        }
+
+        public Button Button { get; private set; }
+        public Color Background
+        {
+            get { return Button.Background; }
+        }
+        public Color Foreground
+        {
+            get { return Button.Foreground; }
+        }
+    }
+
+    public class Hovered : IButtonState
+    {
+        public Hovered(Button button)
+        {
+            Button = button;
+        }
+
+        public Button Button { get; private set; }
+        public Color Background
+        {
+            get { return Color.BlueViolet; }
+        }
+        public Color Foreground
+        {
+            get { return Button.Foreground; }
+        }
+    }
+
+    public class Pressed : IButtonState
+    {
+        public Pressed(Button button)
+        {
+            Button = button;
+        }
+
+        public Button Button { get; private set; }
+        public Color Background
+        {
+            get { return Color.YellowGreen; }
+        }
+        public Color Foreground
+        {
+            get { return Button.Foreground; }
+        }
     }
 
     /// <summary>
