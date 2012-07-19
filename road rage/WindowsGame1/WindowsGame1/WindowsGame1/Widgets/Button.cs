@@ -18,6 +18,11 @@ namespace TangoGames.RoadFighter.Widgets
             CursorOnTop, CursorOffTop, Pressed, Released
         }
 
+        public enum StateIds
+        {
+            Normal, Hovered, Pressed
+        }
+
         public Button(Texture2D texture, SpriteFont font)
         {
             Texture = texture;
@@ -28,16 +33,16 @@ namespace TangoGames.RoadFighter.Widgets
             Foreground = Color.White;
             Text = "OK";
 
-            var normal = new Normal(this);
-            var hovered = new Hovered(this);
-            var pressed = new Pressed(this);
+            StateMachine = new StateMachine<StateIds, IButtonState, Input>(StateIds.Normal);
+            StateMachine.States[StateIds.Normal] = new Normal(this);
+            StateMachine.States[StateIds.Hovered] = new Hovered(this);
+            StateMachine.States[StateIds.Pressed] = new Pressed(this);
 
-            StateMachine = new StateMachine<IButtonState, Input>(normal);
-            StateMachine[new Transition<IButtonState, Input>(normal, Input.CursorOnTop)] = hovered;
-            StateMachine[new Transition<IButtonState, Input>(hovered, Input.CursorOffTop)] = normal;
-            StateMachine[new Transition<IButtonState, Input>(hovered, Input.Pressed)] = pressed;
-            StateMachine[new Transition<IButtonState, Input>(pressed, Input.CursorOffTop)] = normal;
-            StateMachine[new Transition<IButtonState, Input>(pressed, Input.Released)] = normal;
+            StateMachine.On(StateIds.Normal, Input.CursorOnTop).GoTo(StateIds.Hovered);
+            StateMachine.On(StateIds.Hovered, Input.CursorOffTop).GoTo(StateIds.Normal);
+            StateMachine.On(StateIds.Hovered, Input.Pressed).GoTo(StateIds.Pressed);
+            StateMachine.On(StateIds.Pressed, Input.CursorOffTop).GoTo(StateIds.Normal);
+            StateMachine.On(StateIds.Pressed, Input.Released).GoTo(StateIds.Normal);
         }
 
         public void Update(GameTime gameTime)
@@ -70,7 +75,7 @@ namespace TangoGames.RoadFighter.Widgets
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             // desenhando o fundo
-            spriteBatch.Draw(Texture, Bounds, StateMachine.Current.Background);
+            spriteBatch.Draw(Texture, Bounds, StateMachine.CurrentState.Background);
             
             // centralizando o texto
             Vector2 size = Font.MeasureString(Text);
@@ -79,12 +84,10 @@ namespace TangoGames.RoadFighter.Widgets
                 Location.Y + (Bounds.Height - size.Y)/2
             );
 
-            spriteBatch.DrawString(Font, Text, location, StateMachine.Current.Foreground);
+            spriteBatch.DrawString(Font, Text, location, StateMachine.CurrentState.Foreground);
         }
 
         #region Properties & Fields
-        public StateMachine<IButtonState, Input> StateMachine { get; private set; }
-
         public Rectangle Bounds 
         { 
             get { return _bounds; }
@@ -102,6 +105,8 @@ namespace TangoGames.RoadFighter.Widgets
         public SpriteFont Font { get; set; }
         public Texture2D Texture { get; set; }
         public string Text { get; set; }
+        public StateIds State { get { return StateMachine.Current; } }
+        protected StateMachine<StateIds, IButtonState, Input> StateMachine { get; private set; }
 
         private Rectangle _bounds;
         private MouseState _lastMouseState;
@@ -113,59 +118,44 @@ namespace TangoGames.RoadFighter.Widgets
         Button Button { get; }
         Color Background { get; }
         Color Foreground { get; }
+        string Text { get; }
     }
 
-    public class Normal : IButtonState
+    public abstract class AbstractButtonState : IButtonState
     {
-        public Normal(Button button)
+        protected AbstractButtonState(Button button)
         {
             Button = button;
         }
 
-        public Button Button { get; private set; }
-        public Color Background
-        {
-            get { return Button.Background; }
-        }
-        public Color Foreground
-        {
-            get { return Button.Foreground; }
-        }
+        public virtual Button Button { get; private set; }
+        public virtual Color Background { get { return Button.Background; } }
+        public virtual Color Foreground { get { return Button.Foreground; } }
+        public virtual string Text { get { return Button.Text; } }
     }
 
-    public class Hovered : IButtonState
+    public class Normal : AbstractButtonState
     {
-        public Hovered(Button button)
-        {
-            Button = button;
-        }
+        public Normal(Button button) :base(button) {}
+    }
 
-        public Button Button { get; private set; }
-        public Color Background
+    public class Hovered : AbstractButtonState
+    {
+        public Hovered(Button button) :base(button) {}
+
+        public override Color Background
         {
             get { return Color.BlueViolet; }
         }
-        public Color Foreground
-        {
-            get { return Button.Foreground; }
-        }
     }
 
-    public class Pressed : IButtonState
+    public class Pressed : AbstractButtonState
     {
-        public Pressed(Button button)
-        {
-            Button = button;
-        }
+        public Pressed(Button button) :base(button) {}
 
-        public Button Button { get; private set; }
-        public Color Background
+        public override Color Background
         {
             get { return Color.YellowGreen; }
-        }
-        public Color Foreground
-        {
-            get { return Button.Foreground; }
         }
     }
 
