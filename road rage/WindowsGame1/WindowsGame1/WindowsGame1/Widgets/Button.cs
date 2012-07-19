@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -27,22 +28,28 @@ namespace TangoGames.RoadFighter.Widgets
         {
             Texture = texture;
             Font = font;
-
+            
             Bounds = new Rectangle(0, 0, 60, 30);
             Background = Color.Gray;
             Foreground = Color.White;
             Text = "OK";
 
-            StateMachine = new StateMachine<StateIds, IButtonState, Input>(StateIds.Normal);
-            StateMachine.States[StateIds.Normal] = new Normal(this);
-            StateMachine.States[StateIds.Hovered] = new Hovered(this);
-            StateMachine.States[StateIds.Pressed] = new Pressed(this);
+            // mapeando os identificadores para seus respectivos estados
+            States = new Dictionary<StateIds, IButtonState>();
+            States[StateIds.Normal] = new Normal(this);
+            States[StateIds.Hovered] = new Hovered(this);
+            States[StateIds.Pressed] = new Pressed(this);
 
-            StateMachine.On(StateIds.Normal, Input.CursorOnTop).GoTo(StateIds.Hovered);
-            StateMachine.On(StateIds.Hovered, Input.CursorOffTop).GoTo(StateIds.Normal);
-            StateMachine.On(StateIds.Hovered, Input.Pressed).GoTo(StateIds.Pressed);
-            StateMachine.On(StateIds.Pressed, Input.CursorOffTop).GoTo(StateIds.Normal);
-            StateMachine.On(StateIds.Pressed, Input.Released).GoTo(StateIds.Normal);
+            // criando e configurando as transições para a máquina de estados
+            StateMachine = new StateMachine<StateIds, Input>(StateIds.Normal);
+            StateMachine.For(StateIds.Normal)
+                .When(Input.CursorOnTop).GoTo(StateIds.Hovered);
+            StateMachine.For(StateIds.Hovered)
+                .When(Input.CursorOffTop).GoTo(StateIds.Normal)
+                .When(Input.Pressed).GoTo(StateIds.Pressed);
+            StateMachine.For(StateIds.Pressed)
+                .When(Input.CursorOffTop).GoTo(StateIds.Normal)
+                .When(Input.Released).GoTo(StateIds.Normal);
         }
 
         public void Update(GameTime gameTime)
@@ -74,8 +81,9 @@ namespace TangoGames.RoadFighter.Widgets
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            IButtonState currentState = States[StateMachine.Current];
             // desenhando o fundo
-            spriteBatch.Draw(Texture, Bounds, StateMachine.CurrentState.Background);
+            spriteBatch.Draw(Texture, Bounds, currentState.Background);
             
             // centralizando o texto
             Vector2 size = Font.MeasureString(Text);
@@ -84,7 +92,7 @@ namespace TangoGames.RoadFighter.Widgets
                 Location.Y + (Bounds.Height - size.Y)/2
             );
 
-            spriteBatch.DrawString(Font, Text, location, StateMachine.CurrentState.Foreground);
+            spriteBatch.DrawString(Font, Text, location, currentState.Foreground);
         }
 
         #region Properties & Fields
@@ -115,8 +123,8 @@ namespace TangoGames.RoadFighter.Widgets
         public SpriteFont Font { get; set; }
         public Texture2D Texture { get; set; }
         public string Text { get; set; }
-        public StateIds State { get { return StateMachine.Current; } }
-        protected StateMachine<StateIds, IButtonState, Input> StateMachine { get; private set; }
+        protected StateMachine<StateIds, Input> StateMachine { get; private set; }
+        protected IDictionary<StateIds, IButtonState> States { get; private set; }
 
         private Rectangle _bounds;
         private MouseState _lastMouseState;
