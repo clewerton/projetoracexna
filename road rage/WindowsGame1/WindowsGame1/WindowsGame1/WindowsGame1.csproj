@@ -122,6 +122,7 @@
     <Compile Include="Levels\Intro.cs" />
     <Compile Include="Scenes\SceneManager.cs" />
     <Compile Include="States\StateMachine.cs" />
+    <Compile Include="States\Transition.cs" />
     <Compile Include="Widgets\Button.cs" />
   </ItemGroup>
   <ItemGroup>
