@@ -14,11 +14,17 @@ namespace TangoGames.RoadFighter.Widgets
         /// </summary>
         public event EventHandler<ClickEventArgs> OnClick;
 
-        public enum Input
+        /// <summary>
+        /// Os tipos de inputs conhecidos para a máquina de estados.
+        /// </summary>
+        protected enum Input
         {
             CursorOnTop, CursorOffTop, Pressed, Released
         }
 
+        /// <summary>
+        /// Os estados possíveis de um botão.
+        /// </summary>
         public enum StateIds
         {
             Normal, Hovered, Pressed
@@ -30,8 +36,6 @@ namespace TangoGames.RoadFighter.Widgets
             Font = font;
             
             Bounds = new Rectangle(0, 0, 60, 30);
-            Background = Color.Gray;
-            Foreground = Color.White;
             Text = "OK";
 
             // mapeando os identificadores para seus respectivos estados
@@ -43,13 +47,13 @@ namespace TangoGames.RoadFighter.Widgets
             // criando e configurando as transições para a máquina de estados
             StateMachine = new StateMachine<StateIds, Input>(StateIds.Normal);
             StateMachine.For(StateIds.Normal)
-                .When(Input.CursorOnTop).GoTo(StateIds.Hovered);
+                .When(Input.CursorOnTop)    .GoTo(StateIds.Hovered);
             StateMachine.For(StateIds.Hovered)
-                .When(Input.CursorOffTop).GoTo(StateIds.Normal)
-                .When(Input.Pressed).GoTo(StateIds.Pressed);
+                .When(Input.CursorOffTop)   .GoTo(StateIds.Normal)
+                .When(Input.Pressed)        .GoTo(StateIds.Pressed);
             StateMachine.For(StateIds.Pressed)
-                .When(Input.CursorOffTop).GoTo(StateIds.Normal)
-                .When(Input.Released).GoTo(StateIds.Normal);
+                .When(Input.CursorOffTop)   .GoTo(StateIds.Normal)
+                .When(Input.Released)       .GoTo(StateIds.Normal);
         }
 
         public void Update(GameTime gameTime)
@@ -82,6 +86,7 @@ namespace TangoGames.RoadFighter.Widgets
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             IButtonState currentState = States[StateMachine.Current];
+
             // desenhando o fundo
             spriteBatch.Draw(Texture, Bounds, currentState.Background);
             
@@ -92,22 +97,32 @@ namespace TangoGames.RoadFighter.Widgets
                 Location.Y + (Bounds.Height - size.Y)/2
             );
 
+            // escrevendo o texto na posição apropriada
             spriteBatch.DrawString(Font, Text, location, currentState.Foreground);
         }
 
         #region Properties & Fields
+        /// <summary>
+        /// O retângulo contendo este botão.
+        /// </summary>
         public Rectangle Bounds 
         { 
             get { return _bounds; }
             set { _bounds = value; }
         }
 
+        /// <summary>
+        /// A localização deste botão na tela.
+        /// </summary>
         public Point Location
         {
             get { return _bounds.Location; }
             set { _bounds.Location = value; }
         }
 
+        /// <summary>
+        /// As dimensões deste botão: a propriedade X guarda a largura, e a Y a altura.
+        /// </summary>
         public Vector2 Size
         {
             get { return new Vector2(_bounds.Width, _bounds.Height); }
@@ -118,13 +133,53 @@ namespace TangoGames.RoadFighter.Widgets
             }
         }
 
-        public Color Background { get; set; }
-        public Color Foreground { get; set; }
-        public SpriteFont Font { get; set; }
-        public Texture2D Texture { get; set; }
+        /// <summary>
+        /// A cor de fundo atual deste botão.
+        /// </summary>
+        public Color Background 
+        { 
+            get { return CurrentState.Background; }
+            set { CurrentState.Background = value; }
+        }
+
+        /// <summary>
+        /// A cor do texto deste botão.
+        /// </summary>
+        public Color Foreground
+        {
+            get { return CurrentState.Foreground; }
+            set { CurrentState.Foreground = value; }
+        }
+
+        /// <summary>
+        /// O texto a ser escrito neste botão.
+        /// </summary>
         public string Text { get; set; }
+
+        /// <summary>
+        /// A fonte para escrever o texto deste botão.
+        /// </summary>
+        public SpriteFont Font { get; set; }
+
+        /// <summary>
+        /// A textura para pintar este botão.
+        /// </summary>
+        public Texture2D Texture { get; set; }
+        
+        /// <summary>
+        /// A máquina de estados deste botão.
+        /// </summary>
         protected StateMachine<StateIds, Input> StateMachine { get; private set; }
+
+        /// <summary>
+        /// Os estados deste botão.
+        /// </summary>
         protected IDictionary<StateIds, IButtonState> States { get; private set; }
+
+        /// <summary>
+        /// O estado atual deste botão.
+        /// </summary>
+        protected IButtonState CurrentState { get { return States[StateMachine.Current]; } }
 
         private Rectangle _bounds;
         private MouseState _lastMouseState;
@@ -134,9 +189,8 @@ namespace TangoGames.RoadFighter.Widgets
     public interface IButtonState
     {
         Button Button { get; }
-        Color Background { get; }
-        Color Foreground { get; }
-        string Text { get; }
+        Color Background { get; set; }
+        Color Foreground { get; set; }
     }
 
     public abstract class AbstractButtonState : IButtonState
@@ -147,33 +201,34 @@ namespace TangoGames.RoadFighter.Widgets
         }
 
         public virtual Button Button { get; private set; }
-        public virtual Color Background { get { return Button.Background; } }
-        public virtual Color Foreground { get { return Button.Foreground; } }
-        public virtual string Text { get { return Button.Text; } }
+        public virtual Color Background { get; set; }
+        public virtual Color Foreground { get; set; }
     }
 
     public class Normal : AbstractButtonState
     {
-        public Normal(Button button) :base(button) {}
+        public Normal(Button button) :base(button)
+        {
+            Background = Color.Gray;
+            Foreground = Color.White;
+        }
     }
 
     public class Hovered : AbstractButtonState
     {
-        public Hovered(Button button) :base(button) {}
-
-        public override Color Background
+        public Hovered(Button button) :base(button)
         {
-            get { return Color.BlueViolet; }
+            Background = Color.BlueViolet;
+            Foreground = Color.White;
         }
     }
 
     public class Pressed : AbstractButtonState
     {
-        public Pressed(Button button) :base(button) {}
-
-        public override Color Background
+        public Pressed(Button button) :base(button)
         {
-            get { return Color.YellowGreen; }
+            Background = Color.YellowGreen;
+            Foreground = Color.White;
         }
     }
 
