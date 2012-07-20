@@ -41,7 +41,7 @@ namespace TangoGames.RoadFighter.Levels
 
             SpriteBatch.Begin();
 
-            SpriteBatch.DrawString(_arial, "In INTRO; press K to go to MENU", new Vector2(100), Color.BurlyWood);
+            SpriteBatch.DrawString(_arial, "In FASE; press K to go to MENU", new Vector2(300), Color.BurlyWood);
 
             hudteste.Draw(gameTime, SpriteBatch);
 

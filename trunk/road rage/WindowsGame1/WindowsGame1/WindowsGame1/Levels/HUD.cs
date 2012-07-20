@@ -17,6 +17,7 @@ namespace TangoGames.RoadFighter.Levels
         public int gasolina = 100; // quantidade de gasolina do herói
         Texture2D indicadorCombustivel;  // imagem do indicador de gasolina
         Texture2D ponteiro;                // ponteiro do indicador de gasolina
+        Texture2D marcadorPontos;
         SpriteFont Arial;
         int contadordePontos = 0; // calcula o tempo decorrido para atribuição de pontos
         float tempodecorrido = 0;
@@ -26,8 +27,10 @@ namespace TangoGames.RoadFighter.Levels
         {
 
             Arial = Content.Load<SpriteFont>("arial");
-
-
+            
+            marcadorPontos = Content.Load<Texture2D>("HUDElementos/Pontos");
+            indicadorCombustivel = Content.Load<Texture2D>("HUDElementos/gasolina");
+            ponteiro = Content.Load<Texture2D>("HUDElementos/ponteiro");
         }
 
         public void Update(GameTime gameTime)
@@ -47,9 +50,11 @@ namespace TangoGames.RoadFighter.Levels
             
             //SpriteBatch.Begin();
 
-            spriteBatch.DrawString(Arial, "Pontuação: " +pontos, new Vector2(10, 10), Color.Red);
+            spriteBatch.DrawString(Arial, " " +pontos, new Vector2(100, 45), Color.Red);
 
-            //SpriteBatch.End();
+            spriteBatch.Draw(marcadorPontos, new Rectangle(0, 10, 204, 53),new Rectangle(18,10,204,53) , Color.White);
+            spriteBatch.Draw(indicadorCombustivel, new Rectangle(0, 90, 171, 233), new Rectangle(18, 10, 171, 205), Color.White);
+            spriteBatch.Draw(ponteiro, new Rectangle(indicadorCombustivel.Width/6, 70 + indicadorCombustivel.Height/2, 100, 36), new Rectangle(0, 0, 83, 36), Color.White);
             
         }
 
