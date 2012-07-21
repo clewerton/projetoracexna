@@ -3,14 +3,35 @@ using System.Collections.Generic;
 
 namespace TangoGames.RoadFighter.States
 {
+    /// <summary>
+    /// Uma máquina de estados simples. 
+    /// 
+    /// Inspirações para esta implementação:
+    /// * http://stackoverflow.com/questions/5923767/simple-state-machine-example-in-c
+    /// * http://code.google.com/p/stateless/
+    /// </summary>
+    /// <typeparam name="TState">O tipo dos estados.</typeparam>
+    /// <typeparam name="TInput">O tipo da entrada das transições.</typeparam>
     public class StateMachine<TState, TInput>
     {
+        /// <summary>
+        /// Cria uma nova máquina de estados.
+        /// </summary>
+        /// <param name="initial">O estado inicial.</param>
         public StateMachine(TState initial)
         {
             Current = initial;
             Transitions = new Dictionary<Transition<TState, TInput>, TState>();
         }
 
+        /// <summary>
+        /// Calcula o novo estado dada uma entrada e o estado corrente. 
+        /// 
+        /// Não faz a transição de fato; use <see cref="Process"/> para tal.
+        /// </summary>
+        /// <param name="input">A entrada dada.</param>
+        /// <returns>O estado resultante de uma transição dado o estado 
+        /// corrente e a entrada <code>input</code>.</returns>
         public TState GetNextFor(TInput input)
         {
             TState next;
@@ -22,58 +43,97 @@ namespace TangoGames.RoadFighter.States
             return next;
         }
 
+        /// <summary>
+        /// Lê a entrada dada e faz a transição do estado corrente para o 
+        /// <see cref="GetNextFor">estado resultante</see>, que passa a ser o
+        /// novo estado corrente.
+        /// </summary>
+        /// <param name="input">A entrada dada.</param>
+        /// <returns>O novo estado corrente.</returns>
         public TState Process(TInput input)
         {
             Current = GetNextFor(input);
             return Current;
         }
 
+        /// <summary>
+        /// Uma mini-DSL para facilitar o cadastro de novas transições.
+        /// </summary>
+        /// <param name="from">O estado inicial da nova transição a ser 
+        /// cadastrada.</param>
+        /// <returns>Um objeto responsável por cadastrar uma nova transição 
+        /// saindo de <code>from</code>.</returns>
         public TransitionAccumulator<TState, TInput> For(TState from)
         {
             return new TransitionAccumulator<TState, TInput>(this, from);
         }
 
+        /// <summary>
+        /// O estado corrente.
+        /// </summary>
         public TState Current { get; private set; }
+
+        /// <summary>
+        /// A tabela de transições.
+        /// </summary>
         public IDictionary<Transition<TState, TInput>, TState> Transitions { get; private set; }
     }
 
-    public class StateNotFoundException : ApplicationException
+    /// <summary>
+    /// Fornece uma mini-DSL para cadastrar novas transições.
+    /// </summary>
+    /// <typeparam name="TState">O tipo dos estados da máquina de estados original.</typeparam>
+    /// <typeparam name="TInput">O tipo de entrada da máquina de estados original.</typeparam>
+    public class TransitionAccumulator<TState, TInput>
     {
-        public StateNotFoundException(object stateId)
-        {
-            StateId = stateId;
-        }
-
-        public object StateId { get; private set; }
-    }
-
-    public class TransitionAccumulator<TStateId, TInput>
-    {
-        public TransitionAccumulator(StateMachine<TStateId, TInput> owner, TStateId from)
+        /// <summary>
+        /// Cria uma nova instância.
+        /// </summary>
+        /// <param name="owner">A máquina de estados de origem.</param>
+        /// <param name="from">O estado inicial desta nova transição.</param>
+        /// <exception cref="ArgumentNullException">Um dos argumentos dados foi nulo.</exception>
+        internal TransitionAccumulator(StateMachine<TState, TInput> owner, TState from)
         {
             Owner = owner;
             From = from;
         }
 
-        public TransitionAccumulator<TStateId, TInput> When(TInput input)
+        /// <summary>
+        /// Guarda a entrada da nova transição.
+        /// </summary>
+        /// <param name="input">A entrada da nova transição.</param>
+        /// <returns>Esta instância.</returns>
+        /// <exception cref="ArgumentNullException">A entrada dada foi nula.</exception>
+        public TransitionAccumulator<TState, TInput> When(TInput input)
         {
             Input = input;
 
             return this;
         }
 
-        public TransitionAccumulator<TStateId, TInput> GoTo(TStateId to)
+        /// <summary>
+        /// Obtém o estado destino e cadastra a transição final na máquina de estados.
+        /// </summary>
+        /// <param name="to">O estado de destino da nova transição.</param>
+        /// <returns>Um novo acumulador de transições, para o usuário cadastrar
+        /// uma nova transição com a mesma máquina de estados e o mesmo estado 
+        /// inicial.</returns>
+        /// <exception cref="ArgumentNullException">O estado de destino dado foi nulo.</exception>
+        public TransitionAccumulator<TState, TInput> GoTo(TState to)
         {
             if(to == null)
             {
                 throw new ArgumentNullException("to", "No end state given!");
             }
 
-            Owner.Transitions[new Transition<TStateId, TInput>(From, Input)] = to;
-            return new TransitionAccumulator<TStateId, TInput>(Owner, From);
+            Owner.Transitions[new Transition<TState, TInput>(From, Input)] = to;
+            return new TransitionAccumulator<TState, TInput>(Owner, From);
         }
 
-        public StateMachine<TStateId, TInput> Owner
+        /// <summary>
+        /// A máquina de estados onde a transição será cadastrada.
+        /// </summary>
+        public StateMachine<TState, TInput> Owner
         {
             get { return _owner; }
             private set
@@ -86,7 +146,11 @@ namespace TangoGames.RoadFighter.States
                 _owner = value;
             }
         }
-        public TStateId From
+
+        /// <summary>
+        /// O estado de origem da transição.
+        /// </summary>
+        public TState From
         {
             get { return _from; }
             private set
@@ -99,6 +163,10 @@ namespace TangoGames.RoadFighter.States
                 _from = value;
             }
         }
+
+        /// <summary>
+        /// A entrada que aciona a transição.
+        /// </summary>
         public TInput Input
         {
             get { return _input; }
@@ -106,15 +174,15 @@ namespace TangoGames.RoadFighter.States
             {
                 if (value == null)
                 {
-                    throw new ArgumentException("value", "No input given!");
+                    throw new ArgumentNullException("value", "No input given!");
                 }
 
                 _input = value;
             }
         }
 
-        private StateMachine<TStateId, TInput> _owner;
-        private TStateId _from;
+        private StateMachine<TState, TInput> _owner;
+        private TState _from;
         private TInput _input;
     }
 
