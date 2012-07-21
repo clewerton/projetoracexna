@@ -24,7 +24,7 @@ namespace TangoGames.RoadFighter.Levels
 
         public override void Update(GameTime gameTime)
         {
-            var sceneManager = (ISceneManagerService<MainGame.Scenes>)Game.Services.GetService(typeof(ISceneManagerService<MainGame.Scenes>));
+            var sceneManager = GetSceneManager<MainGame.Scenes>();
 
             if (Keyboard.GetState().IsKeyDown(Keys.K))
             {
