@@ -1,6 +1,15 @@
-﻿namespace TangoGames.RoadFighter.States
+﻿using System;
+
+namespace TangoGames.RoadFighter.States
 {
-    public class Transition<TState, TInput>
+    /// <summary>
+    /// Representa uma transição de uma máquina de estados. Possui equivalência
+    /// de valor, ou seja, duas transições com campos equivalentes são 
+    /// consideradas equivalentes.
+    /// </summary>
+    /// <typeparam name="TState">O tipo dos estados.</typeparam>
+    /// <typeparam name="TInput">O tipo das entradas.</typeparam>
+    public struct Transition<TState, TInput> : IEquatable<Transition<TState, TInput>>
     {
         public Transition(TState state, TInput input)
         {
@@ -10,11 +19,14 @@
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
+            return (obj is Transition<TState, TInput>)
+                ? Equals((Transition<TState, TInput>) obj)
+                : false;
+        }
 
-            var other = obj as Transition<TState, TInput>;
-            return other != null && object.Equals(State, other.State) && object.Equals(Input, other.Input);
+        public bool Equals(Transition<TState, TInput> other)
+        {
+            return State.Equals(other.State) && Input.Equals(other.Input);
         }
 
         public override int GetHashCode()
@@ -25,7 +37,24 @@
             }
         }
 
-        public TState State { get; private set; }
-        public TInput Input { get; private set; } 
+        public static bool operator ==(Transition<TState, TInput> left, Transition<TState, TInput> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Transition<TState, TInput> left, Transition<TState, TInput> right)
+        {
+            return !left.Equals(right);
+        }
+
+        /// <summary>
+        /// O estado inicial da transição.
+        /// </summary>
+        public readonly TState State;
+
+        /// <summary>
+        /// A entrada da transição.
+        /// </summary>
+        public readonly TInput Input;
     }
 }
