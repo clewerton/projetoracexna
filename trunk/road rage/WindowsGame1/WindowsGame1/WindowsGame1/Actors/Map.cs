@@ -102,10 +102,10 @@ namespace TangoGames.RoadFighter.Actors
         private bool goingAway(Rectangle bounds, IActor actor)
         {
             return
-                (actor.Location.X > bounds.Right) && (actor.Orientation.X > 0) ||
-                (actor.Location.Y > bounds.Bottom) && (actor.Orientation.Y > 0) ||
-                (actor.Location.X < bounds.Left) && (actor.Orientation.X < 0) ||
-                (actor.Location.Y < bounds.Top) && (actor.Orientation.Y < 0);
+                (actor.Location.X > bounds.Right) && (actor.Velocity.X > 0) ||
+                (actor.Location.Y > bounds.Bottom) && (actor.Velocity.Y > 0) ||
+                (actor.Location.X < bounds.Left) && (actor.Velocity.X < 0) ||
+                (actor.Location.Y < bounds.Top) && (actor.Velocity.Y < 0);
         }
 
     }
