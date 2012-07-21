@@ -9,19 +9,22 @@ namespace TangoGames.RoadFighter.Actors
     /// <summary>
     /// A basic entity implements simple espatial properties. Movement not taken account.
     /// </summary>
-    public class BasicDrawingActor : GameComponent, IActor, IActorsCollision
+    public abstract class BasicDrawingActor : GameComponent, IDrawableActor, IActorsCollision
     {
         private Rectangle bounds;
         private Vector2 location;
         private Vector2 orientation;
         private Vector2 velocity;
+        private Boolean visible;
         private Texture2D texture;
+        protected SpriteBatch spriteBatch;
 
-        public BasicDrawingActor(Game game, Rectangle bounds, Texture2D texture)
+        public BasicDrawingActor(Game game, Rectangle bounds, Texture2D texture, SpriteBatch spriteBatch)
             : base(game)
         {
             this.bounds = bounds;
             this.texture = texture;
+            this.spriteBatch = spriteBatch;
         }
 
         /// <summary>
@@ -45,6 +48,8 @@ namespace TangoGames.RoadFighter.Actors
 
             base.Update(gameTime);
         }
+
+        public abstract void Draw(GameTime gameTime);
 
         public Rectangle Bounds 
         {
@@ -73,7 +78,6 @@ namespace TangoGames.RoadFighter.Actors
             }
             set {
                 orientation = value;
-
             }
         }
 
@@ -86,7 +90,6 @@ namespace TangoGames.RoadFighter.Actors
             set
             {
                 velocity = value;
-
             }
         }
 
@@ -94,10 +97,29 @@ namespace TangoGames.RoadFighter.Actors
         {
             return false;
         }
-        
-        public Texture2D GetTextura()
+
+        public Texture2D Texture
         {
-            return texture;
+            get
+            {
+                return texture;
+            }
+            set
+            {
+                texture = value;
+            }
+        }
+
+        public Boolean Visible
+        {
+            get
+            {
+                return visible;
+            }
+            set
+            {
+                visible = value;
+            }
         }
 
     }

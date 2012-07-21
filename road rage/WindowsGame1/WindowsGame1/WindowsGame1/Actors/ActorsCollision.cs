@@ -10,7 +10,7 @@ namespace TangoGames.RoadFighter.Actors
     public interface IActorsCollision
     {
         Boolean colidiu(BasicDrawingActor AtorColidente);
-        Texture2D GetTextura();
+        Texture2D Texture { get; set; }
     }
 
     class ActorsCollision
@@ -35,8 +35,8 @@ namespace TangoGames.RoadFighter.Actors
                         // Carrega a textura 
 
             IActorsCollision AtorBaseC = (IActorsCollision) AtorBase;
-            DadosTextura =  new Color[AtorBaseC.GetTextura().Width * AtorBaseC.GetTextura().Height];
-            AtorBaseC.GetTextura().GetData(DadosTextura);
+            DadosTextura =  new Color[AtorBaseC.Texture.Width * AtorBaseC.Texture.Height];
+            AtorBaseC.Texture.GetData(DadosTextura);
         }
 
 //               // A imagem
