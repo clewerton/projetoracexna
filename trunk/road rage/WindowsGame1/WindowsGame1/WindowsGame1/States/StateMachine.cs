@@ -63,9 +63,9 @@ namespace TangoGames.RoadFighter.States
         /// cadastrada.</param>
         /// <returns>Um objeto responsável por cadastrar uma nova transição 
         /// saindo de <code>from</code>.</returns>
-        public TransitionAccumulator<TState, TInput> For(TState from)
+        public WhenCollector<TState, TInput> For(TState from)
         {
-            return new TransitionAccumulator<TState, TInput>(this, from);
+            return new WhenCollector<TState, TInput>(this, from);
         }
 
         /// <summary>
@@ -80,11 +80,13 @@ namespace TangoGames.RoadFighter.States
     }
 
     /// <summary>
-    /// Fornece uma mini-DSL para cadastrar novas transições.
+    /// Fornece uma mini-DSL para cadastrar novas transições. Esta classe 
+    /// coleta a entrada da nova transição, e a repassa a uma outra classe, que
+    /// irá coletar o estado de destino e cadastrar a transição de fato.
     /// </summary>
     /// <typeparam name="TState">O tipo dos estados da máquina de estados original.</typeparam>
     /// <typeparam name="TInput">O tipo de entrada da máquina de estados original.</typeparam>
-    public class TransitionAccumulator<TState, TInput>
+    public class WhenCollector<TState, TInput>
     {
         /// <summary>
         /// Cria uma nova instância.
@@ -92,7 +94,7 @@ namespace TangoGames.RoadFighter.States
         /// <param name="owner">A máquina de estados de origem.</param>
         /// <param name="from">O estado inicial desta nova transição.</param>
         /// <exception cref="ArgumentNullException">Um dos argumentos dados foi nulo.</exception>
-        internal TransitionAccumulator(StateMachine<TState, TInput> owner, TState from)
+        internal WhenCollector(StateMachine<TState, TInput> owner, TState from)
         {
             Owner = owner;
             From = from;
@@ -102,13 +104,73 @@ namespace TangoGames.RoadFighter.States
         /// Guarda a entrada da nova transição.
         /// </summary>
         /// <param name="input">A entrada da nova transição.</param>
-        /// <returns>Esta instância.</returns>
+        /// <returns>Um objeto para coletar o estado de destino e cadastrar a nova transição.</returns>
         /// <exception cref="ArgumentNullException">A entrada dada foi nula.</exception>
-        public TransitionAccumulator<TState, TInput> When(TInput input)
+        public GoToCollector<TState, TInput> When(TInput input)
         {
-            Input = input;
+            return new GoToCollector<TState, TInput>(Owner, From, input);
+        }
 
-            return this;
+        /// <summary>
+        /// A máquina de estados onde a transição será cadastrada.
+        /// </summary>
+        public StateMachine<TState, TInput> Owner
+        {
+            get { return _owner; }
+            private set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", "No owner given!");
+                }
+
+                _owner = value;
+            }
+        }
+
+        /// <summary>
+        /// O estado de origem da transição.
+        /// </summary>
+        public TState From
+        {
+            get { return _from; }
+            private set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value", "No starting state given!");
+                }
+
+                _from = value;
+            }
+        }
+
+        private StateMachine<TState, TInput> _owner;
+        private TState _from;
+    }
+
+    /// <summary>
+    /// Fornece uma mini-DSL para cadastrar novas transições. Objetos desta 
+    /// classe recebem a máquina de estados, o estado inicial e a entrada 
+    /// lida, e se responsabilizam por coletar o estado de destino e cadastrar
+    /// a transição de fato.
+    /// </summary>
+    /// <typeparam name="TState">O tipo dos estados da máquina de estados original.</typeparam>
+    /// <typeparam name="TInput">O tipo de entrada da máquina de estados original.</typeparam>
+    public class GoToCollector<TState, TInput> 
+    {
+        /// <summary>
+        /// Cria uma nova instância.
+        /// </summary>
+        /// <param name="owner">A máquina de estados de origem.</param>
+        /// <param name="from">O estado inicial desta nova transição.</param>
+        /// <param name="input">A entrada da nova transição.</param>
+        /// <exception cref="ArgumentNullException">Um dos argumentos dados foi nulo.</exception>
+        internal GoToCollector(StateMachine<TState, TInput> owner, TState from, TInput input)
+        {
+            Owner = owner;
+            From = from;
+            Input = input;
         }
 
         /// <summary>
@@ -119,15 +181,15 @@ namespace TangoGames.RoadFighter.States
         /// uma nova transição com a mesma máquina de estados e o mesmo estado 
         /// inicial.</returns>
         /// <exception cref="ArgumentNullException">O estado de destino dado foi nulo.</exception>
-        public TransitionAccumulator<TState, TInput> GoTo(TState to)
+        public WhenCollector<TState, TInput> GoTo(TState to)
         {
-            if(to == null)
+            if (to == null)
             {
                 throw new ArgumentNullException("to", "No end state given!");
             }
 
             Owner.Transitions[new Transition<TState, TInput>(From, Input)] = to;
-            return new TransitionAccumulator<TState, TInput>(Owner, From);
+            return new WhenCollector<TState, TInput>(Owner, From);
         }
 
         /// <summary>
