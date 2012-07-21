@@ -96,7 +96,7 @@ namespace TangoGames.RoadFighter.Actors
             }
         }
 
-        public new bool Visible
+        public bool Visible
         {
             set
             {
