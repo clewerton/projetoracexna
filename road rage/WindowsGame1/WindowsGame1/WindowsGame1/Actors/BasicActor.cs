@@ -1,4 +1,6 @@
 using Microsoft.Xna.Framework;
+using System;
+using Microsoft.Xna.Framework.Graphics;
 
 
 namespace TangoGames.RoadFighter.Actors
@@ -7,17 +9,19 @@ namespace TangoGames.RoadFighter.Actors
     /// <summary>
     /// A basic entity implements simple espatial properties. Movement not taken account.
     /// </summary>
-    public class BasicActor : GameComponent, IActor
+    public class BasicDrawingActor : GameComponent, IActor, IActorsCollision
     {
         private Rectangle bounds;
         private Vector2 location;
         private Vector2 orientation;
         private Vector2 velocity;
+        private Texture2D texture;
 
-        public BasicActor(Game game, Rectangle bounds)
+        public BasicDrawingActor(Game game, Rectangle bounds, Texture2D texture)
             : base(game)
         {
             this.bounds = bounds;
+            this.texture = texture;
         }
 
         /// <summary>
@@ -84,6 +88,16 @@ namespace TangoGames.RoadFighter.Actors
                 velocity = value;
 
             }
+        }
+
+        public Boolean colidiu(BasicDrawingActor AtorColidente)
+        {
+            return false;
+        }
+        
+        public Texture2D GetTextura()
+        {
+            return texture;
         }
 
     }

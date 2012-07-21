@@ -9,7 +9,7 @@ namespace TangoGames.RoadFighter.Actors
 {
     public interface IActorsCollision
     {
-        Boolean colidiu(BasicActor AtorColidente);
+        Boolean colidiu(BasicDrawingActor AtorColidente);
         Texture2D GetTextura();
     }
 
@@ -19,7 +19,7 @@ namespace TangoGames.RoadFighter.Actors
         /// <summary>
         /// Ator Base é a instancia de ator base que usará a classe de colisão
         /// </summary>
-        BasicActor AtorBase;
+        BasicDrawingActor AtorBase;
 
         /// <summary>
         /// Array bitmap da figura do ator
@@ -27,10 +27,11 @@ namespace TangoGames.RoadFighter.Actors
         Color[] DadosTextura;
 #endregion
 
-        public ActorsCollision(BasicActor AtorBase)
+        public ActorsCollision(BasicDrawingActor AtorBase)
         {
             this.AtorBase = AtorBase;
-            if (AtorBase is IActorGroup)  throw new Exception("Erro: implementar a Interfase IAtorsCollision");
+            if (!(AtorBase is IActorsCollision)) 
+                throw new Exception("Erro: implementar a Interfase IAtorsCollision");
                         // Carrega a textura 
 
             IActorsCollision AtorBaseC = (IActorsCollision) AtorBase;
