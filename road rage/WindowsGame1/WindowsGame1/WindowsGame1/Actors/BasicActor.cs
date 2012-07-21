@@ -12,6 +12,7 @@ namespace TangoGames.RoadFighter.Actors
         private Rectangle bounds;
         private Vector2 location;
         private Vector2 orientation;
+        private Vector2 velocity;
 
         public BasicActor(Game game, Rectangle bounds)
             : base(game)
@@ -68,6 +69,19 @@ namespace TangoGames.RoadFighter.Actors
             }
             set {
                 orientation = value;
+
+            }
+        }
+
+        public Vector2 Velocity
+        {
+            get
+            {
+                return velocity;
+            }
+            set
+            {
+                velocity = value;
 
             }
         }
