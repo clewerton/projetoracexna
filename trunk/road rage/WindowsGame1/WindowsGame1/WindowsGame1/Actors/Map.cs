@@ -17,13 +17,16 @@ namespace TangoGames.RoadFighter.Actors
     /// </summary>
     public class Map : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        private IDrawableActorGroup actors;
-        private IDrawableActorGroup visibleActors;
-        private IDrawableActorGroup activeActors;
+        private DrawAbleActorCollection actors;
+        private DrawAbleActorCollection visibleActors;
+        private Vector2 velocity;
 
         public Map(Game game)
             : base(game)
         {
+            actors = new DrawAbleActorCollection(game);
+            visibleActors = new DrawAbleActorCollection(game);
+
             // TODO: Construct any child components here
         }
 
@@ -61,17 +64,16 @@ namespace TangoGames.RoadFighter.Actors
                 }
                 Configure(actor);
             }
-
+            actors.Move(velocity);
+            // update ALL actors in map (no need to call visibleActor.Update)
+            actors.Update(gameTime);
+            
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            foreach (IDrawableActor actor in visibleActors)
-            {
-                actor.Draw(gameTime);
-            }
-
+            visibleActors.Draw(gameTime);
         }
 
         public void Add(IDrawableActor actor)
@@ -82,18 +84,13 @@ namespace TangoGames.RoadFighter.Actors
 
         public void Remove(IDrawableActor actor)
         {
-            actors.Add(actor);
-            visibleActors.Add(actor);
-            activeActors.Remove(actor);
+            actors.Remove(actor);
+            visibleActors.Remove(actor);
         }
 
         private void Configure(IDrawableActor actor)
         {
-            if (actor.Enabled && !visibleActors.Contains(actor))
-            {
-                activeActors.Add(actor);
-            }
-            if (actor.Visible && !activeActors.Contains(actor))
+            if (actor.Visible && !visibleActors.Contains(actor))
             {
                 visibleActors.Add(actor);
             }
@@ -102,10 +99,23 @@ namespace TangoGames.RoadFighter.Actors
         private bool goingAway(Rectangle bounds, IActor actor)
         {
             return
-                (actor.Location.X > bounds.Right) && (actor.Velocity.X > 0) ||
-                (actor.Location.Y > bounds.Bottom) && (actor.Velocity.Y > 0) ||
-                (actor.Location.X < bounds.Left) && (actor.Velocity.X < 0) ||
-                (actor.Location.Y < bounds.Top) && (actor.Velocity.Y < 0);
+                (actor.Location.X > bounds.Right) && (actor.Velocity.X > velocity.X) ||
+                (actor.Location.Y > bounds.Bottom) && (actor.Velocity.Y > velocity.X) ||
+                (actor.Location.X < bounds.Left) && (actor.Velocity.X < velocity.X) ||
+                (actor.Location.Y < bounds.Top) && (actor.Velocity.Y < velocity.X);
+        }
+
+        public Vector2 Velocity
+        {
+            get
+            {
+                return velocity;
+            }
+            set
+            {
+                velocity = value;
+
+            }
         }
 
     }

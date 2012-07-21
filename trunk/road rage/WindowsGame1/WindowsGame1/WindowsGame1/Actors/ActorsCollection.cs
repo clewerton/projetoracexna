@@ -24,19 +24,21 @@ namespace TangoGames.RoadFighter.Actors
     }
 
     // Encapsulates entity group functionality.
-    public interface IActorGroup : IEnumerable<IActor>
+    public interface IActorGroup<ActorType> : IEnumerable<ActorType> where ActorType : IActor
     {
-        void Add(IActor entity);
-        void Remove(IActor entity);
+        void Add(ActorType entity);
+        void Remove(ActorType entity);
+        void Update(GameTime gameTime);
+        void Move(Vector2 velocity);
         bool Enabled { set; }
     }
 
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class ActorCollection : GameComponent, IActorGroup
+    public class ActorCollection<ActorType> : GameComponent, IActorGroup<ActorType> where ActorType : IActor
     {
-        private IList<IActor> actors = new List<IActor>();
+        protected IList<ActorType> actors = new List<ActorType>();
 
         public ActorCollection(Game game)
             : base(game)
@@ -61,17 +63,20 @@ namespace TangoGames.RoadFighter.Actors
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
+            foreach (IDrawableActor actor in actors)
+            {
+                actor.Update(gameTime);
+            }
 
             base.Update(gameTime);
         }
 
-        public IEnumerator<IActor> GetEnumerator()
+        public IEnumerator<ActorType> GetEnumerator()
         {
             return actors.GetEnumerator();
         }
 
-        public void Add(IActor entity)
+        public void Add(ActorType entity)
         {
             if (entity == null) // null is not a valid argument!
             {
@@ -80,16 +85,24 @@ namespace TangoGames.RoadFighter.Actors
             actors.Add(entity);
         }
 
-        public void Remove(IActor entity)
+        public void Remove(ActorType entity)
         {
             actors.Remove(entity);
+        }
+
+        public void Move(Vector2 velocity)
+        {
+            foreach (ActorType item in actors)
+            {
+                item.Location += velocity;
+            }
         }
 
         public new bool Enabled
         {
             set
             {
-                foreach (IActor item in actors)
+                foreach (ActorType item in actors)
                 {
                     item.Enabled = value;
                 }
