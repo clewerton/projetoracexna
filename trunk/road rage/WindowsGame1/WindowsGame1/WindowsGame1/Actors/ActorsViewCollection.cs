@@ -13,32 +13,25 @@ using Microsoft.Xna.Framework.Media;
 
 namespace TangoGames.RoadFighter.Actors
 {
-    public interface IActor
+    public interface IDrawableActor : IActor
     {
-        Rectangle Bounds { get; set; }
-        Vector2 Location { get; set; }
-        Vector2 Orientation { get; set; }
-        Vector2 Velocity { get; set; }
-        void Update(GameTime gameTime);
-        bool Enabled { get; set; }
+        void Draw(GameTime gameTime);
+        bool Visible { get; set; }
     }
 
-    // Encapsulates entity group functionality.
-    public interface IActorGroup : IEnumerable<IActor>
+    public interface IDrawableActorGroup : IEnumerable<IDrawableActor>
     {
-        void Add(IActor entity);
-        void Remove(IActor entity);
+        void Add(IDrawableActor entity);
+        void Remove(IDrawableActor entity);
         bool Enabled { set; }
+        bool Visible { set; }
     }
 
-    /// <summary>
-    /// This is a game component that implements IUpdateable.
-    /// </summary>
-    public class ActorCollection : GameComponent, IActorGroup
+    public class DrawAbleActorCollection : GameComponent, IDrawableActorGroup
     {
-        private IList<IActor> actors = new List<IActor>();
+        private IList<IDrawableActor> actors = new List<IDrawableActor>();
 
-        public ActorCollection(Game game)
+        public DrawAbleActorCollection(Game game)
             : base(game)
         {
             // TODO: Construct any child components here
@@ -66,12 +59,19 @@ namespace TangoGames.RoadFighter.Actors
             base.Update(gameTime);
         }
 
-        public IEnumerator<IActor> GetEnumerator()
+        public void Draw(GameTime gameTime)
+        {
+            // TODO: Add your update code here
+
+            base.Update(gameTime);
+        }
+
+        public IEnumerator<IDrawableActor> GetEnumerator()
         {
             return actors.GetEnumerator();
         }
 
-        public void Add(IActor entity)
+        public void Add(IDrawableActor entity)
         {
             if (entity == null) // null is not a valid argument!
             {
@@ -80,7 +80,7 @@ namespace TangoGames.RoadFighter.Actors
             actors.Add(entity);
         }
 
-        public void Remove(IActor entity)
+        public void Remove(IDrawableActor entity)
         {
             actors.Remove(entity);
         }
@@ -89,9 +89,20 @@ namespace TangoGames.RoadFighter.Actors
         {
             set
             {
-                foreach (IActor item in actors)
+                foreach (IDrawableActor item in actors)
                 {
                     item.Enabled = value;
+                }
+            }
+        }
+
+        public new bool Visible
+        {
+            set
+            {
+                foreach (IDrawableActor item in actors)
+                {
+                    item.Visible = value;
                 }
             }
         }
