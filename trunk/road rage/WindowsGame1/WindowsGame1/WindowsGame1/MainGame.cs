@@ -3,6 +3,7 @@ using TangoGames.RoadFighter.Levels;
 using TangoGames.RoadFighter.Scenes;
 using TangoGames.RoadFighter.Actors;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace TangoGames.RoadFighter
 {
@@ -17,14 +18,16 @@ namespace TangoGames.RoadFighter
         public enum Scenes { Intro, End, Fase, Menu }
         public enum EntityTypes { Basic }
 
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+
         public MainGame()
         {
             // XXX precisa ficar no construtor, pois base.Initialize precisa de um serviço para 
             // XXX iniciar o GraphicDevice.
-            new GraphicsDeviceManager(this); 
+            graphics = new GraphicsDeviceManager(this); 
 
             Content.RootDirectory = "Content";
-
         }
 
         /// <summary>
@@ -38,6 +41,11 @@ namespace TangoGames.RoadFighter
 
             // inicializa todos os componentes registrados no jogo
             base.Initialize();
+        }
+
+        protected override void LoadContent()
+        {
+            spriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
         protected override void Update(GameTime gameTime)
@@ -82,11 +90,10 @@ namespace TangoGames.RoadFighter
         private void StartEntityFactory()
         {
 	        EntityFactory<EntityTypes> _entityFactory = new EntityFactory<EntityTypes>(); 
-            _entityFactory[EntityTypes.Basic] = new BasicDrawingActor(this, new Rectangle(0, 0, 100, 100), null);
+            _entityFactory[EntityTypes.Basic] = new Car(this, new Rectangle(0, 0, 100, 100), spriteBatch);
             Services.AddService(typeof(IEntityFactory<EntityTypes>), _entityFactory);
 
         }
-
 
     }
 }
