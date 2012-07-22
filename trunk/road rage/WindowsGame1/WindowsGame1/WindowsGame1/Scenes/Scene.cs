@@ -71,7 +71,7 @@ namespace TangoGames.RoadFighter.Scenes
             game.Components.Add(this);
         }
 
-        #region IScene Operations
+        #region IScene
         public virtual void Enter()
         {
             Enable();
@@ -97,7 +97,7 @@ namespace TangoGames.RoadFighter.Scenes
         public IList<ISceneElement> Elements { get; protected set; }
         #endregion
 
-        #region XNA Operations
+        #region XNA
         protected override void LoadContent()
         {
             // carregue o conteúdo de cada elemento desenhável
@@ -185,6 +185,7 @@ namespace TangoGames.RoadFighter.Scenes
         public virtual void DrawAfter(GameTime gameTime, SpriteBatch spriteBatch) {}
         #endregion
 
+        #region Helpers
         /// <summary>
         /// Os elementos desenháveis desta cena. Esta propriedade é calculada a partir da 
         /// propriedade <see cref="Elements"/>, então é somente para leitura.
@@ -199,13 +200,10 @@ namespace TangoGames.RoadFighter.Scenes
         /// </summary>
         /// <typeparam name="TId">O tipo dos identificadores de cenas no gerenciador.</typeparam>
         /// <returns>O gerenciador de cenas do jogo.</returns>
-        public ISceneManagerService<TId> GetSceneManager<TId>()
+        protected ISceneManagerService<TId> GetSceneManager<TId>()
         {
             return (ISceneManagerService<TId>) Game.Services.GetService(typeof(ISceneManagerService<TId>));
         }
-
-        // TODO isto precisa ficar público?
-        public SpriteBatch SpriteBatch { get; set; }
 
         // habilita o componente no ciclo de vida do XNA
         private void Enable()
@@ -220,5 +218,9 @@ namespace TangoGames.RoadFighter.Scenes
             Pause();
             Visible = false; // desabilita o Draw
         }
+
+        // TODO isto precisa ficar público?
+        public SpriteBatch SpriteBatch { get; set; }
+        #endregion
     }
 }
