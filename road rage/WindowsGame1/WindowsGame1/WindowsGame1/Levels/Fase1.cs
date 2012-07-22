@@ -14,10 +14,7 @@ namespace TangoGames.RoadFighter.Levels
 
         protected override void LoadContent()
         {
-            base.LoadContent();
-
             _arial = Game.Content.Load<SpriteFont>("arial");
-            SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
 
             var actorFactory = (IActorFactory<MainGame.ActorTypes, IDrawableActor>)Game.Services.GetService(typeof(IActorFactory<MainGame.ActorTypes, IDrawableActor>));
             map = new Map(Game);
@@ -37,6 +34,7 @@ namespace TangoGames.RoadFighter.Levels
 
             hudteste = new HUD(Game.Content);
 
+            base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
@@ -50,27 +48,26 @@ namespace TangoGames.RoadFighter.Levels
 
             map.Update(gameTime);
             hudteste.Update(gameTime);
-
         }
 
         public override void Draw(GameTime gameTime)
         {
             Game.GraphicsDevice.Clear(Color.Azure);
 
-            SpriteBatch.Begin();
+            base.Draw(gameTime);
+        }
 
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
             SpriteBatch.DrawString(_arial, "In FASE; press K to go to MENU", new Vector2(300), Color.BurlyWood);
 
             map.Draw(gameTime);
             hudteste.Draw(gameTime, SpriteBatch);
-
-            SpriteBatch.End();
         }
 
         #region Properties & Fields
         private SpriteFont _arial;
         private IMap map;
-        private SpriteBatch SpriteBatch { get; set; }
         #endregion
     }
 }

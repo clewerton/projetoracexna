@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace TangoGames.RoadFighter.Scenes
 {
@@ -32,6 +35,11 @@ namespace TangoGames.RoadFighter.Scenes
         /// Retorna verdadeiro se esta cena estiver pausada.
         /// </summary>
         bool Paused { get; }
+
+        /// <summary>
+        /// A lista de elementos nesta cena.
+        /// </summary>
+        IList<ISceneElement> Elements { get; }
     }
 
     /// <summary>
@@ -50,6 +58,12 @@ namespace TangoGames.RoadFighter.Scenes
         /// <param name="game">A instância de <see cref="Game"/> controlando o jogo.</param>
         public Scene(Game game) : base(game)
         {
+            // crie a lista de elementos da cena
+            Elements = new List<ISceneElement>();
+
+            // crie o sprite batch a ser usado pelos elementos
+            SpriteBatch = new SpriteBatch(game.GraphicsDevice);
+
             // comece com tudo desabilitado
             Disable();
 
@@ -58,6 +72,18 @@ namespace TangoGames.RoadFighter.Scenes
         }
 
         #region IScene Operations
+        protected override void LoadContent()
+        {
+            // carregue o conteúdo de cada elemento desenhável
+            foreach (var sceneElement in DrawableElements)
+            {
+                sceneElement.LoadContent(Game.Content, Game.GraphicsDevice);
+            }
+
+            // carregue o conteúdo padrão da superclasse
+            base.LoadContent();
+        }
+
         public virtual void Enter()
         {
             Enable();
@@ -79,7 +105,41 @@ namespace TangoGames.RoadFighter.Scenes
         }
 
         public bool Paused { get { return ! Enabled; } }
+
+        public IList<ISceneElement> Elements { get; protected set; }
         #endregion
+
+        public override void Update(GameTime gameTime)
+        {
+            foreach (var sceneElement in Elements)
+            {
+                sceneElement.Update(gameTime);
+            }
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            SpriteBatch.Begin();
+
+            foreach (var sceneElement in DrawableElements)
+            {
+                sceneElement.Draw(gameTime, SpriteBatch);
+            }
+
+            Draw(gameTime, SpriteBatch);
+
+            SpriteBatch.End();
+        }
+
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            
+        }
+
+        protected IEnumerable<IDrawableSceneElement> DrawableElements 
+        {
+            get { return from e in Elements where e is IDrawableSceneElement select e as IDrawableSceneElement; }
+        }
 
         // habilita o componente no ciclo de vida do XNA
         private void Enable()
@@ -104,5 +164,7 @@ namespace TangoGames.RoadFighter.Scenes
         {
             return (ISceneManagerService<TId>) Game.Services.GetService(typeof(ISceneManagerService<TId>));
         }
+
+        public SpriteBatch SpriteBatch { get; private set; }
     }
 }

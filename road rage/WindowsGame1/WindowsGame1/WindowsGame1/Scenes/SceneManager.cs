@@ -149,7 +149,7 @@ namespace TangoGames.RoadFighter.Scenes
             }
         }
         #endregion
-        
+
         #region Properties & Fields
         private IScene _current;
         #endregion   

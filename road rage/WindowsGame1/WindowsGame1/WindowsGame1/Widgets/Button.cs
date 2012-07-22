@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TangoGames.RoadFighter.Scenes;
 using TangoGames.RoadFighter.States;
 
 namespace TangoGames.RoadFighter.Widgets
 {
-    public class Button
+    public class Button : AbstractDrawableSceneElement
     {
         /// <summary>
         /// Registra eventos de clique.
@@ -30,11 +32,11 @@ namespace TangoGames.RoadFighter.Widgets
             Normal, Hovered, Pressed
         }
 
-        public Button(Texture2D texture, SpriteFont font)
+        public Button(IScene scene)
         {
-            Texture = texture;
-            Font = font;
-            
+            Scene = scene;
+            scene.Elements.Add(this);
+
             Bounds = new Rectangle(0, 0, 60, 30);
             Text = "OK";
 
@@ -56,7 +58,17 @@ namespace TangoGames.RoadFighter.Widgets
                 .When(Input.Released)       .GoTo(StateIds.Normal);
         }
 
-        public void Update(GameTime gameTime)
+        public override void LoadContent(ContentManager contentManager, GraphicsDevice graphicsDevice)
+        {
+            // textura vazia
+            var dummyTexture = new Texture2D(graphicsDevice, 1, 1);
+            dummyTexture.SetData(new Color[] { Color.White });
+            
+            Texture = dummyTexture;
+            Font = contentManager.Load<SpriteFont>("arial");
+        }
+
+        public override void Update(GameTime gameTime)
         {
             var currentState = Mouse.GetState();
             
@@ -83,7 +95,7 @@ namespace TangoGames.RoadFighter.Widgets
             _lastMouseState = currentState;
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             IButtonState currentState = States[StateMachine.Current];
 

@@ -12,11 +12,10 @@ namespace TangoGames.RoadFighter.Levels
 
         protected override void LoadContent()
         {
-            base.LoadContent();
-
             _arial = Game.Content.Load<SpriteFont>("arial");
             _timeElapsed = TimeSpan.Zero;
-            SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
+
+            base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
@@ -35,17 +34,19 @@ namespace TangoGames.RoadFighter.Levels
         {
             Game.GraphicsDevice.Clear(Color.DarkGoldenrod);
 
-            SpriteBatch.Begin();
+            base.Draw(gameTime);
+        }
+
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
             SpriteBatch.DrawString(_arial, "In END; click the LEFT BUTTON to go to MENU", new Vector2(100), Color.Bisque);
             SpriteBatch.DrawString(_arial, "In END; press SPACE to " + (Paused ? "resume" : "pause"), new Vector2(100, 130), Color.Bisque);
             SpriteBatch.DrawString(_arial, "Time: " + _timeElapsed, new Vector2(100, 160), Color.Bisque);
-            SpriteBatch.End();
         }
 
         #region Properties & Fields
         private SpriteFont _arial;
         private TimeSpan _timeElapsed;
-        private SpriteBatch SpriteBatch { get; set; }
         #endregion
     }
 }
