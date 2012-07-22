@@ -117,25 +117,63 @@ namespace TangoGames.RoadFighter.Scenes
             }
         }
 
+        /// <summary>
+        /// Desenha a cena, de acordo com o ciclo de vida do XNA. 
+        /// 
+        /// Faz uso de três métodos para desenhar de fato: <see cref="DrawBefore"/>, 
+        /// <see cref="DrawElements"/> e  <see cref="DrawAfter"/>, que são invocados nessa ordem.
+        /// Este método prepara o SpriteBatch a ser repassado aos métodos.
+        /// </summary>
+        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo Game.</param>
         public override void Draw(GameTime gameTime)
         {
             SpriteBatch.Begin();
 
-            foreach (var sceneElement in DrawableElements)
-            {
-                sceneElement.Draw(gameTime, SpriteBatch);
-            }
-
-            Draw(gameTime, SpriteBatch);
+            DrawBefore(gameTime, SpriteBatch);
+            DrawElements(gameTime, SpriteBatch);
+            DrawAfter(gameTime, SpriteBatch);
 
             SpriteBatch.End();
         }
 
-        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        /// <summary>
+        /// Classes derivadas deverão colocar neste método tudo que precisa ser desenhado antes
+        /// dos elementos de cena.
+        /// </summary>
+        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo Game.</param>
+        /// <param name="spriteBatch">O sprite batch usado para desenhar este quadro, já pronto 
+        /// para uso.</param>
+        public virtual void DrawBefore(GameTime gameTime, SpriteBatch spriteBatch) {}
+
+        /// <summary>
+        /// Desenha os elementos da cena. Este método deverá ser sobreescrito caso se deseje um 
+        /// controle mais fino de como os elementos deverão ser desenhados.
+        /// </summary>
+        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo Game.</param>
+        /// <param name="spriteBatch">O sprite batch usado para desenhar este quadro, já pronto 
+        /// para uso.</param>
+        public virtual void DrawElements(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            
+            foreach (var sceneElement in DrawableElements)
+            {
+                sceneElement.Draw(gameTime, spriteBatch);
+            }
         }
 
+        /// <summary>
+        /// Classes derivadas deverão colocar neste método tudo que precisa ser desenhado depois
+        /// dos elementos de cena.
+        /// </summary>
+        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo Game.</param>
+        /// <param name="spriteBatch">O sprite batch usado para desenhar este quadro, já pronto 
+        /// para uso.</param>
+        public virtual void DrawAfter(GameTime gameTime, SpriteBatch spriteBatch) {}
+
+        /// <summary>
+        /// Os elementos desenháveis desta cena. Esta propriedade é calculada a
+        /// partir da propriedade <see cref="Elements" />, então é somente para
+        /// leitura.
+        /// </summary>
         protected IEnumerable<IDrawableSceneElement> DrawableElements 
         {
             get { return from e in Elements where e is IDrawableSceneElement select e as IDrawableSceneElement; }

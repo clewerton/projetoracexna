@@ -50,14 +50,12 @@ namespace TangoGames.RoadFighter.Levels
             hudteste.Update(gameTime);
         }
 
-        public override void Draw(GameTime gameTime)
+        public override void DrawBefore(GameTime gameTime, SpriteBatch spriteBatch)
         {
             Game.GraphicsDevice.Clear(Color.Azure);
-
-            base.Draw(gameTime);
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void DrawAfter(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SpriteBatch.DrawString(_arial, "In FASE; press K to go to MENU", new Vector2(300), Color.BurlyWood);
 

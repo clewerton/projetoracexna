@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TangoGames.RoadFighter.Scenes;
 using TangoGames.RoadFighter.Widgets;
@@ -35,11 +36,9 @@ namespace TangoGames.RoadFighter.Levels
             base.LoadContent();
         }
 
-        public override void Draw(GameTime gameTime)
+        public override void DrawBefore(GameTime gameTime, SpriteBatch spriteBatch)
         {
             Game.GraphicsDevice.Clear(Color.Brown);
-
-            base.Draw(gameTime);
         }
 
         public Button ToIntro { get; private set; }

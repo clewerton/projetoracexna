@@ -49,14 +49,12 @@ namespace TangoGames.RoadFighter.Levels
             base.Update(gameTime);
         }
 
-        public override void Draw(GameTime gameTime)
+        public override void DrawBefore(GameTime gameTime, SpriteBatch spriteBatch)
         {
             Game.GraphicsDevice.Clear(Color.Azure);
-
-            base.Draw(gameTime);
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void DrawAfter(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SpriteBatch.DrawString(_arial, "In INTRO; press ENTER to go to MENU", new Vector2(100), Color.BurlyWood);
             SpriteBatch.DrawString(_arial, "In INTRO; press SPACE to " + (Paused ? "resume" : "pause"), new Vector2(100, 130), Color.BurlyWood);
