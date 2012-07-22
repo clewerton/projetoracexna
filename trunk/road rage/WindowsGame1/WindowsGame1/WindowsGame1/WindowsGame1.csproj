@@ -124,6 +124,7 @@
     <Compile Include="MainGame.cs" />
     <Compile Include="Levels\End.cs" />
     <Compile Include="Levels\Intro.cs" />
+    <Compile Include="Scenes\SceneElement.cs" />
     <Compile Include="Scenes\SceneManager.cs" />
     <Compile Include="States\StateMachine.cs" />
     <Compile Include="States\Transition.cs" />
