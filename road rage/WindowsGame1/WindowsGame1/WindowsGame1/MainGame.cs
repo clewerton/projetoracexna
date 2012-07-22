@@ -16,7 +16,7 @@ namespace TangoGames.RoadFighter
         /// Serão usados pelo gerenciador de cenas para identificar as cenas.
         /// </summary>
         public enum Scenes { Intro, End, Fase, Menu }
-        public enum EntityTypes { Basic }
+        public enum ActorTypes { Car, Truck }
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -89,9 +89,10 @@ namespace TangoGames.RoadFighter
 
         private void StartEntityFactory()
         {
-	        EntityFactory<EntityTypes> _entityFactory = new EntityFactory<EntityTypes>(); 
-            _entityFactory[EntityTypes.Basic] = new Car(this, new Rectangle(0, 0, 100, 100), spriteBatch);
-            Services.AddService(typeof(IEntityFactory<EntityTypes>), _entityFactory);
+            ActorFactory<ActorTypes, IDrawableActor> _entityFactory = new ActorFactory<ActorTypes, IDrawableActor>(); 
+            _entityFactory[ActorTypes.Car] = new Car(this, new Rectangle(0, 0, 100, 100), spriteBatch);
+            _entityFactory[ActorTypes.Truck] = new Truck(this, new Rectangle(0, 0, 50, 50), spriteBatch);
+            Services.AddService(typeof(IActorFactory<ActorTypes, IDrawableActor>), _entityFactory);
 
         }
 

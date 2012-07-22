@@ -8,10 +8,10 @@ using Microsoft.Xna.Framework.Content;
 
 namespace TangoGames.RoadFighter.Actors
 {
-    class Car : BasicDrawingActor
+    class Truck : BasicDrawingActor
     {
-        public Car(Game game, Rectangle bounds, SpriteBatch spriteBatch)
-            : base(game, bounds, game.Content.Load<Texture2D>("Textures/carSprite"))
+        public Truck(Game game, Rectangle bounds, SpriteBatch spriteBatch)
+            : base(game, bounds, game.Content.Load<Texture2D>("Textures/truckSprite"))
         {
         }
 

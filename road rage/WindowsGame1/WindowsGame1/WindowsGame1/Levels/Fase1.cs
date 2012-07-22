@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using TangoGames.RoadFighter.Scenes;
+using TangoGames.RoadFighter.Actors;
 
 namespace TangoGames.RoadFighter.Levels
 {
@@ -18,6 +19,22 @@ namespace TangoGames.RoadFighter.Levels
             _arial = Game.Content.Load<SpriteFont>("arial");
             SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
 
+            var actorFactory = (IActorFactory<MainGame.ActorTypes, IDrawableActor>)Game.Services.GetService(typeof(IActorFactory<MainGame.ActorTypes, IDrawableActor>));
+            map = new Map(Game);
+            map.Velocity = new Vector2(0, 1);
+
+            Car car = actorFactory[MainGame.ActorTypes.Car] as Car;
+            car.SpriteBatch = this.SpriteBatch;
+            car.Location = new Vector2(100, 0);
+            car.Velocity = new Vector2(0, -2);
+            map.Add(car);
+
+            Truck truck = actorFactory[MainGame.ActorTypes.Truck] as Truck;
+            truck.SpriteBatch = this.SpriteBatch;
+            truck.Location = new Vector2(300, 0);
+            //truck.Velocity = new Vector2(0, 1);
+            map.Add(truck);
+
             hudteste = new HUD(Game.Content);
 
         }
@@ -31,6 +48,7 @@ namespace TangoGames.RoadFighter.Levels
                 sceneManager.GoTo(MainGame.Scenes.Menu);
             }
 
+            map.Update(gameTime);
             hudteste.Update(gameTime);
 
         }
@@ -43,6 +61,7 @@ namespace TangoGames.RoadFighter.Levels
 
             SpriteBatch.DrawString(_arial, "In FASE; press K to go to MENU", new Vector2(300), Color.BurlyWood);
 
+            map.Draw(gameTime);
             hudteste.Draw(gameTime, SpriteBatch);
 
             SpriteBatch.End();
@@ -50,6 +69,7 @@ namespace TangoGames.RoadFighter.Levels
 
         #region Properties & Fields
         private SpriteFont _arial;
+        private IMap map;
         private SpriteBatch SpriteBatch { get; set; }
         #endregion
     }
