@@ -32,11 +32,8 @@ namespace TangoGames.RoadFighter.Widgets
             Normal, Hovered, Pressed
         }
 
-        public Button(IScene scene)
+        public Button(IScene scene) : base(scene)
         {
-            Scene = scene;
-            scene.Elements.Add(this);
-
             Bounds = new Rectangle(0, 0, 60, 30);
             Text = "OK";
 
