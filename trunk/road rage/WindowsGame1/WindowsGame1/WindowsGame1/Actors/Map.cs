@@ -12,15 +12,20 @@ using Microsoft.Xna.Framework.Media;
 
 namespace TangoGames.RoadFighter.Actors
 {
+    public interface IMap
+    {
+        void Add(IDrawableActor actor);
+        void Remove(IDrawableActor actor);
+        void Update(GameTime gameTime);
+        void Draw(GameTime gameTime);
+        Vector2 Velocity {get; set; }
+    }
+
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Map : Microsoft.Xna.Framework.DrawableGameComponent
+    public class Map : DrawableGameComponent, IMap
     {
-        private DrawAbleActorCollection actors;
-        private DrawAbleActorCollection visibleActors;
-        private Vector2 velocity;
-
         public Map(Game game)
             : base(game)
         {
@@ -48,9 +53,11 @@ namespace TangoGames.RoadFighter.Actors
         public override void Update(GameTime gameTime)
         {
             Rectangle screenBounds = Game.Window.ClientBounds;
+            Rectangle limits = new Rectangle(0, 0, screenBounds.Width, screenBounds.Height);
+
             foreach (IDrawableActor actor in actors)
             {
-                if (actor.Bounds.Intersects(screenBounds))
+                if (actor.Bounds.Intersects(limits))
                 {
                     actor.Visible = true;
                 }
@@ -105,6 +112,7 @@ namespace TangoGames.RoadFighter.Actors
                 (actor.Location.Y < bounds.Top) && (actor.Velocity.Y < velocity.X);
         }
 
+        #region Map Properties
         public Vector2 Velocity
         {
             get
@@ -117,6 +125,12 @@ namespace TangoGames.RoadFighter.Actors
 
             }
         }
+        #endregion
 
+        #region Map Fields
+        private DrawAbleActorCollection actors;
+        private DrawAbleActorCollection visibleActors;
+        private Vector2 velocity;
+        #endregion
     }
 }

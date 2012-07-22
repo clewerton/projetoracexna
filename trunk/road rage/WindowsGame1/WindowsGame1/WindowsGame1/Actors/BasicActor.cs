@@ -11,20 +11,12 @@ namespace TangoGames.RoadFighter.Actors
     /// </summary>
     public abstract class BasicDrawingActor : GameComponent, IDrawableActor, IActorsCollision
     {
-        private Rectangle bounds;
-        private Vector2 location;
-        private Vector2 orientation;
-        private Vector2 velocity;
-        private Boolean visible;
-        private Texture2D texture;
-        protected SpriteBatch spriteBatch;
 
-        public BasicDrawingActor(Game game, Rectangle bounds, Texture2D texture, SpriteBatch spriteBatch)
+        public BasicDrawingActor(Game game, Rectangle bounds, Texture2D texture)
             : base(game)
         {
             this.bounds = bounds;
             this.texture = texture;
-            this.spriteBatch = spriteBatch;
         }
 
         /// <summary>
@@ -44,13 +36,19 @@ namespace TangoGames.RoadFighter.Actors
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
+            Location += Velocity;
 
             base.Update(gameTime);
         }
 
         public abstract void Draw(GameTime gameTime);
 
+        public Boolean colidiu(BasicDrawingActor AtorColidente)
+        {
+            return false;
+        }
+
+        #region BasicActor properties
         public Rectangle Bounds 
         {
             get {
@@ -93,11 +91,6 @@ namespace TangoGames.RoadFighter.Actors
             }
         }
 
-        public Boolean colidiu(BasicDrawingActor AtorColidente)
-        {
-            return false;
-        }
-
         public Texture2D Texture
         {
             get
@@ -120,7 +113,19 @@ namespace TangoGames.RoadFighter.Actors
             {
                 visible = value;
             }
+
         }
 
+        public SpriteBatch SpriteBatch { get; set; }
+        #endregion
+
+        #region BasicActor Fields
+        private Rectangle bounds;
+        private Vector2 location;
+        private Vector2 orientation;
+        private Vector2 velocity;
+        private Boolean visible;
+        private Texture2D texture;
+        #endregion
     }
 }
