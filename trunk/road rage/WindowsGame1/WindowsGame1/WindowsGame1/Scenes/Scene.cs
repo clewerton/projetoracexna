@@ -72,18 +72,6 @@ namespace TangoGames.RoadFighter.Scenes
         }
 
         #region IScene Operations
-        protected override void LoadContent()
-        {
-            // carregue o conteúdo de cada elemento desenhável
-            foreach (var sceneElement in DrawableElements)
-            {
-                sceneElement.LoadContent(Game.Content, Game.GraphicsDevice);
-            }
-
-            // carregue o conteúdo padrão da superclasse
-            base.LoadContent();
-        }
-
         public virtual void Enter()
         {
             Enable();
@@ -109,7 +97,34 @@ namespace TangoGames.RoadFighter.Scenes
         public IList<ISceneElement> Elements { get; protected set; }
         #endregion
 
+        #region XNA Operations
+        protected override void LoadContent()
+        {
+            // carregue o conteúdo de cada elemento desenhável
+            foreach (var sceneElement in DrawableElements)
+            {
+                sceneElement.LoadContent(Game.Content, Game.GraphicsDevice);
+            }
+
+            // carregue o conteúdo padrão da superclasse
+            base.LoadContent();
+        }
+
+        /// <summary>
+        /// Atualiza a cena, de acordo com o ciclo de vida do XNA, e os seus 
+        /// <see cref="UpdateElements">elementos</see>.
+        /// </summary>
+        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo XNA.</param>
         public override void Update(GameTime gameTime)
+        {
+            UpdateElements(gameTime);
+        }
+
+        /// <summary>
+        /// Atualiza todos os elementos da cena.
+        /// </summary>
+        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo XNA.</param>
+        public virtual void UpdateElements(GameTime gameTime)
         {
             foreach (var sceneElement in Elements)
             {
@@ -124,7 +139,7 @@ namespace TangoGames.RoadFighter.Scenes
         /// <see cref="DrawElements"/> e  <see cref="DrawAfter"/>, que são invocados nessa ordem.
         /// Este método prepara o SpriteBatch a ser repassado aos métodos.
         /// </summary>
-        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo Game.</param>
+        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo XNA.</param>
         public override void Draw(GameTime gameTime)
         {
             SpriteBatch.Begin();
@@ -140,7 +155,7 @@ namespace TangoGames.RoadFighter.Scenes
         /// Classes derivadas deverão colocar neste método tudo que precisa ser desenhado antes
         /// dos elementos de cena.
         /// </summary>
-        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo Game.</param>
+        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo XNA.</param>
         /// <param name="spriteBatch">O sprite batch usado para desenhar este quadro, já pronto 
         /// para uso.</param>
         public virtual void DrawBefore(GameTime gameTime, SpriteBatch spriteBatch) {}
@@ -149,7 +164,7 @@ namespace TangoGames.RoadFighter.Scenes
         /// Desenha os elementos da cena. Este método deverá ser sobreescrito caso se deseje um 
         /// controle mais fino de como os elementos deverão ser desenhados.
         /// </summary>
-        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo Game.</param>
+        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo XNA.</param>
         /// <param name="spriteBatch">O sprite batch usado para desenhar este quadro, já pronto 
         /// para uso.</param>
         public virtual void DrawElements(GameTime gameTime, SpriteBatch spriteBatch)
@@ -164,20 +179,33 @@ namespace TangoGames.RoadFighter.Scenes
         /// Classes derivadas deverão colocar neste método tudo que precisa ser desenhado depois
         /// dos elementos de cena.
         /// </summary>
-        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo Game.</param>
+        /// <param name="gameTime">O tempo de jogo, conforme reportado pelo XNA.</param>
         /// <param name="spriteBatch">O sprite batch usado para desenhar este quadro, já pronto 
         /// para uso.</param>
         public virtual void DrawAfter(GameTime gameTime, SpriteBatch spriteBatch) {}
+        #endregion
 
         /// <summary>
-        /// Os elementos desenháveis desta cena. Esta propriedade é calculada a
-        /// partir da propriedade <see cref="Elements" />, então é somente para
-        /// leitura.
+        /// Os elementos desenháveis desta cena. Esta propriedade é calculada a partir da 
+        /// propriedade <see cref="Elements"/>, então é somente para leitura.
         /// </summary>
         protected IEnumerable<IDrawableSceneElement> DrawableElements 
         {
             get { return from e in Elements where e is IDrawableSceneElement select e as IDrawableSceneElement; }
         }
+
+        /// <summary>
+        /// Retorna o gerenciador de cenas do jogo.
+        /// </summary>
+        /// <typeparam name="TId">O tipo dos identificadores de cenas no gerenciador.</typeparam>
+        /// <returns>O gerenciador de cenas do jogo.</returns>
+        public ISceneManagerService<TId> GetSceneManager<TId>()
+        {
+            return (ISceneManagerService<TId>) Game.Services.GetService(typeof(ISceneManagerService<TId>));
+        }
+
+        // TODO isto precisa ficar público?
+        public SpriteBatch SpriteBatch { get; set; }
 
         // habilita o componente no ciclo de vida do XNA
         private void Enable()
@@ -192,17 +220,5 @@ namespace TangoGames.RoadFighter.Scenes
             Pause();
             Visible = false; // desabilita o Draw
         }
-
-        /// <summary>
-        /// Retorna o gerenciador de cenas do jogo.
-        /// </summary>
-        /// <typeparam name="TId">O tipo dos identificadores de cenas no gerenciador.</typeparam>
-        /// <returns>O gerenciador de cenas do jogo.</returns>
-        public ISceneManagerService<TId> GetSceneManager<TId>()
-        {
-            return (ISceneManagerService<TId>) Game.Services.GetService(typeof(ISceneManagerService<TId>));
-        }
-
-        public SpriteBatch SpriteBatch { get; private set; }
     }
 }
