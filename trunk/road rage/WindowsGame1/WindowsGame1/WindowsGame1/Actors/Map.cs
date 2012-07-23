@@ -57,13 +57,16 @@ namespace TangoGames.RoadFighter.Actors
 
             foreach (IDrawableActor actor in actors)
             {
-                if (actor.Bounds.Intersects(limits))
+                Rectangle actorRect = new Rectangle((int)actor.Location.X, (int)actor.Location.Y, actor.Bounds.Width, actor.Bounds.Height);
+                if (actorRect.Intersects(limits))
                 {
                     actor.Visible = true;
                 }
                 else if (goingAway(screenBounds, actor))
                 {
                     actor.Visible = false;
+                    Vector2 oldPosition = actor.Location;
+                    actor.Location = new Vector2(oldPosition.X - Math.Sign(actor.Velocity.X) * limits.Width, oldPosition.Y - Math.Sign(actor.Velocity.Y) * limits.Height);
                 }
                 else
                 {
@@ -107,9 +110,9 @@ namespace TangoGames.RoadFighter.Actors
         {
             return
                 (actor.Location.X > bounds.Right) && (actor.Velocity.X > velocity.X) ||
-                (actor.Location.Y > bounds.Bottom) && (actor.Velocity.Y > velocity.X) ||
+                (actor.Location.Y > bounds.Bottom) && (actor.Velocity.Y > velocity.Y) ||
                 (actor.Location.X < bounds.Left) && (actor.Velocity.X < velocity.X) ||
-                (actor.Location.Y < bounds.Top) && (actor.Velocity.Y < velocity.X);
+                (actor.Location.Y < bounds.Top) && (actor.Velocity.Y < velocity.Y);
         }
 
         #region Map Properties
