@@ -57,11 +57,14 @@ namespace TangoGames.RoadFighter.Widgets
 
         public override void LoadContent(ContentManager contentManager, GraphicsDevice graphicsDevice)
         {
-            // textura vazia
-            var dummyTexture = new Texture2D(graphicsDevice, 1, 1);
-            dummyTexture.SetData(new Color[] { Color.White });
-            
-            Texture = dummyTexture;
+            if(Texture == null)
+            {
+                var dummyTexture = new Texture2D(graphicsDevice, 1, 1);
+                dummyTexture.SetData(new Color[] { Color.White });
+
+                Texture = dummyTexture;
+            }
+
             Font = contentManager.Load<SpriteFont>("arial");
         }
 
