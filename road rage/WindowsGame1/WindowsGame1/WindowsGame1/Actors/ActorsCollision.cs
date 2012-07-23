@@ -7,39 +7,57 @@ using System.Text;
 
 namespace TangoGames.RoadFighter.Actors
 {
-    public interface IActorsCollision
+    public interface ICollidable
     {
-        Boolean collided(BasicDrawingActor AtorColidente);
-        Texture2D Texture { get; set; }
-        //ActorsCollision CollisionComponent { get; }
+        bool Collided(ICollidable that);
+        Rectangle Bounds { get; }
+        Texture2D Texture { get; }
+        ICollider Collider { get; set; }
     }
 
-    public class ActorsCollision
+    public interface ICollider
     {
-#region Declaracao de variaveis
-        /// <summary>
-        /// Ator Base é a instancia de ator base que usará a classe de colisão
-        /// </summary>
-        BasicDrawingActor AtorBase;
+        bool TestCollision(ICollidable a, ICollidable b);
+    }
 
-        /// <summary>
-        /// Array bitmap da imagem de colisão do ator
-        /// </summary>
-        Color[] DadosTextura;
-#endregion
-
-        public ActorsCollision(BasicDrawingActor AtorBase)
+    public class BoundingBox : ICollider 
+    {
+        public bool TestCollision(ICollidable a, ICollidable b) 
         {
-            // Preserva a instancia do ator base
-            this.AtorBase = AtorBase;
-            
-            DadosTextura =  new Color[AtorBase.Texture.Width * AtorBase.Texture.Height];
-            AtorBase.Texture.GetData(DadosTextura);
+            return a.Bounds.Intersects(b.Bounds);
+        }
+    }
+
+    public class PixelPerfect : ICollider 
+    {
+        public bool TestCollision(ICollidable a, ICollidable b) 
+        {
+            Color[] aData = FromCache(a);
+            Color[] bData = FromCache(b);
+
+            return false;
         }
 
-        public Boolean CollisionTestRetangle(BasicDrawingActor AtorColidente)
-        {  
-           return false;
+        private Color[] FromCache(ICollidable a)
+        {
+            if(! CACHE.ContainsKey(a))
+            {
+                Color[] data = new Color[a.Texture.Width * a.Texture.Height];
+                a.Texture.GetData(data);
+
+                CACHE[a] = data;
+            }
+
+            return CACHE[a];
+        }
+
+        public static IDictionary<ICollidable, Color[]> CACHE;
+    }
+}
+ //       {
+ //           if (!AtorBase.Bounds.Intersects(AtorColidente.Bounds)) return false;
+
+//            return false;
            //if (AtorBase.Retangulo
            //Rectangle RetanguloMoto1 =
 //                new Rectangle((int)posicaoMoto1.X, (int)posicaoMoto1.Y,
@@ -49,7 +67,7 @@ namespace TangoGames.RoadFighter.Actors
 //            Rectangle RetanguloMoto2 =
 //                new Rectangle((int)posicaoMoto2.X, (int)posicaoMoto2.Y,
 //                texturaMoto.Width, texturaMoto.Height);return false;
-        }
+//        }
 //               // A imagem
 //        Texture2D texturaMoto;
 //        // Os dados de cores para as imagens, usado para colisão por pixel
@@ -195,5 +213,3 @@ namespace TangoGames.RoadFighter.Actors
 //            return false;
 //        }
 //    }
-  }
-}

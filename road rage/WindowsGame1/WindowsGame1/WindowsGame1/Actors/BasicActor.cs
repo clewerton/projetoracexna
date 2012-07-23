@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using Microsoft.Xna.Framework.Graphics;
-
+using TangoGames.RoadFighter.Scenes;
 
 namespace TangoGames.RoadFighter.Actors
 {
@@ -9,7 +9,7 @@ namespace TangoGames.RoadFighter.Actors
     /// <summary>
     /// A basic entity implements simple espatial properties. Movement not taken account.
     /// </summary>
-    public abstract class BasicDrawingActor : GameComponent, IDrawableActor, IActorsCollision
+    public abstract class BasicDrawingActor : GameComponent, IDrawableActor
     {
 
         public BasicDrawingActor(Game game, Rectangle bounds, Texture2D texture)
