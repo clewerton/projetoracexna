@@ -9,11 +9,12 @@ namespace TangoGames.RoadFighter.Actors
 {
     public interface IActorsCollision
     {
-        Boolean colidiu(BasicDrawingActor AtorColidente);
+        Boolean collided(BasicDrawingActor AtorColidente);
         Texture2D Texture { get; set; }
+        //ActorsCollision CollisionComponent { get; }
     }
 
-    class ActorsCollision
+    public class ActorsCollision
     {
 #region Declaracao de variaveis
         /// <summary>
@@ -22,23 +23,33 @@ namespace TangoGames.RoadFighter.Actors
         BasicDrawingActor AtorBase;
 
         /// <summary>
-        /// Array bitmap da figura do ator
+        /// Array bitmap da imagem de colisão do ator
         /// </summary>
         Color[] DadosTextura;
 #endregion
 
         public ActorsCollision(BasicDrawingActor AtorBase)
         {
+            // Preserva a instancia do ator base
             this.AtorBase = AtorBase;
-            if (!(AtorBase is IActorsCollision)) 
-                throw new Exception("Erro: implementar a Interfase IAtorsCollision");
-                        // Carrega a textura 
-
-            IActorsCollision AtorBaseC = (IActorsCollision) AtorBase;
-            DadosTextura =  new Color[AtorBaseC.Texture.Width * AtorBaseC.Texture.Height];
-            AtorBaseC.Texture.GetData(DadosTextura);
+            
+            DadosTextura =  new Color[AtorBase.Texture.Width * AtorBase.Texture.Height];
+            AtorBase.Texture.GetData(DadosTextura);
         }
 
+        public Boolean CollisionTestRetangle(BasicDrawingActor AtorColidente)
+        {  
+           return false;
+           //if (AtorBase.Retangulo
+           //Rectangle RetanguloMoto1 =
+//                new Rectangle((int)posicaoMoto1.X, (int)posicaoMoto1.Y,
+//                texturaMoto.Width, texturaMoto.Height);
+
+//            // Define o retangulo delimitador 2
+//            Rectangle RetanguloMoto2 =
+//                new Rectangle((int)posicaoMoto2.X, (int)posicaoMoto2.Y,
+//                texturaMoto.Width, texturaMoto.Height);return false;
+        }
 //               // A imagem
 //        Texture2D texturaMoto;
 //        // Os dados de cores para as imagens, usado para colisão por pixel

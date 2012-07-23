@@ -43,7 +43,7 @@ namespace TangoGames.RoadFighter.Actors
 
         public abstract void Draw(GameTime gameTime);
 
-        public Boolean colidiu(BasicDrawingActor AtorColidente)
+        public Boolean collided(BasicDrawingActor AtorColidente)
         {
             return false;
         }
