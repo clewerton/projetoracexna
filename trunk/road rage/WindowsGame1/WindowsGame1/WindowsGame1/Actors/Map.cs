@@ -58,15 +58,34 @@ namespace TangoGames.RoadFighter.Actors
             foreach (IDrawableActor actor in actors)
             {
                 Rectangle actorRect = new Rectangle((int)actor.Location.X, (int)actor.Location.Y, actor.Bounds.Width, actor.Bounds.Height);
+                Vector2 delta = actor.Velocity + velocity;
+
                 if (actorRect.Intersects(limits))
                 {
                     actor.Visible = true;
                 }
-                else if (goingAway(screenBounds, actor))
+                else if (goingAway(screenBounds, actor, delta))
                 {
+                    Vector2 newPosition = actor.Location;
                     actor.Visible = false;
-                    Vector2 oldPosition = actor.Location;
-                    actor.Location = new Vector2(oldPosition.X - Math.Sign(actor.Velocity.X) * limits.Width, oldPosition.Y - Math.Sign(actor.Velocity.Y) * limits.Height);
+
+                    if (delta.X > 0)
+                    {
+                        newPosition.X = -actor.Bounds.Width;
+                    }
+                    else if (delta.X < 0)
+                    {
+                        newPosition.X = limits.Width;
+                    }
+                    if (delta.Y > 0)
+                    {
+                        newPosition.Y = -actor.Bounds.Height;
+                    }
+                    else if (delta.Y < 0)
+                    {
+                        newPosition.Y = limits.Height;
+                    }
+                    actor.Location = newPosition;
                 }
                 else
                 {
@@ -106,13 +125,13 @@ namespace TangoGames.RoadFighter.Actors
             }
         }
 
-        private bool goingAway(Rectangle bounds, IActor actor)
+        private bool goingAway(Rectangle bounds, IActor actor, Vector2 delta)
         {
             return
-                (actor.Location.X > bounds.Right) && (actor.Velocity.X > velocity.X) ||
-                (actor.Location.Y > bounds.Bottom) && (actor.Velocity.Y > velocity.Y) ||
-                (actor.Location.X < bounds.Left) && (actor.Velocity.X < velocity.X) ||
-                (actor.Location.Y < bounds.Top) && (actor.Velocity.Y < velocity.Y);
+                (actor.Location.X >= bounds.Width) && (delta.X > 0) ||
+                (actor.Location.Y >= bounds.Height) && (delta.Y > 0) ||
+                (actor.Location.X <= 0) && (delta.X < 0) ||
+                (actor.Location.Y <= 0) && (delta.Y < 0);
         }
 
         #region Map Properties

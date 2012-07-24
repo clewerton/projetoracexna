@@ -91,7 +91,7 @@ namespace TangoGames.RoadFighter
         {
             ActorFactory<ActorTypes, IDrawableActor> _entityFactory = new ActorFactory<ActorTypes, IDrawableActor>(); 
             _entityFactory[ActorTypes.Car] = new Car(this, new Rectangle(0, 0, 100, 100), spriteBatch);
-            _entityFactory[ActorTypes.Truck] = new Truck(this, new Rectangle(0, 0, 50, 50), spriteBatch);
+            _entityFactory[ActorTypes.Truck] = new Truck(this, new Rectangle(0, 0, 85, 135), spriteBatch);
             Services.AddService(typeof(IActorFactory<ActorTypes, IDrawableActor>), _entityFactory);
 
         }
