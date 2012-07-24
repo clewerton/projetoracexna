@@ -34,6 +34,7 @@ namespace TangoGames.RoadFighter.Levels
             ToEnd.Size = new Vector2(ButtonWidth, ButtonHeight);
             ToEnd.Text = "To END";
 
+            // carregue o conteúdo dos elementos desta cena
             base.LoadContent();
         }
 
