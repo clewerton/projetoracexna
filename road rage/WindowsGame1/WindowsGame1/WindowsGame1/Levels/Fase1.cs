@@ -18,13 +18,14 @@ namespace TangoGames.RoadFighter.Levels
 
             var actorFactory = (IActorFactory<MainGame.ActorTypes, IDrawableActor>)Game.Services.GetService(typeof(IActorFactory<MainGame.ActorTypes, IDrawableActor>));
             map = new Map(Game);
-            map.Velocity = new Vector2(0, 1);
+            map.Velocity = new Vector2(1, 0);
 
             Car car = actorFactory[MainGame.ActorTypes.Car] as Car;
             car.SpriteBatch = this.SpriteBatch;
             car.Location = new Vector2(100, 0);
-            car.Velocity = new Vector2(0, -2);
+            car.Velocity = new Vector2(-2, 0);
             map.Add(car);
+            
 
             Truck truck = actorFactory[MainGame.ActorTypes.Truck] as Truck;
             truck.SpriteBatch = this.SpriteBatch;
