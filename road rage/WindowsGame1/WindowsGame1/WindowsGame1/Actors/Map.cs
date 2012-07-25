@@ -57,39 +57,42 @@ namespace TangoGames.RoadFighter.Actors
 
             foreach (IDrawableActor actor in actors)
             {
-                Rectangle actorRect = new Rectangle((int)actor.Location.X, (int)actor.Location.Y, actor.Bounds.Width, actor.Bounds.Height);
-                Vector2 delta = actor.Velocity + velocity;
+                if (actor.Scrollable)
+                {
+                    Rectangle actorRect = new Rectangle((int)actor.Location.X, (int)actor.Location.Y, actor.Bounds.Width, actor.Bounds.Height);
+                    Vector2 delta = actor.Velocity + velocity;
 
-                if (actorRect.Intersects(limits))
-                {
-                    actor.Visible = true;
-                }
-                else if (goingAway(screenBounds, actor, delta))
-                {
-                    Vector2 newPosition = actor.Location;
-                    actor.Visible = false;
+                    if (actorRect.Intersects(limits))
+                    {
+                        actor.Visible = true;
+                    }
+                    else if (goingAway(screenBounds, actor, delta))
+                    {
+                        Vector2 newPosition = actor.Location;
+                        actor.Visible = false;
 
-                    if (delta.X > 0)
-                    {
-                        newPosition.X = -actor.Bounds.Width;
+                        if (delta.X > 0)
+                        {
+                            newPosition.X = -actor.Bounds.Width;
+                        }
+                        else if (delta.X < 0)
+                        {
+                            newPosition.X = limits.Width;
+                        }
+                        if (delta.Y > 0)
+                        {
+                            newPosition.Y = -actor.Bounds.Height;
+                        }
+                        else if (delta.Y < 0)
+                        {
+                            newPosition.Y = limits.Height;
+                        }
+                        actor.Location = newPosition;
                     }
-                    else if (delta.X < 0)
+                    else
                     {
-                        newPosition.X = limits.Width;
+                        actor.Visible = true;
                     }
-                    if (delta.Y > 0)
-                    {
-                        newPosition.Y = -actor.Bounds.Height;
-                    }
-                    else if (delta.Y < 0)
-                    {
-                        newPosition.Y = limits.Height;
-                    }
-                    actor.Location = newPosition;
-                }
-                else
-                {
-                    actor.Visible = true;
                 }
                 Configure(actor);
             }
