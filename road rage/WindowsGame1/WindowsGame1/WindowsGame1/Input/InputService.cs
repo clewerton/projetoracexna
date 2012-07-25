@@ -15,7 +15,7 @@ namespace TangoGames.RoadFighter.Input
 
         bool MouseClick(Rectangle ret);
 
-        bool keyPressOnce(Keys key);
+        bool KeyPressOnce(Keys key);
 
         KeyboardState teclado { get; }
         KeyboardState teclado_anterior { get; }
@@ -91,7 +91,7 @@ namespace TangoGames.RoadFighter.Input
             return false;
         }
 
-        public bool keyPressOnce(Keys key)
+        public bool KeyPressOnce(Keys key)
         {
             if (!_teclado_anterior.IsKeyDown(key) && _teclado.IsKeyDown(key))
                 return true;
