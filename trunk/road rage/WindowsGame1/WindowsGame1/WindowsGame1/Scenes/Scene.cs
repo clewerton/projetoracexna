@@ -39,7 +39,7 @@ namespace TangoGames.RoadFighter.Scenes
         /// <summary>
         /// A lista de elementos nesta cena.
         /// </summary>
-        IList<ISceneElement> Elements { get; }
+        GameComponentCollection Elements { get; }
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ namespace TangoGames.RoadFighter.Scenes
         public Scene(Game game) : base(game)
         {
             // crie a lista de elementos da cena
-            Elements = new List<ISceneElement>();
+            Elements = new GameComponentCollection();
 
             // crie o sprite batch a ser usado pelos elementos
             SpriteBatch = new SpriteBatch(game.GraphicsDevice);
@@ -94,17 +94,23 @@ namespace TangoGames.RoadFighter.Scenes
 
         public bool Paused { get { return ! Enabled; } }
 
-        public IList<ISceneElement> Elements { get; protected set; }
+        public GameComponentCollection Elements { get; protected set; }
         #endregion
 
         #region XNA
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            foreach(var element in Elements)
+            {
+                element.Initialize();
+            }
+        }
+
         protected override void LoadContent()
         {
-            // carregue o conteúdo de cada elemento desenhável
-            foreach (var sceneElement in DrawableElements)
-            {
-                sceneElement.LoadContent(Game.Content, Game.GraphicsDevice);
-            }
+            SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
 
             // carregue o conteúdo padrão da superclasse
             base.LoadContent();
@@ -126,7 +132,7 @@ namespace TangoGames.RoadFighter.Scenes
         /// <param name="gameTime">O tempo de jogo, conforme reportado pelo XNA.</param>
         public virtual void UpdateElements(GameTime gameTime)
         {
-            foreach (var sceneElement in Elements)
+            foreach (var sceneElement in UpdateableElements)
             {
                 sceneElement.Update(gameTime);
             }
@@ -142,13 +148,9 @@ namespace TangoGames.RoadFighter.Scenes
         /// <param name="gameTime">O tempo de jogo, conforme reportado pelo XNA.</param>
         public override void Draw(GameTime gameTime)
         {
-            SpriteBatch.Begin();
-
-            DrawBefore(gameTime, SpriteBatch);
-            DrawElements(gameTime, SpriteBatch);
-            DrawAfter(gameTime, SpriteBatch);
-
-            SpriteBatch.End();
+            DrawBefore(gameTime);
+            DrawElements(gameTime);
+            DrawAfter(gameTime);
         }
 
         /// <summary>
@@ -156,22 +158,18 @@ namespace TangoGames.RoadFighter.Scenes
         /// dos elementos de cena.
         /// </summary>
         /// <param name="gameTime">O tempo de jogo, conforme reportado pelo XNA.</param>
-        /// <param name="spriteBatch">O sprite batch usado para desenhar este quadro, já pronto 
-        /// para uso.</param>
-        public virtual void DrawBefore(GameTime gameTime, SpriteBatch spriteBatch) {}
+        public virtual void DrawBefore(GameTime gameTime) {}
 
         /// <summary>
         /// Desenha os elementos da cena. Este método deverá ser sobreescrito caso se deseje um 
         /// controle mais fino de como os elementos deverão ser desenhados.
         /// </summary>
         /// <param name="gameTime">O tempo de jogo, conforme reportado pelo XNA.</param>
-        /// <param name="spriteBatch">O sprite batch usado para desenhar este quadro, já pronto 
-        /// para uso.</param>
-        public virtual void DrawElements(GameTime gameTime, SpriteBatch spriteBatch)
+        public virtual void DrawElements(GameTime gameTime)
         {
             foreach (var sceneElement in DrawableElements)
             {
-                sceneElement.Draw(gameTime, spriteBatch);
+                sceneElement.Draw(gameTime);
             }
         }
 
@@ -180,19 +178,26 @@ namespace TangoGames.RoadFighter.Scenes
         /// dos elementos de cena.
         /// </summary>
         /// <param name="gameTime">O tempo de jogo, conforme reportado pelo XNA.</param>
-        /// <param name="spriteBatch">O sprite batch usado para desenhar este quadro, já pronto 
-        /// para uso.</param>
-        public virtual void DrawAfter(GameTime gameTime, SpriteBatch spriteBatch) {}
+        public virtual void DrawAfter(GameTime gameTime) {}
         #endregion
 
         #region Helpers
         /// <summary>
+        /// Os elementos atualizáveis desta cena. Esta propriedade é calculada a partir da 
+        /// propriedade <see cref="Elements"/>, então é somente para leitura.
+        /// </summary>
+        protected IEnumerable<IUpdateable> UpdateableElements
+        {
+            get { return from e in Elements where e is IUpdateable select e as IUpdateable; }
+        }
+
+        /// <summary>
         /// Os elementos desenháveis desta cena. Esta propriedade é calculada a partir da 
         /// propriedade <see cref="Elements"/>, então é somente para leitura.
         /// </summary>
-        protected IEnumerable<IDrawableSceneElement> DrawableElements 
+        protected IEnumerable<IDrawable> DrawableElements 
         {
-            get { return from e in Elements where e is IDrawableSceneElement select e as IDrawableSceneElement; }
+            get { return from e in Elements where e is IDrawable select e as IDrawable; }
         }
 
         /// <summary>
@@ -219,8 +224,7 @@ namespace TangoGames.RoadFighter.Scenes
             Visible = false; // desabilita o Draw
         }
 
-        // TODO isto precisa ficar público?
-        public SpriteBatch SpriteBatch { get; set; }
+        protected SpriteBatch SpriteBatch { get; set; }
         #endregion
     }
 }

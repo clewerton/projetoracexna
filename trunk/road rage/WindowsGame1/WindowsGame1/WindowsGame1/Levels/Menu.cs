@@ -10,35 +10,35 @@ namespace TangoGames.RoadFighter.Levels
     {
         public Menu(Game game) : base(game) {}
 
-        protected override void LoadContent()
+        public override void Initialize()
         {
             // configurando os botões da tela
             var clientBounds = Game.Window.ClientBounds;
 
-            ToIntro = new Button(this);
+            ToIntro = new Button(Game);
             ToIntro.OnClick += (sender, args) => GetSceneManager<MainGame.Scenes>().GoTo(MainGame.Scenes.Intro);
             ToIntro.Location = new Point((clientBounds.Width - ButtonWidth) / 2, (clientBounds.Height - ButtonHeight) / 2 - ButtonHeight - Padding);
             ToIntro.Size = new Vector2(ButtonWidth, ButtonHeight);
             ToIntro.Text = "To INTRO";
+            Elements.Add(ToIntro);
 
-            ToFase = new Button(this);
+            ToFase = new Button(Game);
             ToFase.OnClick += (sender, args) => GetSceneManager<MainGame.Scenes>().GoTo(MainGame.Scenes.Fase);
             ToFase.Location = new Point((clientBounds.Width - ButtonWidth) / 2, (clientBounds.Height - ButtonHeight) / 2);
             ToFase.Size = new Vector2(ButtonWidth, ButtonHeight);
             ToFase.Text = "To FASE";
             ToFase.Texture = Game.Content.Load<Texture2D>("Widgets/Button");
+            Elements.Add(ToFase);
 
-            ToEnd = new Button(this);
+            ToEnd = new Button(Game);
             ToEnd.OnClick += (sender, args) => GetSceneManager<MainGame.Scenes>().GoTo(MainGame.Scenes.End);
             ToEnd.Location = new Point((clientBounds.Width - ButtonWidth) / 2, (clientBounds.Height + ButtonHeight) / 2 + Padding);
             ToEnd.Size = new Vector2(ButtonWidth, ButtonHeight);
             ToEnd.Text = "To END";
-
-            // carregue o conteúdo dos elementos desta cena
-            base.LoadContent();
+            Elements.Add(ToEnd);
         }
 
-        public override void DrawBefore(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void DrawBefore(GameTime gameTime)
         {
             Game.GraphicsDevice.Clear(Color.Brown);
         }

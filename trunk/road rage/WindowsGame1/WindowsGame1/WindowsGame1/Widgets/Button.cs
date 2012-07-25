@@ -9,7 +9,7 @@ using TangoGames.RoadFighter.States;
 
 namespace TangoGames.RoadFighter.Widgets
 {
-    public class Button : AbstractDrawableSceneElement
+    public class Button : DrawableGameComponent
     {
         /// <summary>
         /// Registra eventos de clique.
@@ -32,7 +32,7 @@ namespace TangoGames.RoadFighter.Widgets
             Normal, Hovered, Pressed
         }
 
-        public Button(IScene scene) : base(scene)
+        public Button(Game game) : base(game)
         {
             Bounds = new Rectangle(0, 0, 60, 30);
             Text = "OK";
@@ -53,19 +53,9 @@ namespace TangoGames.RoadFighter.Widgets
             StateMachine.For(StateIds.Pressed)
                 .When(Input.CursorOffTop)   .GoTo(StateIds.Normal)
                 .When(Input.Released)       .GoTo(StateIds.Normal);
-        }
 
-        public override void LoadContent(ContentManager contentManager, GraphicsDevice graphicsDevice)
-        {
-            if(Texture == null)
-            {
-                var dummyTexture = new Texture2D(graphicsDevice, 1, 1);
-                dummyTexture.SetData(new Color[] { Color.White });
-
-                Texture = dummyTexture;
-            }
-
-            Font = contentManager.Load<SpriteFont>("arial");
+            SpriteBatch = new SpriteBatch(Game.GraphicsDevice);
+            Font = Game.Content.Load<SpriteFont>("arial");
         }
 
         public override void Update(GameTime gameTime)
@@ -95,12 +85,14 @@ namespace TangoGames.RoadFighter.Widgets
             _lastMouseState = currentState;
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime)
         {
             IButtonState currentState = States[StateMachine.Current];
 
+            SpriteBatch.Begin();
+
             // desenhando o fundo
-            spriteBatch.Draw(Texture, Bounds, currentState.Background);
+            SpriteBatch.Draw(Texture, Bounds, currentState.Background);
             
             // centralizando o texto
             Vector2 size = Font.MeasureString(Text);
@@ -110,7 +102,9 @@ namespace TangoGames.RoadFighter.Widgets
             );
 
             // escrevendo o texto na posição apropriada
-            spriteBatch.DrawString(Font, Text, location, currentState.Foreground);
+            SpriteBatch.DrawString(Font, Text, location, currentState.Foreground);
+
+            SpriteBatch.End();
         }
 
         #region Properties & Fields
@@ -176,7 +170,22 @@ namespace TangoGames.RoadFighter.Widgets
         /// <summary>
         /// A textura para pintar este botão.
         /// </summary>
-        public Texture2D Texture { get; set; }
+        public Texture2D Texture {
+            get
+            {
+                if (_texture == null)
+                {
+                    var dummyTexture = new Texture2D(Game.GraphicsDevice, 1, 1);
+                    dummyTexture.SetData(new Color[] { Color.White });
+
+                    _texture = dummyTexture;
+                }
+
+                return _texture;
+            }
+
+            set { _texture = value; }
+        }
         
         /// <summary>
         /// A máquina de estados deste botão.
@@ -193,8 +202,11 @@ namespace TangoGames.RoadFighter.Widgets
         /// </summary>
         protected IButtonState CurrentState { get { return States[StateMachine.Current]; } }
 
+        protected SpriteBatch SpriteBatch { get; set; }
+
         private Rectangle _bounds;
         private MouseState _lastMouseState;
+        private Texture2D _texture;
         #endregion
     }
 
