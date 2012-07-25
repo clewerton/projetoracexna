@@ -36,7 +36,7 @@ namespace TangoGames.RoadFighter.Levels
             map.Add(truck);
 
             hudteste = new HUD(Game.Content);
-            heroi = new Heroi(Game.Content);
+            heroi = new Heroi(Game);
 
             base.LoadContent();
         }

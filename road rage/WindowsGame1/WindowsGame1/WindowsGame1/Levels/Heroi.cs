@@ -7,12 +7,20 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using TangoGames.RoadFighter.Scenes;
 using Microsoft.Xna.Framework.Content;
+using TangoGames.RoadFighter.Input;
 
 namespace TangoGames.RoadFighter.Levels
 {
     public class Heroi
     {
+        private Game game;
+
         Texture2D textura;
+        Texture2D botaoEsquerda;
+        Texture2D botaoDireita;
+
+        Rectangle retEsquerda;
+        Rectangle retDireita;
 
         IList<Vector2> listadepistas;
 
@@ -23,11 +31,16 @@ namespace TangoGames.RoadFighter.Levels
         Vector2 faixa4;
         int faixaanterior = 1;
         int faixaatual = 1;
-       
 
-        public Heroi(ContentManager Content)
+        IInputService imput;
+        
+        
+
+        public Heroi(Game game)
         {
-            textura = Content.Load<Texture2D>("Textures/CarroHeroi");
+            this.game = game;
+
+            textura = game.Content.Load<Texture2D>("Textures/CarroHeroi");
             posicao = new Vector2(300,300);
             faixa1 = new Vector2(200,300);
             faixa2 = new Vector2(300, 300);
@@ -40,7 +53,13 @@ namespace TangoGames.RoadFighter.Levels
             listadepistas.Add(faixa3);
             listadepistas.Add(faixa4);
 
-            
+            botaoEsquerda = game.Content.Load<Texture2D>("Widgets/botaoEsquerda");
+            botaoDireita = game.Content.Load<Texture2D>("Widgets/botaoDireita");
+
+            retEsquerda = new Rectangle(20, game.Window.ClientBounds.Height / 5 * 3, 141, 139);
+            retDireita = new Rectangle(game.Window.ClientBounds.Width - 150, game.Window.ClientBounds.Height / 5 * 3, 141, 139);
+
+            imput = (IInputService) game.Services.GetService(typeof(IInputService));
         }
 
 
@@ -57,12 +76,14 @@ namespace TangoGames.RoadFighter.Levels
 
             spriteBatch.Draw(textura,new Rectangle((int)posicao.X,(int)posicao.Y, 72, 155), Color.White);
 
+            spriteBatch.Draw(botaoEsquerda, retEsquerda, Color.White);
+            spriteBatch.Draw(botaoDireita, retDireita, Color.White);
         }
 
         void controleHEroi()
         {
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            if (imput.KeyPressOnce(Keys.Left) || imput.MouseClick(retEsquerda))
             {
                 if (faixaatual > 0)
                 {
@@ -70,7 +91,7 @@ namespace TangoGames.RoadFighter.Levels
                     faixaatual--;
                 }
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            if (imput.KeyPressOnce(Keys.Right) || imput.MouseClick(retDireita))
             {
                 if (faixaatual < 3)
                 {
@@ -78,6 +99,8 @@ namespace TangoGames.RoadFighter.Levels
                     faixaatual++;
                 }
             }
+
+
         }
 
 
