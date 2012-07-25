@@ -31,6 +31,7 @@ namespace TangoGames.RoadFighter.Levels
         {
             
             Arial = Content.Load<SpriteFont>("arial");
+            
                         
             marcadorPontos = Content.Load<Texture2D>("HUDElementos/Pontos");
             indicadorCombustivel = Content.Load<Texture2D>("HUDElementos/gasolina");
@@ -51,8 +52,8 @@ namespace TangoGames.RoadFighter.Levels
             
         {
             
-            spriteBatch.DrawString(Arial, " " +pontos, new Vector2(100, 45), Color.Red);
-
+            spriteBatch.DrawString(Arial, " " +pontos, new Vector2(10, 45), Color.Red);
+            
             spriteBatch.Draw(marcadorPontos, new Rectangle(0, 10, 204, 53),new Rectangle(18,10,204,53) , Color.White);
             spriteBatch.Draw(indicadorCombustivel, new Rectangle(0, 90, 171, 233), new Rectangle(18, 10, 171, 205), Color.White);
             spriteBatch.Draw(ponteiro, new Rectangle(35,205, 78, 6), null, Color.White, radianos, new Vector2(0, ponteiro.Height/2), SpriteEffects.None, 0);
