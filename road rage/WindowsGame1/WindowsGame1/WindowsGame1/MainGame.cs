@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using TangoGames.RoadFighter.Levels;
 using TangoGames.RoadFighter.Scenes;
 using TangoGames.RoadFighter.Actors;
+using TangoGames.RoadFighter.Input;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -38,6 +39,9 @@ namespace TangoGames.RoadFighter
             // configura o gerenciamento de cenas
             StartSceneManager();
             StartEntityFactory();
+
+            //Cria Serviço de input
+            StartInputService();
 
             // inicializa todos os componentes registrados no jogo
             base.Initialize();
@@ -94,6 +98,12 @@ namespace TangoGames.RoadFighter
             _entityFactory[ActorTypes.Truck] = new Truck(this, new Rectangle(0, 0, 85, 135), spriteBatch);
             Services.AddService(typeof(IActorFactory<ActorTypes, IDrawableActor>), _entityFactory);
 
+        }
+
+
+        private void StartInputService()
+        {
+            var inputservice = new InputService(this);
         }
 
     }
