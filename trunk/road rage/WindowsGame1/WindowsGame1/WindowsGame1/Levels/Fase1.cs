@@ -10,6 +10,8 @@ namespace TangoGames.RoadFighter.Levels
     {
         public Fase1(Game game) : base(game) { }
 
+        Heroi heroi;
+
         HUD hudteste;
 
         protected override void LoadContent()
@@ -34,6 +36,7 @@ namespace TangoGames.RoadFighter.Levels
             map.Add(truck);
 
             hudteste = new HUD(Game.Content);
+            heroi = new Heroi(Game.Content);
 
             base.LoadContent();
         }
@@ -49,6 +52,7 @@ namespace TangoGames.RoadFighter.Levels
 
             map.Update(gameTime);
             hudteste.Update(gameTime);
+            heroi.Update(gameTime);
         }
 
         public override void DrawBefore(GameTime gameTime, SpriteBatch spriteBatch)
@@ -62,6 +66,7 @@ namespace TangoGames.RoadFighter.Levels
 
             map.Draw(gameTime);
             hudteste.Draw(gameTime, SpriteBatch);
+            heroi.Draw(gameTime, spriteBatch);
         }
 
         #region Properties & Fields

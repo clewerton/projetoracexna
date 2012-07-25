@@ -116,6 +116,7 @@
     <Compile Include="Actors\Truck.cs" />
     <Compile Include="Input\InputService.cs" />
     <Compile Include="Levels\Fase1.cs" />
+    <Compile Include="Levels\Heroi.cs" />
     <Compile Include="Levels\HUD.cs" />
     <Compile Include="Actors\Map.cs" />
     <Compile Include="Levels\Menu.cs" />
