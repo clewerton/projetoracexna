@@ -115,7 +115,18 @@ namespace TangoGames.RoadFighter.Actors
             }
 
         }
+        public Boolean Scrollable
+        {
+            get
+            {
+                return scrollable;
+            }
+            set
+            {
+                scrollable = value;
+            }
 
+        }
         public SpriteBatch SpriteBatch { get; set; }
         #endregion
 
@@ -125,6 +136,7 @@ namespace TangoGames.RoadFighter.Actors
         private Vector2 orientation;
         private Vector2 velocity;
         private Boolean visible;
+        private Boolean scrollable;
         private Texture2D texture;
         #endregion
     }

@@ -20,12 +20,13 @@ namespace TangoGames.RoadFighter.Levels
 
             var actorFactory = (IActorFactory<MainGame.ActorTypes, IDrawableActor>)Game.Services.GetService(typeof(IActorFactory<MainGame.ActorTypes, IDrawableActor>));
             map = new Map(Game);
-            map.Velocity = new Vector2(1, 0);
+            map.Velocity = new Vector2(0, 1);
 
             Car car = actorFactory[MainGame.ActorTypes.Car] as Car;
             car.SpriteBatch = this.SpriteBatch;
             car.Location = new Vector2(100, 0);
-            car.Velocity = new Vector2(-2, 0);
+            car.Velocity = new Vector2(0, -2);
+            car.Scrollable = true;
             map.Add(car);
             
 
@@ -33,6 +34,7 @@ namespace TangoGames.RoadFighter.Levels
             truck.SpriteBatch = this.SpriteBatch;
             truck.Location = new Vector2(300, 0);
             //truck.Velocity = new Vector2(0, 1);
+            truck.Visible = true;
             map.Add(truck);
 
             hudteste = new HUD(Game.Content);
