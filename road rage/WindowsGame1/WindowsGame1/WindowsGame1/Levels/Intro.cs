@@ -18,7 +18,7 @@ namespace TangoGames.RoadFighter.Levels
             _arial = Game.Content.Load<SpriteFont>("arial");
             _timeElapsed = TimeSpan.Zero;
 
-            _button = new Button(this);
+            _button = new Button(Game);
             _button.Location = new Point(200, 300);
             _button.Size = new Vector2(120, 60);
             _button.Text = "To END";
@@ -30,6 +30,7 @@ namespace TangoGames.RoadFighter.Levels
 
                     sceneManager.GoTo(MainGame.Scenes.End);
                 };
+            Elements.Add(_button);
 
             base.LoadContent();
         }
@@ -49,16 +50,18 @@ namespace TangoGames.RoadFighter.Levels
             base.Update(gameTime);
         }
 
-        public override void DrawBefore(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void DrawBefore(GameTime gameTime)
         {
             Game.GraphicsDevice.Clear(Color.Azure);
         }
 
-        public override void DrawAfter(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void DrawAfter(GameTime gameTime)
         {
+            SpriteBatch.Begin();
             SpriteBatch.DrawString(_arial, "In INTRO; press ENTER to go to MENU", new Vector2(100), Color.BurlyWood);
             SpriteBatch.DrawString(_arial, "In INTRO; press SPACE to " + (Paused ? "resume" : "pause"), new Vector2(100, 130), Color.BurlyWood);
             SpriteBatch.DrawString(_arial, "Time: " + _timeElapsed, new Vector2(100, 160), Color.BurlyWood);
+            SpriteBatch.End();
         }
 
         #region Properties & Fields

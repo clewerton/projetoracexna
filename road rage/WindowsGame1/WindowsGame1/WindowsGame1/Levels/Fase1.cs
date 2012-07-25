@@ -55,18 +55,21 @@ namespace TangoGames.RoadFighter.Levels
             heroi.Update(gameTime);
         }
 
-        public override void DrawBefore(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void DrawBefore(GameTime gameTime)
         {
             Game.GraphicsDevice.Clear(Color.Azure);
         }
 
-        public override void DrawAfter(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void DrawAfter(GameTime gameTime)
         {
+            SpriteBatch.Begin();
+
             SpriteBatch.DrawString(_arial, "In FASE; press K to go to MENU", new Vector2(300), Color.BurlyWood);
 
             map.Draw(gameTime);
             hudteste.Draw(gameTime, SpriteBatch);
-            heroi.Draw(gameTime, spriteBatch);
+            heroi.Draw(gameTime, SpriteBatch);
+            SpriteBatch.End();
         }
 
         #region Properties & Fields
