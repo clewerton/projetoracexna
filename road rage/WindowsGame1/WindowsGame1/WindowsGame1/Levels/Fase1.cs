@@ -29,7 +29,6 @@ namespace TangoGames.RoadFighter.Levels
             car.Scrollable = true;
             map.Add(car);
             
-
             Truck truck = actorFactory[MainGame.ActorTypes.Truck] as Truck;
             truck.SpriteBatch = this.SpriteBatch;
             truck.Location = new Vector2(300, 0);
@@ -57,12 +56,12 @@ namespace TangoGames.RoadFighter.Levels
             heroi.Update(gameTime);
         }
 
-        public override void DrawBefore(GameTime gameTime)
+        protected override void DrawBefore(GameTime gameTime)
         {
             Game.GraphicsDevice.Clear(Color.Azure);
         }
 
-        public override void DrawAfter(GameTime gameTime)
+        protected override void DrawAfter(GameTime gameTime)
         {
             SpriteBatch.Begin();
 

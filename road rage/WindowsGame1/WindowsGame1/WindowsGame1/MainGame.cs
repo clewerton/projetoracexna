@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using TangoGames.RoadFighter.Levels;
 using TangoGames.RoadFighter.Scenes;
@@ -29,6 +30,7 @@ namespace TangoGames.RoadFighter
             graphics = new GraphicsDeviceManager(this); 
 
             Content.RootDirectory = "Content";
+            IsMouseVisible = true;
         }
 
         /// <summary>
@@ -42,6 +44,8 @@ namespace TangoGames.RoadFighter
 
             //Cria Serviço de input
             StartInputService();
+
+            new ProbeComponent(this);
 
             // inicializa todos os componentes registrados no jogo
             base.Initialize();
@@ -105,6 +109,49 @@ namespace TangoGames.RoadFighter
         {
             var inputservice = new InputService(this);
         }
+    }
 
+    public class ProbeComponent : DrawableGameComponent
+    {
+        public ProbeComponent(Game game) : base(game)
+        {
+            game.Components.Add(this);
+        }
+
+        public override void Initialize()
+        {
+            Console.WriteLine("before base.Initialize()");
+
+            base.Initialize();
+
+            Console.WriteLine("after base.Initialize()");
+        }
+
+        protected override void LoadContent()
+        {
+            Console.WriteLine("before base.LoadContent()");
+
+            base.LoadContent();
+
+            Console.WriteLine("after base.LoadContent()");
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            Console.WriteLine("before base.Update()");
+
+            base.Update(gameTime);
+
+            Console.WriteLine("after base.Update()");
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            Console.WriteLine("before base.Draw()");
+
+            base.Draw(gameTime);
+
+            Console.WriteLine("after base.Draw()");
+        }
     }
 }
