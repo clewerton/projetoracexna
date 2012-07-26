@@ -17,9 +17,7 @@ namespace TangoGames.RoadFighter.Actors
 
         public override void Draw(GameTime gameTime)
         {
-            SpriteBatch.Begin();
             SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
-            SpriteBatch.End();
         }
 
     }

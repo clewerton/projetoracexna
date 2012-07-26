@@ -10,7 +10,7 @@ namespace TangoGames.RoadFighter.Levels
     {
         public Menu(Game game) : base(game) {}
 
-        public override void Initialize()
+        protected override void LoadContent()
         {
             // configurando os botões da tela
             var clientBounds = Game.Window.ClientBounds;
@@ -38,7 +38,7 @@ namespace TangoGames.RoadFighter.Levels
             Elements.Add(ToEnd);
         }
 
-        public override void DrawBefore(GameTime gameTime)
+        protected override void DrawBefore(GameTime gameTime)
         {
             Game.GraphicsDevice.Clear(Color.Brown);
         }

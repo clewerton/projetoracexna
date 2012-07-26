@@ -8,14 +8,14 @@ namespace TangoGames.RoadFighter.Levels
 {
     public class End : Scene
     {
-        public End(Game game) : base(game) {}
+        public End(Game game) : base(game)
+        {
+            _timeElapsed = TimeSpan.Zero;
+        }
 
         protected override void LoadContent()
         {
             _arial = Game.Content.Load<SpriteFont>("arial");
-            _timeElapsed = TimeSpan.Zero;
-
-            base.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
@@ -30,12 +30,12 @@ namespace TangoGames.RoadFighter.Levels
             }
         }
 
-        public override void DrawBefore(GameTime gameTime)
+        protected override void DrawBefore(GameTime gameTime)
         {
             Game.GraphicsDevice.Clear(Color.DarkGoldenrod);
         }
 
-        public override void DrawAfter(GameTime gameTime)
+        protected override void DrawAfter(GameTime gameTime)
         {
             SpriteBatch.Begin();
             SpriteBatch.DrawString(_arial, "In END; click the LEFT BUTTON to go to MENU", new Vector2(100), Color.Bisque);
