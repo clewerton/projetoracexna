@@ -24,7 +24,7 @@ namespace TangoGames.RoadFighter.Levels
             _button.OnClick +=
                 (sender, args) =>
                 {
-                    var sceneManager = GetSceneManager<MainGame.Scenes>();
+                    var sceneManager = GetService<ISceneManagerService<MainGame.Scenes>>();
 
                     sceneManager.GoTo(MainGame.Scenes.End);
                 };
@@ -35,7 +35,7 @@ namespace TangoGames.RoadFighter.Levels
         {
             _timeElapsed += gameTime.ElapsedGameTime;
 
-            var sceneManager = GetSceneManager<MainGame.Scenes>();
+            var sceneManager = GetService<ISceneManagerService<MainGame.Scenes>>();
         
             if(Keyboard.GetState().IsKeyDown(Keys.Enter))
             {

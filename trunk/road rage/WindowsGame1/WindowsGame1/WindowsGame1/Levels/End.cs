@@ -22,7 +22,7 @@ namespace TangoGames.RoadFighter.Levels
         {
             _timeElapsed += gameTime.ElapsedGameTime;
 
-            var sceneManager = GetSceneManager<MainGame.Scenes>();
+            var sceneManager = GetService<ISceneManagerService<MainGame.Scenes>>();
         
             if(Mouse.GetState().LeftButton == ButtonState.Pressed)
             {

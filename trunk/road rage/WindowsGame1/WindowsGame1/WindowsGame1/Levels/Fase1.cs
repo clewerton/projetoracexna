@@ -18,7 +18,7 @@ namespace TangoGames.RoadFighter.Levels
         {
             _arial = Game.Content.Load<SpriteFont>("arial");
 
-            var actorFactory = (IActorFactory<MainGame.ActorTypes, IDrawableActor>)Game.Services.GetService(typeof(IActorFactory<MainGame.ActorTypes, IDrawableActor>));
+            var actorFactory = GetService<IActorFactory<MainGame.ActorTypes, IDrawableActor>>();
             map = new Map(Game);
             map.Velocity = new Vector2(0, 1);
 
@@ -44,7 +44,7 @@ namespace TangoGames.RoadFighter.Levels
 
         public override void Update(GameTime gameTime)
         {
-            var sceneManager = GetSceneManager<MainGame.Scenes>();
+            var sceneManager = GetService<ISceneManagerService<MainGame.Scenes>>();
 
             if (Keyboard.GetState().IsKeyDown(Keys.K))
             {

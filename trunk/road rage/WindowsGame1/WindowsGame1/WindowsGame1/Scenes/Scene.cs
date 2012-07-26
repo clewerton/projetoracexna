@@ -251,13 +251,13 @@ namespace TangoGames.RoadFighter.Scenes
         }
 
         /// <summary>
-        /// Retorna o gerenciador de cenas do jogo.
+        /// Retorna o serviço com o tipo indicado.
         /// </summary>
-        /// <typeparam name="TId">O tipo dos identificadores de cenas no gerenciador.</typeparam>
+        /// <typeparam name="TService">O tipo do serviço desejado.</typeparam>
         /// <returns>O gerenciador de cenas do jogo.</returns>
-        protected ISceneManagerService<TId> GetSceneManager<TId>()
+        protected TService GetService<TService>()
         {
-            return (ISceneManagerService<TId>) Game.Services.GetService(typeof(ISceneManagerService<TId>));
+            return (TService) Game.Services.GetService(typeof(TService));
         }
 
         // habilita o componente no ciclo de vida do XNA

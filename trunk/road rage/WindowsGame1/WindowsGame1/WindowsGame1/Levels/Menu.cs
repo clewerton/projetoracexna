@@ -16,14 +16,14 @@ namespace TangoGames.RoadFighter.Levels
             var clientBounds = Game.Window.ClientBounds;
 
             ToIntro = new Button(Game);
-            ToIntro.OnClick += (sender, args) => GetSceneManager<MainGame.Scenes>().GoTo(MainGame.Scenes.Intro);
+            ToIntro.OnClick += (sender, args) => GetService<ISceneManagerService<MainGame.Scenes>>().GoTo(MainGame.Scenes.Intro);
             ToIntro.Location = new Point((clientBounds.Width - ButtonWidth) / 2, (clientBounds.Height - ButtonHeight) / 2 - ButtonHeight - Padding);
             ToIntro.Size = new Vector2(ButtonWidth, ButtonHeight);
             ToIntro.Text = "To INTRO";
             Elements.Add(ToIntro);
 
             ToFase = new Button(Game);
-            ToFase.OnClick += (sender, args) => GetSceneManager<MainGame.Scenes>().GoTo(MainGame.Scenes.Fase);
+            ToFase.OnClick += (sender, args) => GetService<ISceneManagerService<MainGame.Scenes>>().GoTo(MainGame.Scenes.Fase);
             ToFase.Location = new Point((clientBounds.Width - ButtonWidth) / 2, (clientBounds.Height - ButtonHeight) / 2);
             ToFase.Size = new Vector2(ButtonWidth, ButtonHeight);
             ToFase.Text = "To FASE";
@@ -31,7 +31,7 @@ namespace TangoGames.RoadFighter.Levels
             Elements.Add(ToFase);
 
             ToEnd = new Button(Game);
-            ToEnd.OnClick += (sender, args) => GetSceneManager<MainGame.Scenes>().GoTo(MainGame.Scenes.End);
+            ToEnd.OnClick += (sender, args) => GetService<ISceneManagerService<MainGame.Scenes>>().GoTo(MainGame.Scenes.End);
             ToEnd.Location = new Point((clientBounds.Width - ButtonWidth) / 2, (clientBounds.Height + ButtonHeight) / 2 + Padding);
             ToEnd.Size = new Vector2(ButtonWidth, ButtonHeight);
             ToEnd.Text = "To END";

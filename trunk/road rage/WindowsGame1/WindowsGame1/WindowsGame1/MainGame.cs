@@ -20,14 +20,14 @@ namespace TangoGames.RoadFighter
         public enum Scenes { Intro, End, Fase, Menu }
         public enum ActorTypes { Car, Truck }
 
-        private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
 
         public MainGame()
         {
             // XXX precisa ficar no construtor, pois base.Initialize precisa de um serviço para 
             // XXX iniciar o GraphicDevice.
-            graphics = new GraphicsDeviceManager(this); 
+            _graphics = new GraphicsDeviceManager(this); 
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -38,14 +38,9 @@ namespace TangoGames.RoadFighter
         /// </summary>
         protected override void Initialize()
         {
-            // configura o gerenciamento de cenas
-            StartSceneManager();
-            StartEntityFactory();
-
-            //Cria Serviço de input
-            StartInputService();
-
-            new ProbeComponent(this);
+            StartSceneManager(); // o gerenciamento de cenas
+            StartActorFactory(); // fábrica de atores
+            StartInputService(); // detecção de input
 
             // inicializa todos os componentes registrados no jogo
             base.Initialize();
@@ -53,7 +48,7 @@ namespace TangoGames.RoadFighter
 
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
         protected override void Update(GameTime gameTime)
@@ -95,63 +90,25 @@ namespace TangoGames.RoadFighter
             sceneManager.GoTo(Scenes.Intro);
         }
 
-        private void StartEntityFactory()
+        private void StartActorFactory()
         {
-            ActorFactory<ActorTypes, IDrawableActor> _entityFactory = new ActorFactory<ActorTypes, IDrawableActor>(); 
-            _entityFactory[ActorTypes.Car] = new Car(this, new Rectangle(0, 0, 100, 100), spriteBatch);
-            _entityFactory[ActorTypes.Truck] = new Truck(this, new Rectangle(0, 0, 85, 135), spriteBatch);
-            Services.AddService(typeof(IActorFactory<ActorTypes, IDrawableActor>), _entityFactory);
+            var actorFactory = new ActorFactory<ActorTypes, IDrawableActor>(); 
+            actorFactory[ActorTypes.Car] = new Car(this, new Rectangle(0, 0, 100, 100), _spriteBatch);
+            actorFactory[ActorTypes.Truck] = new Truck(this, new Rectangle(0, 0, 85, 135), _spriteBatch);
 
+            // se registra como serviço
+            Services.AddService(typeof(IActorFactory<ActorTypes, IDrawableActor>), actorFactory);
         }
-
 
         private void StartInputService()
         {
             var inputservice = new InputService(this);
-        }
-    }
 
-    public class ProbeComponent : DrawableGameComponent
-    {
-        public ProbeComponent(Game game) : base(game)
-        {
-            game.Components.Add(this);
-        }
+            // se registra como serviço
+            Services.AddService(typeof(IInputService), inputservice);
 
-        public override void Initialize()
-        {
-            Console.WriteLine("before base.Initialize()");
-
-            base.Initialize();
-
-            Console.WriteLine("after base.Initialize()");
-        }
-
-        protected override void LoadContent()
-        {
-            Console.WriteLine("before base.LoadContent()");
-
-            base.LoadContent();
-
-            Console.WriteLine("after base.LoadContent()");
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            Console.WriteLine("before base.Update()");
-
-            base.Update(gameTime);
-
-            Console.WriteLine("after base.Update()");
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            Console.WriteLine("before base.Draw()");
-
-            base.Draw(gameTime);
-
-            Console.WriteLine("after base.Draw()");
+            // se registra como GameComponent
+            Components.Add(inputservice);
         }
     }
 }
