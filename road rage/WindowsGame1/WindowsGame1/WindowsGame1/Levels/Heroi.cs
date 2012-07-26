@@ -113,7 +113,7 @@ namespace TangoGames.RoadFighter.Levels
                 {
                     posicao.X += 3;
 
-                    if(posicao.X + 2 >= listadepistas[faixaatual].X){
+                    if(posicao.X + 3 >= listadepistas[faixaatual].X){
                         posicao.X = listadepistas[faixaatual].X;
                     }
                     
@@ -129,7 +129,7 @@ namespace TangoGames.RoadFighter.Levels
                 {
                     posicao.X -= 3;
 
-                    if (posicao.X + 2 <= listadepistas[faixaatual].X)
+                    if (posicao.X - 3 <= listadepistas[faixaatual].X)
                     {
                         posicao.X = listadepistas[faixaatual].X;
                     }
