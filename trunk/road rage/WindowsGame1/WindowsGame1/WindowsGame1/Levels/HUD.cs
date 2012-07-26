@@ -29,8 +29,8 @@ namespace TangoGames.RoadFighter.Levels
 
         public HUD(ContentManager Content)
         {
-            
-            Arial = Content.Load<SpriteFont>("arial");
+
+            Arial = Content.Load<SpriteFont>("quartz");
             
                         
             marcadorPontos = Content.Load<Texture2D>("HUDElementos/Pontos");
@@ -52,7 +52,7 @@ namespace TangoGames.RoadFighter.Levels
             
         {
             
-            spriteBatch.DrawString(Arial, " " +pontos, new Vector2(10, 45), Color.Red);
+            spriteBatch.DrawString(Arial, " " +pontos, new Vector2(10, 40), Color.Red);
             
             spriteBatch.Draw(marcadorPontos, new Rectangle(0, 10, 204, 53),new Rectangle(18,10,204,53) , Color.White);
             spriteBatch.Draw(indicadorCombustivel, new Rectangle(0, 90, 171, 233), new Rectangle(18, 10, 171, 205), Color.White);
