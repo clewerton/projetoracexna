@@ -45,9 +45,6 @@ namespace TangoGames.RoadFighter.Input
             _teclado_anterior = Keyboard.GetState();
             _mouse_anterior = Mouse.GetState();
             _joystick_anterior = GamePad.GetState(PlayerIndex.One);
-
-            game.Services.AddService(typeof(IInputService), this);
-            game.Components.Add(this);
         }
 
         public override void  Update(GameTime gameTime)
