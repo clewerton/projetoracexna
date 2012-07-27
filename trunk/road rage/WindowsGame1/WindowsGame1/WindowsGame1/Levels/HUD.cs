@@ -30,7 +30,7 @@ namespace TangoGames.RoadFighter.Levels
         public HUD(ContentManager Content)
         {
 
-            Arial = Content.Load<SpriteFont>("quartz");
+            Arial = Content.Load<SpriteFont>("arial");
             
                         
             marcadorPontos = Content.Load<Texture2D>("HUDElementos/Pontos");
