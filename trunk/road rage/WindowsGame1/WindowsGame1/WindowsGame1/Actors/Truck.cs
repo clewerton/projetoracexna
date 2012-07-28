@@ -10,8 +10,8 @@ namespace TangoGames.RoadFighter.Actors
 {
     class Truck : BasicDrawingActor
     {
-        public Truck(Game game, Rectangle bounds, SpriteBatch spriteBatch)
-            : base(game, bounds, game.Content.Load<Texture2D>("Textures/truckSprite"))
+        public Truck(Game game, Vector2 dimensions, SpriteBatch spriteBatch)
+            : base(game, dimensions, game.Content.Load<Texture2D>("Textures/truckSprite"))
         {
         }
 

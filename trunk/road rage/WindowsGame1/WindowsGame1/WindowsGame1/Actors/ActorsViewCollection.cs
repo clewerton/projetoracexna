@@ -51,8 +51,6 @@ namespace TangoGames.RoadFighter.Actors
             {
                 actor.Draw(gameTime);
             }
-
-            base.Update(gameTime);
         }
 
         public bool Visible

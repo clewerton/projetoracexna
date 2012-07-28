@@ -21,6 +21,7 @@ namespace TangoGames.RoadFighter.Actors
         Vector2 Velocity { get; set; }
         void Update(GameTime gameTime);
         bool Enabled { get; set; }
+        void Move(Vector2 delta);
     }
 
     // Encapsulates entity group functionality.
@@ -29,7 +30,6 @@ namespace TangoGames.RoadFighter.Actors
         void Add(ActorType entity);
         void Remove(ActorType entity);
         void Update(GameTime gameTime);
-        void Move(Vector2 velocity);
         bool Enabled { set; }
     }
 
@@ -88,14 +88,6 @@ namespace TangoGames.RoadFighter.Actors
         public void Remove(ActorType entity)
         {
             actors.Remove(entity);
-        }
-
-        public void Move(Vector2 velocity)
-        {
-            foreach (ActorType item in actors)
-            {
-                item.Location += velocity;
-            }
         }
 
         public new bool Enabled

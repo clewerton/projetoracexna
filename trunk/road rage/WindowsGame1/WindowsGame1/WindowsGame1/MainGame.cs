@@ -18,7 +18,7 @@ namespace TangoGames.RoadFighter
         /// Serão usados pelo gerenciador de cenas para identificar as cenas.
         /// </summary>
         public enum Scenes { Intro, End, Fase, Menu }
-        public enum ActorTypes { Car, Truck }
+        public enum ActorTypes { Car, Truck, Hero }
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -40,9 +40,9 @@ namespace TangoGames.RoadFighter
         /// </summary>
         protected override void Initialize()
         {
+            StartInputService(); // detecção de input
             StartSceneManager(); // o gerenciamento de cenas
             StartActorFactory(); // fábrica de atores
-            StartInputService(); // detecção de input
 
             // inicializa todos os componentes registrados no jogo
             base.Initialize();
@@ -95,8 +95,9 @@ namespace TangoGames.RoadFighter
         private void StartActorFactory()
         {
             var actorFactory = new ActorFactory<ActorTypes, IDrawableActor>(); 
-            actorFactory[ActorTypes.Car] = new Car(this, new Rectangle(0, 0, 100, 100), _spriteBatch);
-            actorFactory[ActorTypes.Truck] = new Truck(this, new Rectangle(0, 0, 85, 135), _spriteBatch);
+            actorFactory[ActorTypes.Car] = new Car(this, new Vector2(100, 100), _spriteBatch);
+            actorFactory[ActorTypes.Truck] = new Truck(this, new Vector2(85, 135), _spriteBatch);
+            actorFactory[ActorTypes.Hero] = new Heroi(this, new Vector2(72, 155), _spriteBatch);
 
             // se registra como serviço
             Services.AddService(typeof(IActorFactory<ActorTypes, IDrawableActor>), actorFactory);

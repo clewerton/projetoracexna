@@ -12,10 +12,10 @@ namespace TangoGames.RoadFighter.Actors
     public abstract class BasicDrawingActor : GameComponent, IDrawableActor
     {
 
-        public BasicDrawingActor(Game game, Rectangle bounds, Texture2D texture)
+        public BasicDrawingActor(Game game, Vector2 dimensions, Texture2D texture)
             : base(game)
         {
-            this.bounds = bounds;
+            this.bounds = new Rectangle(0, 0, (int)dimensions.X, (int)dimensions.Y);
             this.texture = texture;
         }
 
@@ -37,11 +37,16 @@ namespace TangoGames.RoadFighter.Actors
         public override void Update(GameTime gameTime)
         {
             Location += Velocity;
-
             base.Update(gameTime);
         }
 
         public abstract void Draw(GameTime gameTime);
+
+        public void Move(Vector2 delta)
+        {
+            location.X += delta.X;
+            location.Y += delta.Y;
+        }
 
         public Boolean collided(BasicDrawingActor AtorColidente)
         {
@@ -64,7 +69,8 @@ namespace TangoGames.RoadFighter.Actors
             get {
                 return location;
             }
-            set {
+            set
+            {
                 location = value;
             }
         }
