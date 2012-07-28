@@ -15,26 +15,34 @@ namespace TangoGames.RoadFighter.Levels
             _arial = Game.Content.Load<SpriteFont>("arial");
 
             var actorFactory = GetService<IActorFactory<MainGame.ActorTypes, IDrawableActor>>();
-            map = new Map(Game);
-            map.Velocity = new Vector2(0, 1);
 
-            hero = new Heroi(Game);
             hud = new HUD(Game.Content);
+            map = new Map(Game);
+
+            hero = actorFactory[MainGame.ActorTypes.Hero] as Heroi;
+            hero.SpriteBatch = this.SpriteBatch;
+            hero.Location = new Vector2(300, 500);
+            hero.Velocity = new Vector2(0, -5);
+            hero.Scrollable = true;
+            map.Add(hero);
+            
+            map.Velocity = -hero.Velocity;
 
             Car car = actorFactory[MainGame.ActorTypes.Car] as Car;
             car.SpriteBatch = this.SpriteBatch;
-            car.Location = new Vector2(100, 0);
-            car.Velocity = new Vector2(0, -2);
+            car.Location = new Vector2(500, 600);
+            car.Velocity = new Vector2(0, -3);
             car.Scrollable = true;
             map.Add(car);
             
             Truck truck = actorFactory[MainGame.ActorTypes.Truck] as Truck;
             truck.SpriteBatch = this.SpriteBatch;
-            truck.Location = new Vector2(300, 0);
-            //truck.Velocity = new Vector2(0, 1);
+            truck.Location = new Vector2(400, 0);
+            //truck.Velocity = new Vector2(0, -2);
             truck.Visible = true;
+            truck.Scrollable = true;
             map.Add(truck);
-
+            
             base.LoadContent();
         }
 
@@ -49,7 +57,6 @@ namespace TangoGames.RoadFighter.Levels
 
             map.Update(gameTime);
             hud.Update(gameTime);
-            hero.Update(gameTime);
         }
 
         protected override void DrawBefore(GameTime gameTime)
@@ -65,7 +72,6 @@ namespace TangoGames.RoadFighter.Levels
 
             map.Draw(gameTime);
             hud.Draw(gameTime, SpriteBatch);
-            hero.Draw(gameTime, SpriteBatch);
             SpriteBatch.End();
         }
 

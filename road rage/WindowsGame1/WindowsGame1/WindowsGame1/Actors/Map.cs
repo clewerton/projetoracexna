@@ -30,7 +30,6 @@ namespace TangoGames.RoadFighter.Actors
             : base(game)
         {
             actors = new DrawAbleActorCollection(game);
-            visibleActors = new DrawAbleActorCollection(game);
         }
 
         /// <summary>
@@ -59,39 +58,26 @@ namespace TangoGames.RoadFighter.Actors
                 {
                     adjustPosition(ref screenBounds, ref limits, actor);
                 }
-                Configure(actor);
+                actor.Location += velocity;
+                actor.Update(gameTime);
             }
-            actors.Move(velocity);
-            // update ALL actors in map (no need to call visibleActor.Update)
-            actors.Update(gameTime);
-            
             base.Update(gameTime);
         }
 
 
         public override void Draw(GameTime gameTime)
         {
-            visibleActors.Draw(gameTime);
+            actors.Draw(gameTime);
         }
 
         public void Add(IDrawableActor actor)
         {
             actors.Add(actor);
-            Configure(actor);
         }
 
         public void Remove(IDrawableActor actor)
         {
             actors.Remove(actor);
-            visibleActors.Remove(actor);
-        }
-
-        private void Configure(IDrawableActor actor)
-        {
-            if (actor.Visible && !visibleActors.Contains(actor))
-            {
-                visibleActors.Add(actor);
-            }
         }
 
         private bool goingAway(Rectangle bounds, IActor actor, Vector2 delta)
@@ -151,14 +137,12 @@ namespace TangoGames.RoadFighter.Actors
             set
             {
                 velocity = value;
-
             }
         }
         #endregion
 
         #region Map Fields
         private DrawAbleActorCollection actors;
-        private DrawAbleActorCollection visibleActors;
         private Vector2 velocity;
         #endregion
     }

@@ -8,40 +8,39 @@ using Microsoft.Xna.Framework.Graphics;
 using TangoGames.RoadFighter.Scenes;
 using Microsoft.Xna.Framework.Content;
 using TangoGames.RoadFighter.Input;
+using TangoGames.RoadFighter.Actors;
 
 namespace TangoGames.RoadFighter.Levels
 {
-    public class Heroi
+    public class Heroi : BasicDrawingActor
     {
         private Game game;
 
-        private Texture2D textura;
         private Texture2D botaoEsquerda;
         private Texture2D botaoDireita;
 
         private Rectangle retEsquerda;
         private Rectangle retDireita;
 
-        private IList<Vector2> listadepistas;
+        private IList<int> listadepistas;
         private int numeroPistas = 4;
 
-        private Vector2 posicao;
         private int faixaAnterior = 1;
         private int faixaAtual = 1;
 
-        private IInputService imput;
+        private IInputService input;
 
-        public Heroi(Game game)
+        public Heroi(Game game, Vector2 dimensions, SpriteBatch spriteBatch)
+            : base(game, dimensions, game.Content.Load<Texture2D>("Textures/CarroHeroi"))
         {
             this.game = game;
 
-            textura = game.Content.Load<Texture2D>("Textures/CarroHeroi");
-            listadepistas = new List<Vector2>();
+            listadepistas = new List<int>();
             for (int i = 0; i < numeroPistas; i++)
             {
-                listadepistas.Add(new Vector2(200 + 100 * i, 300));
+                listadepistas.Add(200 + 100 * i);
             }
-            posicao = listadepistas.ElementAt(1);
+            Move(new Vector2(listadepistas.ElementAt(1), 0));
 
             botaoEsquerda = game.Content.Load<Texture2D>("Widgets/botaoEsquerda");
             botaoDireita = game.Content.Load<Texture2D>("Widgets/botaoDireita");
@@ -49,33 +48,34 @@ namespace TangoGames.RoadFighter.Levels
             retEsquerda = new Rectangle(20, game.Window.ClientBounds.Height / 5 * 3, 120, 120);
             retDireita = new Rectangle(game.Window.ClientBounds.Width - 150, game.Window.ClientBounds.Height / 5 * 3, 120, 120);
 
-            imput = (IInputService)game.Services.GetService(typeof(IInputService));
+            input = (IInputService)game.Services.GetService(typeof(IInputService));
         }
 
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             controleHeroi();
             movimentaHeroi();
         }
 
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Draw(textura, new Rectangle((int)posicao.X, (int)posicao.Y, 72, 155), Color.White);
+            SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
 
-            spriteBatch.Draw(botaoEsquerda, retEsquerda, Color.White);
-            spriteBatch.Draw(botaoDireita, retDireita, Color.White);
+            SpriteBatch.Draw(botaoEsquerda, retEsquerda, Color.White);
+            SpriteBatch.Draw(botaoDireita, retDireita, Color.White);
         }
 
-        void controleHeroi()
+        private void controleHeroi()
         {
-            if ((imput.KeyPressOnce(Keys.Left) || imput.MouseClick(retEsquerda)) && (faixaAtual > 0))
+            if ((input.KeyPressOnce(Keys.Left) || input.MouseClick(retEsquerda)) && (faixaAtual > 0))
             {
                 faixaAnterior = faixaAtual;
                 faixaAtual--;
             }
-            if ((imput.KeyPressOnce(Keys.Right) || imput.MouseClick(retDireita)) && (faixaAtual < numeroPistas - 1))
+            if ((input.KeyPressOnce(Keys.Right) || input.MouseClick(retDireita)) && (faixaAtual < numeroPistas - 1))
             {
                 faixaAnterior = faixaAtual;
                 faixaAtual++;
@@ -83,24 +83,24 @@ namespace TangoGames.RoadFighter.Levels
         }
 
 
-        void movimentaHeroi()
+        private void movimentaHeroi()
         {
-            if ((faixaAnterior <= faixaAtual) && (posicao.X < listadepistas[faixaAtual].X))
+            if ((faixaAnterior <= faixaAtual) && (Location.X < listadepistas[faixaAtual]))
             {
-                posicao.X += 3;
+                Move(new Vector2(3, 0));
 
-                if (posicao.X + 3 >= listadepistas[faixaAtual].X)
+                if (Location.X > listadepistas[faixaAtual])
                 {
-                    posicao.X = listadepistas[faixaAtual].X;
+                    Location = new Vector2(listadepistas[faixaAtual], Location.Y);
                 }
             }
-            if ((faixaAnterior >= faixaAtual) && (posicao.X > listadepistas[faixaAtual].X))
+            if ((faixaAnterior >= faixaAtual) && (Location.X > listadepistas[faixaAtual]))
             {
-                posicao.X -= 3;
+                Move(new Vector2(-3, 0));
 
-                if (posicao.X - 3 <= listadepistas[faixaAtual].X)
+                if (Location.X < listadepistas[faixaAtual])
                 {
-                    posicao.X = listadepistas[faixaAtual].X;
+                    Location = new Vector2(listadepistas[faixaAtual], Location.Y);
                 }
             }
         }
