@@ -27,7 +27,9 @@ namespace TangoGames.RoadFighter
         {
             // XXX precisa ficar no construtor, pois base.Initialize precisa de um serviço para 
             // XXX iniciar o GraphicDevice.
-            _graphics = new GraphicsDeviceManager(this); 
+            _graphics = new GraphicsDeviceManager(this);
+            _graphics.PreferredBackBufferWidth = 1024;
+            _graphics.PreferredBackBufferHeight = 768;
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
