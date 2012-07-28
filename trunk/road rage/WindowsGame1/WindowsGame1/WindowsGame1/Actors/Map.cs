@@ -31,8 +31,6 @@ namespace TangoGames.RoadFighter.Actors
         {
             actors = new DrawAbleActorCollection(game);
             visibleActors = new DrawAbleActorCollection(game);
-
-            // TODO: Construct any child components here
         }
 
         /// <summary>
@@ -59,40 +57,7 @@ namespace TangoGames.RoadFighter.Actors
             {
                 if (actor.Scrollable)
                 {
-                    Rectangle actorRect = new Rectangle((int)actor.Location.X, (int)actor.Location.Y, actor.Bounds.Width, actor.Bounds.Height);
-                    Vector2 delta = actor.Velocity + velocity;
-
-                    if (actorRect.Intersects(limits))
-                    {
-                        actor.Visible = true;
-                    }
-                    else if (goingAway(screenBounds, actor, delta))
-                    {
-                        Vector2 newPosition = actor.Location;
-                        actor.Visible = false;
-
-                        if (delta.X > 0)
-                        {
-                            newPosition.X = -actor.Bounds.Width;
-                        }
-                        else if (delta.X < 0)
-                        {
-                            newPosition.X = limits.Width;
-                        }
-                        if (delta.Y > 0)
-                        {
-                            newPosition.Y = -actor.Bounds.Height;
-                        }
-                        else if (delta.Y < 0)
-                        {
-                            newPosition.Y = limits.Height;
-                        }
-                        actor.Location = newPosition;
-                    }
-                    else
-                    {
-                        actor.Visible = true;
-                    }
+                    adjustPosition(ref screenBounds, ref limits, actor);
                 }
                 Configure(actor);
             }
@@ -102,6 +67,7 @@ namespace TangoGames.RoadFighter.Actors
             
             base.Update(gameTime);
         }
+
 
         public override void Draw(GameTime gameTime)
         {
@@ -135,6 +101,44 @@ namespace TangoGames.RoadFighter.Actors
                 (actor.Location.Y >= bounds.Height) && (delta.Y > 0) ||
                 (actor.Location.X <= 0) && (delta.X < 0) ||
                 (actor.Location.Y <= 0) && (delta.Y < 0);
+        }
+
+        private void adjustPosition(ref Rectangle screenBounds, ref Rectangle limits, IDrawableActor actor)
+        {
+            Rectangle actorRect = new Rectangle((int)actor.Location.X, (int)actor.Location.Y, actor.Bounds.Width, actor.Bounds.Height);
+            Vector2 delta = actor.Velocity + velocity;
+
+            if (actorRect.Intersects(limits))
+            {
+                actor.Visible = true;
+            }
+            else if (goingAway(screenBounds, actor, delta))
+            {
+                Vector2 newPosition = actor.Location;
+                actor.Visible = false;
+
+                if (delta.X > 0)
+                {
+                    newPosition.X = -actor.Bounds.Width;
+                }
+                else if (delta.X < 0)
+                {
+                    newPosition.X = limits.Width;
+                }
+                if (delta.Y > 0)
+                {
+                    newPosition.Y = -actor.Bounds.Height;
+                }
+                else if (delta.Y < 0)
+                {
+                    newPosition.Y = limits.Height;
+                }
+                actor.Location = newPosition;
+            }
+            else
+            {
+                actor.Visible = true;
+            }
         }
 
         #region Map Properties

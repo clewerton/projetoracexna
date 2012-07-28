@@ -15,136 +15,95 @@ namespace TangoGames.RoadFighter.Levels
     {
         private Game game;
 
-        Texture2D textura;
-        Texture2D botaoEsquerda;
-        Texture2D botaoDireita;
+        private Texture2D textura;
+        private Texture2D botaoEsquerda;
+        private Texture2D botaoDireita;
 
-        Rectangle retEsquerda;
-        Rectangle retDireita;
+        private Rectangle retEsquerda;
+        private Rectangle retDireita;
 
-        IList<Vector2> listadepistas;
+        private IList<Vector2> listadepistas;
+        private int numeroPistas = 4;
 
-        Vector2 posicao;
-        Vector2 faixa1;
-        Vector2 faixa2;
-        Vector2 faixa3;
-        Vector2 faixa4;
-        int faixaanterior = 1;
-        int faixaatual = 1;
+        private Vector2 posicao;
+        private int faixaAnterior = 1;
+        private int faixaAtual = 1;
 
-        IInputService imput;
-        
-        
+        private IInputService imput;
 
         public Heroi(Game game)
         {
             this.game = game;
 
             textura = game.Content.Load<Texture2D>("Textures/CarroHeroi");
-            posicao = new Vector2(300,300);
-            faixa1 = new Vector2(200,300);
-            faixa2 = new Vector2(300, 300);
-            faixa3 = new Vector2(400, 300);
-            faixa4 = new Vector2(500, 300);
-
             listadepistas = new List<Vector2>();
-            listadepistas.Add(faixa1);
-            listadepistas.Add(faixa2);
-            listadepistas.Add(faixa3);
-            listadepistas.Add(faixa4);
+            for (int i = 0; i < numeroPistas; i++)
+            {
+                listadepistas.Add(new Vector2(200 + 100 * i, 300));
+            }
+            posicao = listadepistas.ElementAt(1);
 
             botaoEsquerda = game.Content.Load<Texture2D>("Widgets/botaoEsquerda");
             botaoDireita = game.Content.Load<Texture2D>("Widgets/botaoDireita");
 
-            retEsquerda = new Rectangle(20, game.Window.ClientBounds.Height / 5 * 3, 141, 139);
-            retDireita = new Rectangle(game.Window.ClientBounds.Width - 150, game.Window.ClientBounds.Height / 5 * 3, 141, 139);
+            retEsquerda = new Rectangle(20, game.Window.ClientBounds.Height / 5 * 3, 120, 120);
+            retDireita = new Rectangle(game.Window.ClientBounds.Width - 150, game.Window.ClientBounds.Height / 5 * 3, 120, 120);
 
-            imput = (IInputService) game.Services.GetService(typeof(IInputService));
+            imput = (IInputService)game.Services.GetService(typeof(IInputService));
         }
 
 
         public void Update(GameTime gameTime)
         {
-            controleHEroi();
+            controleHeroi();
             movimentaHeroi();
-
         }
 
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-
-            spriteBatch.Draw(textura,new Rectangle((int)posicao.X,(int)posicao.Y, 72, 155), Color.White);
+            spriteBatch.Draw(textura, new Rectangle((int)posicao.X, (int)posicao.Y, 72, 155), Color.White);
 
             spriteBatch.Draw(botaoEsquerda, retEsquerda, Color.White);
             spriteBatch.Draw(botaoDireita, retDireita, Color.White);
         }
 
-        void controleHEroi()
+        void controleHeroi()
         {
-
-            if (imput.KeyPressOnce(Keys.Left) || imput.MouseClick(retEsquerda))
+            if ((imput.KeyPressOnce(Keys.Left) || imput.MouseClick(retEsquerda)) && (faixaAtual > 0))
             {
-                if (faixaatual > 0)
-                {
-                    faixaanterior = faixaatual;
-                    faixaatual--;
-                }
+                faixaAnterior = faixaAtual;
+                faixaAtual--;
             }
-            if (imput.KeyPressOnce(Keys.Right) || imput.MouseClick(retDireita))
+            if ((imput.KeyPressOnce(Keys.Right) || imput.MouseClick(retDireita)) && (faixaAtual < numeroPistas - 1))
             {
-                if (faixaatual < 3)
-                {
-                    faixaanterior = faixaatual;
-                    faixaatual++;
-                }
+                faixaAnterior = faixaAtual;
+                faixaAtual++;
             }
-
-
         }
 
 
         void movimentaHeroi()
         {
-            if (faixaanterior <= faixaatual)
+            if ((faixaAnterior <= faixaAtual) && (posicao.X < listadepistas[faixaAtual].X))
             {
+                posicao.X += 3;
 
-                if (posicao.X < listadepistas[faixaatual].X)
+                if (posicao.X + 3 >= listadepistas[faixaAtual].X)
                 {
-                    posicao.X += 3;
-
-                    if(posicao.X + 3 >= listadepistas[faixaatual].X){
-                        posicao.X = listadepistas[faixaatual].X;
-                    }
-                    
-
+                    posicao.X = listadepistas[faixaAtual].X;
                 }
-                
             }
-
-            if (faixaanterior >= faixaatual)
+            if ((faixaAnterior >= faixaAtual) && (posicao.X > listadepistas[faixaAtual].X))
             {
+                posicao.X -= 3;
 
-                if (posicao.X > listadepistas[faixaatual].X)
+                if (posicao.X - 3 <= listadepistas[faixaAtual].X)
                 {
-                    posicao.X -= 3;
-
-                    if (posicao.X - 3 <= listadepistas[faixaatual].X)
-                    {
-                        posicao.X = listadepistas[faixaatual].X;
-                    }
-
-
+                    posicao.X = listadepistas[faixaAtual].X;
                 }
-                
-            }            
+            }
         }
-
-
-
-
-
-
 
     }
 }
