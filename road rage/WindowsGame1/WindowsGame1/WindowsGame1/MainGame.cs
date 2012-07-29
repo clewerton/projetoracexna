@@ -18,7 +18,7 @@ namespace TangoGames.RoadFighter
         /// Serão usados pelo gerenciador de cenas para identificar as cenas.
         /// </summary>
         public enum Scenes { Intro, End, Fase, Menu }
-        public enum ActorTypes { Car, Truck, Hero }
+        public enum ActorTypes { Car, Truck, Hero, StraightRoad1, StraightRoad2 }
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -98,6 +98,8 @@ namespace TangoGames.RoadFighter
             actorFactory[ActorTypes.Car] = new Car(this, new Vector2(100, 100), _spriteBatch);
             actorFactory[ActorTypes.Truck] = new Truck(this, new Vector2(85, 135), _spriteBatch);
             actorFactory[ActorTypes.Hero] = new Heroi(this, new Vector2(72, 155), _spriteBatch);
+            actorFactory[ActorTypes.StraightRoad1] = new StraightRoad(this, new Vector2(1024, 1024), _spriteBatch);
+            actorFactory[ActorTypes.StraightRoad2] = new StraightRoad(this, new Vector2(1024, 1024), _spriteBatch);
 
             // se registra como serviço
             Services.AddService(typeof(IActorFactory<ActorTypes, IDrawableActor>), actorFactory);
