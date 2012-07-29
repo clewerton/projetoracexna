@@ -113,6 +113,7 @@
     <Compile Include="Actors\ActorsCollection.cs" />
     <Compile Include="Actors\ActorsViewCollection.cs" />
     <Compile Include="Actors\Car.cs" />
+    <Compile Include="Actors\Road.cs" />
     <Compile Include="Actors\Truck.cs" />
     <Compile Include="Input\InputService.cs" />
     <Compile Include="Levels\Fase1.cs" />

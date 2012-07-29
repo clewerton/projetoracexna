@@ -18,6 +18,7 @@ namespace TangoGames.RoadFighter.Actors
         void Draw(GameTime gameTime);
         bool Visible { get; set; }
         bool Scrollable { get; set; }
+        SpriteBatch SpriteBatch { get; set; }
     }
 
     public interface IDrawableActorGroup : IActorGroup<IDrawableActor>
