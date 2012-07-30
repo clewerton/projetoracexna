@@ -19,7 +19,7 @@ namespace TangoGames.RoadFighter.Actors
         void Update(GameTime gameTime);
         void Draw(GameTime gameTime);
         Vector2 Velocity {get; set; }
-        event EventHandler ColisionsOccours;
+        event EventHandler<CollisionEventArgs > ColisionsOccours;
     }
 
     /// <summary>
@@ -63,17 +63,18 @@ namespace TangoGames.RoadFighter.Actors
                 actor.Update(gameTime);
             }
 
-            //// Teste de colisão entre os objetos colidiveis
-            //Dictionary<ICollidable,Boolean > ActorsTest = new Dictionary<ICollidable,Boolean >();
+            // Teste de colisão entre os objetos colidiveis
+            Dictionary<ICollidable,Boolean > actorsAlreadyTested = new Dictionary<ICollidable,Boolean >();
 
-            //foreach (ICollidable actor1 in actors)
-            //{
-            //    foreach (ICollidable actor2 in actors) 
-            //    {
-            //        if ( (! ActorsTest.ContainsKey (actor2) ) && (actor1!=actor2) && (actor1.Collided(actor2) ) ) 
-            //    }
-            //    ActorsTest[actor1]=true;
-            //}
+            foreach (ICollidable actor1 in ElementsToCollide )
+            {
+                foreach (ICollidable actor2 in ElementsToCollide) 
+                {
+                    //if ( (! actorsAlreadyTested.ContainsKey (actor2) ) && (actor1!=actor2) && (actor1.Collided(actor2) ) )
+                       // ColisionsOccours(this,new CollisionEventArgs (actor1,actor2));
+                }
+                actorsAlreadyTested[actor1]=true;
+            }
 
             base.Update(gameTime);
         }
@@ -161,8 +162,46 @@ namespace TangoGames.RoadFighter.Actors
         #endregion
 
         #region Collision
-        public event EventHandler ColisionsOccours;
+        public event EventHandler<CollisionEventArgs> ColisionsOccours;
+
+
+        /// <summary>
+        /// Os atores colidíveis. Esta propriedade é calculada a partir da 
+        /// propriedade <see cref="actors"/>, então é somente para leitura.
+        /// </summary>
+        protected IEnumerable<ICollidable> ElementsToCollide
+        {
+            get
+            {
+                return from e in actors
+                       where e is ICollidable
+                       select e as ICollidable;
+            }
+        }
         #endregion
 
+    }
+
+    public class CollisionEventArgs : EventArgs
+    {
+        ICollidable colliderA;
+        public ICollidable ColliderA
+        {
+            get { return colliderA; }
+            private set { colliderA = value; }
+        }
+
+        ICollidable colliderB;
+        public ICollidable ColliderB
+        {
+            get { return colliderB; }
+            private set { colliderB = value; }
+        }
+
+        public CollisionEventArgs(ICollidable a, ICollidable b)
+        {
+            ColliderA = a;
+            ColliderB = b;
+        }
     }
 }

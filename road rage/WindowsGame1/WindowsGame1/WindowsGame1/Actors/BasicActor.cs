@@ -44,8 +44,7 @@ namespace TangoGames.RoadFighter.Actors
 
         public void Move(Vector2 delta)
         {
-            location.X += delta.X;
-            location.Y += delta.Y;
+            Location += delta;
         }
 
         public Boolean collided(BasicDrawingActor AtorColidente)
@@ -67,11 +66,11 @@ namespace TangoGames.RoadFighter.Actors
         public Vector2 Location
         {
             get {
-                return location;
+                return new Vector2(bounds.Location.X, bounds.Location.Y);
             }
             set
             {
-                location = value;
+                bounds.Location = new Point((int)value.X, (int)value.Y);
             }
         }
 
@@ -138,7 +137,6 @@ namespace TangoGames.RoadFighter.Actors
 
         #region BasicActor Fields
         private Rectangle bounds;
-        private Vector2 location;
         private Vector2 orientation;
         private Vector2 velocity;
         private Boolean visible;
