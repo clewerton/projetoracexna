@@ -141,6 +141,7 @@ namespace TangoGames.RoadFighter.Actors
                     newPosition.Y = limits.Height;
                 }
                 actor.Location = newPosition;
+                if (actor is ICollidable) ((ICollidable)actor).Collidable = true;
             }
             else
             {

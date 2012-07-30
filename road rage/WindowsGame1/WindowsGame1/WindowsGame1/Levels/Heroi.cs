@@ -36,6 +36,7 @@ namespace TangoGames.RoadFighter.Levels
             : base(game, dimensions, game.Content.Load<Texture2D>("Textures/CarroHeroi"))
         {
             this.game = game;
+            Collidable = true;
 
             listadepistas = new List<int>();
             for (int i = 0; i < numeroPistas; i++)
@@ -134,6 +135,8 @@ namespace TangoGames.RoadFighter.Levels
         }
 
         public ICollider Collider { get { return this.collider; } set { this.collider = value; } }
+
+        public bool Collidable { get; set; }
 
         #endregion
 

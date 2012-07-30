@@ -58,10 +58,7 @@ namespace TangoGames.RoadFighter.Levels
             
             base.LoadContent();
 
-            map.ColisionsOccours += (sender, args) => 
-                { 
-                    Console.WriteLine(args.ColliderA + " bateu no " + args.ColliderB); 
-                };
+            map.ColisionsOccours += OnColisionsOccours;
         }
 
         public override void Update(GameTime gameTime)
@@ -92,6 +89,15 @@ namespace TangoGames.RoadFighter.Levels
             hud.Draw(gameTime, SpriteBatch);
             SpriteBatch.End();
         }
+
+        #region colision
+        public void OnColisionsOccours(Object sender, CollisionEventArgs args)
+        {
+            Console.WriteLine(args.ColliderA + " bateu no " + args.ColliderB);
+            if (!(args.ColliderA is Heroi)) args.ColliderA.Collidable = false;
+            if (!(args.ColliderB is Heroi)) args.ColliderB.Collidable = false;
+        }
+        #endregion
 
         #region Properties & Fields
         private SpriteFont _arial;
