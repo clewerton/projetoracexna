@@ -70,8 +70,14 @@ namespace TangoGames.RoadFighter.Actors
             {
                 foreach (ICollidable actor2 in ElementsToCollide) 
                 {
-                    //if ( (! actorsAlreadyTested.ContainsKey (actor2) ) && (actor1!=actor2) && (actor1.Collided(actor2) ) )
-                       // ColisionsOccours(this,new CollisionEventArgs (actor1,actor2));
+                    if ((!actorsAlreadyTested.ContainsKey(actor2)) && (actor1 != actor2) && (actor1.Collided(actor2))) 
+                    {
+                        if (ColisionsOccours != null)
+                        {
+                            ColisionsOccours(this, new CollisionEventArgs(actor1, actor2));
+                        }
+                    }
+                     
                 }
                 actorsAlreadyTested[actor1]=true;
             }
