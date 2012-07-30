@@ -12,7 +12,7 @@ using TangoGames.RoadFighter.Actors;
 
 namespace TangoGames.RoadFighter.Levels
 {
-    public class Heroi : BasicDrawingActor
+    public class Heroi : BasicDrawingActor, ICollidable 
     {
         private Game game;
 
@@ -104,6 +104,22 @@ namespace TangoGames.RoadFighter.Levels
                 }
             }
         }
+
+        #region Collision implementation
+
+        /// <summary>
+        /// Teste de colisão por retangulo
+        /// </summary>
+        ICollider collider = new TangoGames.RoadFighter.Actors.BoundingBox();
+
+        public bool Collided(ICollidable that)
+        {
+            return collider.TestCollision(this, that);
+        }
+
+        public ICollider Collider { get { return this.collider; } set { this.collider = value; } }
+
+        #endregion
 
     }
 }

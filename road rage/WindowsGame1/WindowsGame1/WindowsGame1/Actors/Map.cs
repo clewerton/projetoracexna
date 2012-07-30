@@ -19,6 +19,7 @@ namespace TangoGames.RoadFighter.Actors
         void Update(GameTime gameTime);
         void Draw(GameTime gameTime);
         Vector2 Velocity {get; set; }
+        event EventHandler ColisionsOccours;
     }
 
     /// <summary>
@@ -61,6 +62,19 @@ namespace TangoGames.RoadFighter.Actors
                 actor.Location += velocity;
                 actor.Update(gameTime);
             }
+
+            //// Teste de colisão entre os objetos colidiveis
+            //Dictionary<ICollidable,Boolean > ActorsTest = new Dictionary<ICollidable,Boolean >();
+
+            //foreach (ICollidable actor1 in actors)
+            //{
+            //    foreach (ICollidable actor2 in actors) 
+            //    {
+            //        if ( (! ActorsTest.ContainsKey (actor2) ) && (actor1!=actor2) && (actor1.Collided(actor2) ) ) 
+            //    }
+            //    ActorsTest[actor1]=true;
+            //}
+
             base.Update(gameTime);
         }
 
@@ -145,5 +159,10 @@ namespace TangoGames.RoadFighter.Actors
         private DrawAbleActorCollection actors;
         private Vector2 velocity;
         #endregion
+
+        #region Collision
+        public event EventHandler ColisionsOccours;
+        #endregion
+
     }
 }

@@ -30,14 +30,14 @@ namespace TangoGames.RoadFighter.Levels
             road2.Location = new Vector2(road1.Bounds.Left, road1.Location.Y - road2.Bounds.Height + 5);
             road2.Scrollable = true;
             map.Add(road2);
-            
+
             hero = actorFactory[MainGame.ActorTypes.Hero];
             hero.SpriteBatch = this.SpriteBatch;
             hero.Location = new Vector2(300, 500);
             hero.Velocity = new Vector2(0, -5);
             hero.Scrollable = true;
             map.Add(hero);
-            
+
             map.Velocity = -hero.Velocity;
 
             IDrawableActor car = actorFactory[MainGame.ActorTypes.Car];
