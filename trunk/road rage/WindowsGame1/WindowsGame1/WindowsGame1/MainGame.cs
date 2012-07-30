@@ -28,9 +28,13 @@ namespace TangoGames.RoadFighter
             // XXX precisa ficar no construtor, pois base.Initialize precisa de um serviço para 
             // XXX iniciar o GraphicDevice.
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferWidth = 1024;
-            _graphics.PreferredBackBufferHeight = 768;
-
+            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            if (!_graphics.IsFullScreen)
+            {
+                _graphics.ToggleFullScreen();
+            }
+            _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -55,6 +59,7 @@ namespace TangoGames.RoadFighter
 
         protected override void Update(GameTime gameTime)
         {
+            Window.Title = _graphics.PreferredBackBufferWidth.ToString();
             var sceneManager = (ISceneManagerService<MainGame.Scenes>) Services.GetService(typeof(ISceneManagerService<MainGame.Scenes>));
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space))
