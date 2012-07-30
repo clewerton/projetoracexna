@@ -38,7 +38,7 @@ namespace TangoGames.RoadFighter.Levels
             listadepistas = new List<int>();
             for (int i = 0; i < numeroPistas; i++)
             {
-                listadepistas.Add(200 + 100 * i);
+                listadepistas.Add(270 + 130 * i);
             }
             Move(new Vector2(listadepistas.ElementAt(1), 0));
 
