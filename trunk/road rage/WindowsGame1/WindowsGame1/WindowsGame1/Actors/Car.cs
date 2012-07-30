@@ -14,6 +14,7 @@ namespace TangoGames.RoadFighter.Actors
         public Car(Game game, Vector2 dimensions, SpriteBatch spriteBatch)
             : base(game, dimensions, game.Content.Load<Texture2D>("Textures/carSprite"))
         {
+            Collidable = true;
         }
 
         public override void Draw(GameTime gameTime)
@@ -34,6 +35,8 @@ namespace TangoGames.RoadFighter.Actors
         }
 
         public ICollider Collider { get {return this.collider ;}  set {this.collider=value; } }
+
+        public bool Collidable { get; set; }
 
         #endregion
 

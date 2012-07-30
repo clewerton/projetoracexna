@@ -10,6 +10,7 @@ namespace TangoGames.RoadFighter.Actors
     public interface ICollidable
     {
         bool Collided(ICollidable that);
+        bool Collidable { get; set; }
         Rectangle Bounds { get; }
         Texture2D Texture { get; }
         ICollider Collider { get; set; }
@@ -24,7 +25,7 @@ namespace TangoGames.RoadFighter.Actors
     {
         public bool TestCollision(ICollidable a, ICollidable b) 
         {
-            return a.Bounds.Intersects(b.Bounds);
+            return a.Collidable && b.Collidable && a.Bounds.Intersects(b.Bounds);
         }
     }
 
