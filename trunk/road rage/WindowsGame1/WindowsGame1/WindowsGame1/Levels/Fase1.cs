@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using TangoGames.RoadFighter.Scenes;
@@ -56,6 +57,11 @@ namespace TangoGames.RoadFighter.Levels
             map.Add(truck);
             
             base.LoadContent();
+
+            map.ColisionsOccours += (sender, args) => 
+                { 
+                    Console.WriteLine(args.ColliderA + " bateu no " + args.ColliderB); 
+                };
         }
 
         public override void Update(GameTime gameTime)
