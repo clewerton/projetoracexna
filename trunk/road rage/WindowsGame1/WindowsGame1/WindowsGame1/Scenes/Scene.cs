@@ -275,6 +275,9 @@ namespace TangoGames.RoadFighter.Scenes
         }
 
         protected SpriteBatch SpriteBatch { get; set; }
+
+        public SpriteBatch currentSpriteBatch { get { return SpriteBatch;} }
+
         #endregion
     }
 }

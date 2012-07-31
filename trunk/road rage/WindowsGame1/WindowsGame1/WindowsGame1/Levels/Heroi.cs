@@ -32,6 +32,8 @@ namespace TangoGames.RoadFighter.Levels
 
         private IInputService input;
 
+        private Scene scene;
+
         public Heroi(Game game, Vector2 dimensions, SpriteBatch spriteBatch)
             : base(game, dimensions, game.Content.Load<Texture2D>("Textures/CarroHeroi"))
         {

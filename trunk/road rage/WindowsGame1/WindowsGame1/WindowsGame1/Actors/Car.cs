@@ -5,10 +5,11 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using TangoGames.RoadFighter.Levels;
 
 namespace TangoGames.RoadFighter.Actors
 {
-    class Car : BasicDrawingActor, ICollidable
+    class Car : BasicDrawingActor, ICollidable, IEnemy 
     {
 
         public Car(Game game, Vector2 dimensions, SpriteBatch spriteBatch)

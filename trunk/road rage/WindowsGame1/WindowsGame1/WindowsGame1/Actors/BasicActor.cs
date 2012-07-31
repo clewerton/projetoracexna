@@ -132,6 +132,21 @@ namespace TangoGames.RoadFighter.Actors
             }
 
         }
+        public Boolean Outofscreen
+        {
+            get
+            {
+                return outofscreen;
+            }
+            set
+            {
+                outofscreen = value;
+            }
+
+        }
+
+        
+        
         public SpriteBatch SpriteBatch { get; set; }
         #endregion
 
@@ -141,6 +156,7 @@ namespace TangoGames.RoadFighter.Actors
         private Vector2 velocity;
         private Boolean visible;
         private Boolean scrollable;
+        private Boolean outofscreen = false;
         private Texture2D texture;
         #endregion
     }
