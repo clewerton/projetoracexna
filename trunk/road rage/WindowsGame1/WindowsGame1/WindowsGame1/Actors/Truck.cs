@@ -40,5 +40,12 @@ namespace TangoGames.RoadFighter.Actors
 
         #endregion
 
+        #region Enemy implementation
+
+        private bool _active = false;
+        public Boolean Active { get { return _active; } set { _active = value; } }
+
+        #endregion
+
     }
 }

@@ -27,6 +27,9 @@ namespace TangoGames.RoadFighter.Levels
             road1.Scrollable = true;
             map.Add(road1);
 
+            //Atribui as pistas da estrada para o gestor de inimigos conhecer
+            enemies.CurrentRoad = ((IRoad)road1).Lanes;
+
             road2 = actorFactory[MainGame.ActorTypes.StraightRoad2];
             road2.SpriteBatch = this.SpriteBatch;
             road2.Location = new Vector2(road1.Bounds.Left, road1.Location.Y - road2.Bounds.Height + 30);
@@ -46,6 +49,7 @@ namespace TangoGames.RoadFighter.Levels
 
             map.ColisionsOccours += OnColisionsOccours;
 
+            //inicia a geração de inimigos na estrada
             enemies.startGeneration(map);
         }
 

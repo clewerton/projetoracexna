@@ -19,7 +19,7 @@ namespace TangoGames.RoadFighter.Levels
 
     public interface IEnemy
     {
-    
+        bool Active { get; set; }
     }
 
     public class EnemiesManager: GameComponent, IEnemiesManager
@@ -32,6 +32,12 @@ namespace TangoGames.RoadFighter.Levels
             : base(scene.Game)
         {
             _currentScene = scene;
+
+            //cria definicão de pistas inicial deve ser atualizado pelo método CurrentRoad
+            _lanes = new FourLanes(); 
+
+            //lista de inimigos fora de ação
+            _ListofEnemies = new List<IEnemy>();
         }
         
         /// <summary>
@@ -48,22 +54,38 @@ namespace TangoGames.RoadFighter.Levels
             var actorFactory = (IActorFactory<MainGame.ActorTypes, IDrawableActor>)Game.Services.GetService(typeof(IActorFactory<MainGame.ActorTypes, IDrawableActor>));
 
             IDrawableActor car = actorFactory[MainGame.ActorTypes.Car];
-            car.SpriteBatch = _currentScene.currentSpriteBatch; 
-            car.Location = new Vector2(500, 600);
-            car.Velocity = new Vector2(0, -3);
+            car.SpriteBatch = _currentScene.currentSpriteBatch;
+            car.Visible = false;
             car.Scrollable = false;
-            _currentMap.Add(car);
+            _ListofEnemies.Add((IEnemy)car);
 
             IDrawableActor truck = actorFactory[MainGame.ActorTypes.Truck];
-            truck.SpriteBatch = _currentScene.currentSpriteBatch; 
-            truck.Location = new Vector2(400, 0);
-            //truck.Velocity = new Vector2(0, -2);
-            truck.Visible = true;
+            truck.SpriteBatch = _currentScene.currentSpriteBatch;
+            truck.Visible = false;
             truck.Scrollable = false;
-            _currentMap.Add(truck);
+            _ListofEnemies.Add((IEnemy)truck);
 
         }
 
+        private void RandomizeEnemy(IDrawableActor enemy)
+        {
+            int numlane = RandomNumber(_lanes.StartIndex, _lanes.LastIndex);
+
+            enemy.Location = new Vector2(_lanes.LanesList[ numlane ] , -enemy.Bounds.Height);
+
+            enemy.Velocity = new Vector2(0, -RandomNumber(1, 4));
+
+            enemy.Outofscreen = false;
+
+            _currentMap.Add( enemy );
+        }
+
+
+        private int RandomNumber(int min, int max)
+        {
+            Random random = new Random();
+            return random.Next(min, max);
+        }
 
         /// <summary>
         /// Finaliza geração de inimigos e remove instancias 
@@ -75,7 +97,14 @@ namespace TangoGames.RoadFighter.Levels
 
         public override void Update(GameTime gameTime) 
         {
+            if (RandomNumber(0, 100) > 90)
+            {
+            //    IEnemy ene = EnemiesNotActive.FirstOrDefault();
 
+            //    RandomizeEnemy((IDrawableActor)ene);
+
+             //   ene.Active = true;
+            }
         }
 
         #region Saiu da Tela
@@ -84,17 +113,55 @@ namespace TangoGames.RoadFighter.Levels
         {
             if (args.OutActor is IEnemy) 
             {
-                Console.WriteLine(args.OutActor + " saiu da tela ");
+                _currentMap.Remove(args.OutActor);
             }
-
-
         }
+
+
         #endregion
 
 
         #region Properties & Fields
+
         private IMap _currentMap;
         private Scene _currentScene;
+
+        private List<IEnemy> _ListofEnemies;
+
+        /// <summary>
+        /// Os atores ativos. Esta propriedade é calculada a partir da 
+        /// propriedade <see cref="_ListofEnemies"/>, então é somente para leitura.
+        /// </summary>
+        protected IEnumerable<IEnemy> EnemiesActive
+        {
+            get
+            {
+                return from e in _ListofEnemies 
+                       where e.Active 
+                       select e as IEnemy;
+            }
+        }
+        /// <summary>
+        /// Os atores Nao ativos. Esta propriedade é calculada a partir da 
+        /// propriedade <see cref="_ListofEnemies"/>, então é somente para leitura.
+        /// </summary>
+        protected IEnumerable<IEnemy> EnemiesNotActive
+        {
+            get
+            {
+                return from e in _ListofEnemies
+                       where !e.Active
+                       select e as IEnemy;
+            }
+        }
         #endregion
+
+        #region Controle de Pistas
+
+        private ILanes _lanes;
+        public ILanes CurrentRoad { get { return _lanes; } set { _lanes = value; } }
+
+        #endregion
+
     }
 }
