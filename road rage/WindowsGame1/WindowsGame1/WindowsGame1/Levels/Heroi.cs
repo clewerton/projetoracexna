@@ -24,15 +24,13 @@ namespace TangoGames.RoadFighter.Levels
 
         private float angulo = 0;
         //0.261
-        private IList<int> listadepistas;
-        private int numeroPistas = 4;
+        //private IList<int> listadepistas;
+        //private int numeroPistas = 4;
 
         private int faixaAnterior = 1;
         private int faixaAtual = 1;
 
         private IInputService input;
-
-        private Scene scene;
 
         public Heroi(Game game, Vector2 dimensions, SpriteBatch spriteBatch)
             : base(game, dimensions, game.Content.Load<Texture2D>("Textures/CarroHeroi"))
@@ -40,12 +38,10 @@ namespace TangoGames.RoadFighter.Levels
             this.game = game;
             Collidable = true;
 
-            listadepistas = new List<int>();
-            for (int i = 0; i < numeroPistas; i++)
-            {
-                listadepistas.Add(270 + 130 * i);
-            }
-            Move(new Vector2(listadepistas.ElementAt(1), 0));
+            //cria definicão de pistas inicial deve ser atualizado pelo método CurrentRoad
+            _lanes = new FourLanes(); 
+
+            //Move(new Vector2(listadepistas.ElementAt(1), 0));
 
             botaoEsquerda = game.Content.Load<Texture2D>("Widgets/botaoEsquerda");
             botaoDireita = game.Content.Load<Texture2D>("Widgets/botaoDireita");
@@ -86,7 +82,7 @@ namespace TangoGames.RoadFighter.Levels
                 faixaAnterior = faixaAtual;
                 faixaAtual--;
             }
-            if ((input.KeyPressOnce(Keys.Right) || input.MouseClick(retDireita)) && (faixaAtual < numeroPistas - 1))
+            if ((input.KeyPressOnce(Keys.Right) || input.MouseClick(retDireita)) && (faixaAtual < _lanes.Count  - 1))
             {
                 faixaAnterior = faixaAtual;
                 faixaAtual++;
@@ -96,26 +92,26 @@ namespace TangoGames.RoadFighter.Levels
 
         private void movimentaHeroi()
         {
-            if ((faixaAnterior <= faixaAtual) && (Location.X < listadepistas[faixaAtual]))
+            if ((faixaAnterior <= faixaAtual) && (Location.X < _lanes.LanesList [faixaAtual]))
             {
                 Move(new Vector2(3, 0));
                 angulo = (float)0.1;
 
-                if (Location.X >= listadepistas[faixaAtual])
+                if (Location.X >= _lanes.LanesList[faixaAtual])
                 {
                     angulo = 0;
-                    Location = new Vector2(listadepistas[faixaAtual], Location.Y);
+                    Location = new Vector2(_lanes.LanesList[faixaAtual], Location.Y);
                 }
             }
-            if ((faixaAnterior >= faixaAtual) && (Location.X > listadepistas[faixaAtual]))
+            if ((faixaAnterior >= faixaAtual) && (Location.X > _lanes.LanesList[faixaAtual]))
             {
                 Move(new Vector2(-3, 0));
                 angulo = (float)-0.1;
 
-                if (Location.X <= listadepistas[faixaAtual])
+                if (Location.X <= _lanes.LanesList[faixaAtual])
                 {
                     angulo = 0;
-                    Location = new Vector2(listadepistas[faixaAtual], Location.Y);
+                    Location = new Vector2(_lanes.LanesList[faixaAtual], Location.Y);
                 }
             }
 
@@ -126,6 +122,13 @@ namespace TangoGames.RoadFighter.Levels
 
            // }
         }
+
+        #region Controle de Pistas
+
+        private ILanes _lanes;
+        public ILanes CurrentRoad { get { return _lanes; } set {  _lanes = value; } }
+
+        #endregion
 
         #region Collision implementation
 

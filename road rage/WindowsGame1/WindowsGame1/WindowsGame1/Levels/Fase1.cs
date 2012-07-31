@@ -81,7 +81,23 @@ namespace TangoGames.RoadFighter.Levels
         #region colision
         public void OnColisionsOccours(Object sender, CollisionEventArgs args)
         {
-            Console.WriteLine(args.ColliderA + " bateu no ator " + args.ColliderB);
+            //Console.WriteLine(args.ColliderA + " bateu no ator " + args.ColliderB);
+   
+            #region colisão com a estrada
+            //colisão com a estrada joga a configuração da nova estrada para 
+            //o carro do heroi
+            if (args.ColliderA is IRoad && args.ColliderB is Heroi) 
+            {
+               args.ColliderB.Collidable = false;
+               ((Heroi)args.ColliderB).CurrentRoad = ((IRoad)args.ColliderA).Lanes;
+            }
+            if (args.ColliderA is IRoad && args.ColliderB is Heroi)
+            {
+                args.ColliderA.Collidable = false;
+                ((Heroi)args.ColliderB).CurrentRoad = ((IRoad)args.ColliderA).Lanes;
+            }
+            #endregion
+
             //if (!(args.ColliderA is Heroi)) args.ColliderA.Collidable = false;
             //if (!(args.ColliderB is Heroi)) args.ColliderB.Collidable = false;
         }
@@ -94,6 +110,7 @@ namespace TangoGames.RoadFighter.Levels
         private IDrawableActor road1;
         private IDrawableActor road2;
         private HUD hud;
+
 
         /// <summary>
         /// Controle de inimigos no map
