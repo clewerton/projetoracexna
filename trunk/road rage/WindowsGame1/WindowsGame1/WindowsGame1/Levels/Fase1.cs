@@ -83,6 +83,7 @@ namespace TangoGames.RoadFighter.Levels
         }
 
         #region colision
+
         public void OnColisionsOccours(Object sender, CollisionEventArgs args)
         {
             //Console.WriteLine(args.ColliderA + " bateu no ator " + args.ColliderB);
@@ -92,13 +93,13 @@ namespace TangoGames.RoadFighter.Levels
             //o carro do heroi
             if (args.ColliderA is IRoad && args.ColliderB is Heroi) 
             {
-               args.ColliderB.Collidable = false;
+               args.ColliderA.Collidable = false;
                ((Heroi)args.ColliderB).CurrentRoad = ((IRoad)args.ColliderA).Lanes;
             }
-            if (args.ColliderA is IRoad && args.ColliderB is Heroi)
+            if (args.ColliderB is IRoad && args.ColliderA is Heroi)
             {
-                args.ColliderA.Collidable = false;
-                ((Heroi)args.ColliderB).CurrentRoad = ((IRoad)args.ColliderA).Lanes;
+                args.ColliderB.Collidable = false;
+                ((Heroi)args.ColliderB).CurrentRoad = ((IRoad)args.ColliderB).Lanes;
             }
             #endregion
 
