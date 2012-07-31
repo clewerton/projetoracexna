@@ -20,6 +20,7 @@ namespace TangoGames.RoadFighter.Actors
         void Draw(GameTime gameTime);
         Vector2 Velocity {get; set; }
         event EventHandler<CollisionEventArgs > ColisionsOccours;
+        event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
     }
 
     /// <summary>
@@ -61,6 +62,16 @@ namespace TangoGames.RoadFighter.Actors
                 }
                 actor.Location += velocity;
                 actor.Update(gameTime);
+
+
+                //Testa se ator saiu da tela e dispara evento OutOfBounds
+                if (!actor.Outofscreen && !screenBounds.Intersects (actor.Bounds))
+                {
+                    actor.Outofscreen = true;
+                    if (OutOfBounds != null)
+                        OutOfBounds(this, new OutOfBoundsEventArgs(actor));
+                }
+
             }
 
             // Teste de colisão entre os objetos colidiveis
@@ -73,9 +84,7 @@ namespace TangoGames.RoadFighter.Actors
                     if ((!actorsAlreadyTested.ContainsKey(actor2)) && (actor1 != actor2) && (actor1.Collided(actor2))) 
                     {
                         if (ColisionsOccours != null)
-                        {
                             ColisionsOccours(this, new CollisionEventArgs(actor1, actor2));
-                        }
                     }
                      
                 }
@@ -187,8 +196,19 @@ namespace TangoGames.RoadFighter.Actors
         }
         #endregion
 
-    }
+        #region Out of Bounds Actor
 
+        public event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
+
+        #endregion
+
+    }
+    
+
+
+    /// <summary>
+    /// Classe para eventos colisão entre atores
+    /// </summary>
     public class CollisionEventArgs : EventArgs
     {
         ICollidable colliderA;
@@ -211,4 +231,19 @@ namespace TangoGames.RoadFighter.Actors
             ColliderB = b;
         }
     }
+
+    /// <summary>
+    /// Class para eventos de saida da tela
+    /// </summary>
+    public class OutOfBoundsEventArgs : EventArgs
+    {
+        IDrawableActor outactor;
+
+        public IDrawableActor OutActor {  get { return outactor; } private set { outactor = value; }  }
+
+        public OutOfBoundsEventArgs(IDrawableActor outator) { this.outactor = outator; }
+
+    }
+
+
 }

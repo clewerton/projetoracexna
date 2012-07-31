@@ -19,6 +19,7 @@ namespace TangoGames.RoadFighter.Levels
 
             hud = new HUD(Game.Content);
             map = new Map(Game);
+            enemies = new EnemiesManager(this);
 
             road1 = actorFactory[MainGame.ActorTypes.StraightRoad1];
             road1.SpriteBatch = this.SpriteBatch;
@@ -40,25 +41,12 @@ namespace TangoGames.RoadFighter.Levels
             map.Add(hero);
 
             map.Velocity = -hero.Velocity;
-
-            IDrawableActor car = actorFactory[MainGame.ActorTypes.Car];
-            car.SpriteBatch = this.SpriteBatch;
-            car.Location = new Vector2(500, 600);
-            car.Velocity = new Vector2(0, -3);
-            car.Scrollable = true;
-            map.Add(car);
-
-            IDrawableActor truck = actorFactory[MainGame.ActorTypes.Truck];
-            truck.SpriteBatch = this.SpriteBatch;
-            truck.Location = new Vector2(400, 0);
-            //truck.Velocity = new Vector2(0, -2);
-            truck.Visible = true;
-            truck.Scrollable = true;
-            map.Add(truck);
             
             base.LoadContent();
 
             map.ColisionsOccours += OnColisionsOccours;
+
+            enemies.startGeneration(map);
         }
 
         public override void Update(GameTime gameTime)
@@ -93,9 +81,9 @@ namespace TangoGames.RoadFighter.Levels
         #region colision
         public void OnColisionsOccours(Object sender, CollisionEventArgs args)
         {
-            Console.WriteLine(args.ColliderA + " bateu no " + args.ColliderB);
-            if (!(args.ColliderA is Heroi)) args.ColliderA.Collidable = false;
-            if (!(args.ColliderB is Heroi)) args.ColliderB.Collidable = false;
+            Console.WriteLine(args.ColliderA + " bateu no ator " + args.ColliderB);
+            //if (!(args.ColliderA is Heroi)) args.ColliderA.Collidable = false;
+            //if (!(args.ColliderB is Heroi)) args.ColliderB.Collidable = false;
         }
         #endregion
 
@@ -106,6 +94,12 @@ namespace TangoGames.RoadFighter.Levels
         private IDrawableActor road1;
         private IDrawableActor road2;
         private HUD hud;
+
+        /// <summary>
+        /// Controle de inimigos no map
+        /// </summary>
+        private EnemiesManager enemies; 
+
         #endregion
     }
 }
