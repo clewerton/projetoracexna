@@ -95,16 +95,24 @@ namespace TangoGames.RoadFighter.Levels
             Game.Components.Remove(this);
         }
 
+        float tempodecorrido = 0;
+
         public override void Update(GameTime gameTime) 
         {
-            if (RandomNumber(0, 100) > 90)
+            tempodecorrido += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            if (tempodecorrido >= 3000 && EnemiesNotActive.Count()>0)
             {
-            //    IEnemy ene = EnemiesNotActive.FirstOrDefault();
+                tempodecorrido = 0;
+                
+                IEnemy ene = EnemiesNotActive.FirstOrDefault();
 
-            //    RandomizeEnemy((IDrawableActor)ene);
+                RandomizeEnemy((IDrawableActor)ene);
 
-             //   ene.Active = true;
+                ene.Active = true;
+
             }
+
         }
 
         #region Saiu da Tela
@@ -113,7 +121,8 @@ namespace TangoGames.RoadFighter.Levels
         {
             if (args.OutActor is IEnemy) 
             {
-                _currentMap.Remove(args.OutActor);
+                //((IEnemy)args.OutActor).Active = false;
+                //_currentMap.Remove(args.OutActor);
             }
         }
 
