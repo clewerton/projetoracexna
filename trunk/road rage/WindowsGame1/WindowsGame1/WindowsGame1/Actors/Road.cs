@@ -8,12 +8,13 @@ using Microsoft.Xna.Framework.Content;
 
 namespace TangoGames.RoadFighter.Actors
 {
-    public class StraightRoad : BasicDrawingActor,IRoad 
+    public class StraightRoad : BasicDrawingActor,IRoad, ICollidable 
     {
         public StraightRoad(Game game, Vector2 dimensions, SpriteBatch spriteBatch)
             : base(game, dimensions, game.Content.Load<Texture2D>("Textures/straight_road_4"))
         {
             lanes = new FourLanes();
+            Collidable = true;
         }
 
         public override void Draw(GameTime gameTime)
@@ -28,7 +29,28 @@ namespace TangoGames.RoadFighter.Actors
         private ILanes lanes;
 
         #endregion
+
+
+        #region Collision implementation
+
+        /// <summary>
+        /// Teste de colisão por retangulo
+        /// </summary>
+        ICollider collider = new TangoGames.RoadFighter.Actors.BoundingBox();
+
+        public bool Collided(ICollidable that)
+        {
+            return collider.TestCollision(this, that);
+        }
+
+        public ICollider Collider { get { return this.collider; } set { this.collider = value; } }
+
+        public bool Collidable { get; set; }
+
+        #endregion
     }
+
+    #region Road & Lanes
 
     public interface IRoad
     { 
@@ -64,5 +86,5 @@ namespace TangoGames.RoadFighter.Actors
         public int LastIndex { get { return _lastindex; } set { _lastindex = value; } }
 
     }
-
+    #endregion
 }
