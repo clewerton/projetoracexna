@@ -36,6 +36,13 @@ namespace TangoGames.RoadFighter.Levels
             ToEnd.Size = new Vector2(ButtonWidth, ButtonHeight);
             ToEnd.Text = "To END";
             Elements.Add(ToEnd);
+
+            ToExit = new Button(Game);
+            ToExit.OnClick += (sender, args) => Game.Exit();
+            ToExit.Location = new Point((clientBounds.Width - ButtonWidth) / 2, clientBounds.Height / 2 + 3 * ButtonHeight / 2 + 2 * Padding);
+            ToExit.Size = new Vector2(ButtonWidth, ButtonHeight);
+            ToExit.Text = "EXIT";
+            Elements.Add(ToExit);
         }
 
         protected override void DrawBefore(GameTime gameTime)
@@ -46,6 +53,7 @@ namespace TangoGames.RoadFighter.Levels
         public Button ToIntro { get; private set; }
         public Button ToFase { get; private set; }
         public Button ToEnd { get; private set; }
+        public Button ToExit { get; private set; }
 
         private const int ButtonWidth = 150;
         private const int ButtonHeight = 60;
