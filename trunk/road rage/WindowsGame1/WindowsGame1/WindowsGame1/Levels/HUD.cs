@@ -52,11 +52,14 @@ namespace TangoGames.RoadFighter.Levels
             
         {
             
-            spriteBatch.DrawString(Arial, " " +pontos, new Vector2(10, 40), Color.Red);
-            
-            spriteBatch.Draw(marcadorPontos, new Rectangle(0, 10, 204, 53),new Rectangle(18,10,204,53) , Color.White);
-            spriteBatch.Draw(indicadorCombustivel, new Rectangle(0, 90, 171, 233), new Rectangle(18, 10, 171, 205), Color.White);
-            spriteBatch.Draw(ponteiro, new Rectangle(35,205, 78, 6), null, Color.White, radianos, new Vector2(0, ponteiro.Height/2), SpriteEffects.None, 0);
+            spriteBatch.DrawString(Arial, " " +pontos, new Vector2(10, 140), Color.Red);
+
+            spriteBatch.Draw(marcadorPontos, new Rectangle(0, 100, 204, 53), new Rectangle(18, 10, 204, 53), Color.White);
+            spriteBatch.Draw(indicadorCombustivel, new Rectangle(0, 190, 171, 233), new Rectangle(18, 10, 171, 205), Color.White);
+
+            //spriteBatch.Draw(marcadorPontos, new Rectangle(0, 10, 204, 53),new Rectangle(18,10,204,53) , Color.White);
+            //spriteBatch.Draw(indicadorCombustivel, new Rectangle(0, 90, 171, 233), new Rectangle(18, 10, 171, 205), Color.White);
+            spriteBatch.Draw(ponteiro, new Rectangle(35,305, 78, 6), null, Color.White, radianos, new Vector2(0, ponteiro.Height/2), SpriteEffects.None, 0);
 
             
         }

@@ -48,10 +48,12 @@ namespace TangoGames.RoadFighter.Levels
             botaoEsquerda = game.Content.Load<Texture2D>("Widgets/botaoEsquerda");
             botaoDireita = game.Content.Load<Texture2D>("Widgets/botaoDireita");
 
-            retEsquerda = new Rectangle(20, game.Window.ClientBounds.Height / 5 * 3, 120, 120);
-            retDireita = new Rectangle(game.Window.ClientBounds.Width - 150, game.Window.ClientBounds.Height / 5 * 3, 120, 120);
+            retEsquerda = new Rectangle(20, game.Window.ClientBounds.Height - game.Window.ClientBounds.Height /4, 120, 120);
+            retDireita = new Rectangle(game.Window.ClientBounds.Width - 150, game.Window.ClientBounds.Height - game.Window.ClientBounds.Height / 4, 120, 120);
 
             input = (IInputService)game.Services.GetService(typeof(IInputService));
+
+            //Location.Y = game.Window.ClientBounds.Height - Texture.Height * 2;
         }
 
 
@@ -67,7 +69,8 @@ namespace TangoGames.RoadFighter.Levels
         {
             //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height),null, Color.White);
 
-            SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, (int)Location.Y + Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
+            SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, game.Window.ClientBounds.Height - Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
+            //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, (int)Location.Y + Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
             //new Vector2(Texture.Width/2, Texture.Height)
 
             SpriteBatch.Draw(botaoEsquerda, retEsquerda, Color.White);
@@ -94,9 +97,9 @@ namespace TangoGames.RoadFighter.Levels
             if ((faixaAnterior <= faixaAtual) && (Location.X < listadepistas[faixaAtual]))
             {
                 Move(new Vector2(3, 0));
-                angulo = (float)0.2;
+                angulo = (float)0.1;
 
-                if (Location.X > listadepistas[faixaAtual])
+                if (Location.X >= listadepistas[faixaAtual])
                 {
                     angulo = 0;
                     Location = new Vector2(listadepistas[faixaAtual], Location.Y);
@@ -105,9 +108,9 @@ namespace TangoGames.RoadFighter.Levels
             if ((faixaAnterior >= faixaAtual) && (Location.X > listadepistas[faixaAtual]))
             {
                 Move(new Vector2(-3, 0));
-                angulo = (float)-0.2;
+                angulo = (float)-0.1;
 
-                if (Location.X < listadepistas[faixaAtual])
+                if (Location.X <= listadepistas[faixaAtual])
                 {
                     angulo = 0;
                     Location = new Vector2(listadepistas[faixaAtual], Location.Y);
