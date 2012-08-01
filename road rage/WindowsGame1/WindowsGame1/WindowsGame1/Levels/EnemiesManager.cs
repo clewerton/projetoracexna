@@ -14,7 +14,6 @@ namespace TangoGames.RoadFighter.Levels
     {
         void startGeneration(IMap map);
         void stopGeneration();
-
     }
 
     public interface IEnemy
