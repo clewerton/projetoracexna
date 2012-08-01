@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using TangoGames.RoadFighter.Levels;
+using TangoGames.RoadFighter.Actors ;
 
 
 namespace TangoGames.RoadFighter.Actors
@@ -73,9 +74,6 @@ namespace TangoGames.RoadFighter.Actors
                 {
                     actor.Outofscreen = true;
                     if (OutOfBounds != null)
-                        if (actor is IEnemy)
-                            Remove(actor);
-
                         OutOfBounds(this, new OutOfBoundsEventArgs(actor));
                 }
 
@@ -103,7 +101,6 @@ namespace TangoGames.RoadFighter.Actors
             //remover com segurança os atores 
             SafeRemove();
         }
-
 
         public override void Draw(GameTime gameTime)
         {
