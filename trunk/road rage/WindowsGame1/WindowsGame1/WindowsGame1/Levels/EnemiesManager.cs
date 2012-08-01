@@ -24,6 +24,8 @@ namespace TangoGames.RoadFighter.Levels
 
     public class EnemiesManager: GameComponent, IEnemiesManager
     {
+        private Random random;
+
         /// <summary>
         /// Contrutor do controle de inimigos
         /// </summary>
@@ -38,6 +40,10 @@ namespace TangoGames.RoadFighter.Levels
 
             //lista de inimigos fora de ação
             _ListofEnemies = new List<IEnemy>();
+
+            int TheSeed = (int)DateTime.Now.Ticks;
+            random = new Random(TheSeed);
+
         }
         
         /// <summary>
@@ -55,33 +61,35 @@ namespace TangoGames.RoadFighter.Levels
 
             for (int i = 0; i < 10; i++) _ListofEnemies.Add(new Enemy(RandomEnemyType(), _currentScene ));
 
+            //_ListofEnemies.Add(new Enemy(Enemy.EnemyTypes.Inimigo1, _currentScene));
+            //_ListofEnemies.Add(new Enemy(Enemy.EnemyTypes.Inimigo2, _currentScene));
+            //_ListofEnemies.Add(new Enemy(Enemy.EnemyTypes.Inimigo3, _currentScene));
+            //_ListofEnemies.Add(new Enemy(Enemy.EnemyTypes.Inimigo4, _currentScene));
+            //_ListofEnemies.Add(new Enemy(Enemy.EnemyTypes.Inimigo5, _currentScene));
+            //_ListofEnemies.Add(new Enemy(Enemy.EnemyTypes.Inimigo6, _currentScene));
+            //_ListofEnemies.Add(new Enemy(Enemy.EnemyTypes.Inimigo7, _currentScene));
+            //_ListofEnemies.Add(new Enemy(Enemy.EnemyTypes.Inimigo8, _currentScene));
+
         }
 
         public Enemy.EnemyTypes RandomEnemyType()
         {
-            Enemy.EnemyTypes[] values = (Enemy.EnemyTypes[])Enum.GetValues(typeof(Enemy.EnemyTypes));
-            return values[new Random().Next(0, values.Length)];
-        } 
+            Array values = Enum.GetValues(typeof(Enemy.EnemyTypes));
 
+            return (Enemy.EnemyTypes)values.GetValue(random.Next(values.Length));
+        } 
 
         private void RandomizeEnemy(IDrawableActor enemy)
         {
-            int numlane = RandomNumber(_lanes.StartIndex, _lanes.LastIndex);
+            int numlane = random.Next (_lanes.StartIndex, _lanes.LastIndex);
 
             enemy.Location = new Vector2(_lanes.LanesList[ numlane ] , -enemy.Bounds.Height);
 
-            enemy.Velocity = new Vector2(0, -RandomNumber(1, 4));
+            enemy.Velocity = new Vector2(0, -random.Next (1, 5));
 
             enemy.Outofscreen = false;
 
             _currentMap.Add( enemy );
-        }
-
-
-        private int RandomNumber(int min, int max)
-        {
-            Random random = new Random();
-            return random.Next(min, max);
         }
 
         /// <summary>
@@ -101,8 +109,8 @@ namespace TangoGames.RoadFighter.Levels
             if (tempodecorrido >= 3000 && EnemiesNotActive.Count()>0)
             {
                 tempodecorrido = 0;
-                
-                IEnemy ene = EnemiesNotActive.FirstOrDefault();
+
+                IEnemy ene = EnemiesNotActive.ElementAtOrDefault( random.Next (EnemiesNotActive.Count()));
 
                 RandomizeEnemy((IDrawableActor)ene);
 
