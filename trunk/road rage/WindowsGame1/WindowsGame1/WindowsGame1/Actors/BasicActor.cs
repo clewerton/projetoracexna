@@ -12,6 +12,14 @@ namespace TangoGames.RoadFighter.Actors
     public abstract class BasicDrawingActor : GameComponent, IDrawableActor
     {
 
+        public BasicDrawingActor(Game game, Texture2D texture)
+            : base(game)
+        {
+            this.bounds = new Rectangle(0, 0, texture.Width, texture.Height);
+            this.texture = texture;
+        }
+
+
         public BasicDrawingActor(Game game, Vector2 dimensions, Texture2D texture)
             : base(game)
         {

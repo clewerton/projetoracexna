@@ -53,19 +53,16 @@ namespace TangoGames.RoadFighter.Levels
 
             var actorFactory = (IActorFactory<MainGame.ActorTypes, IDrawableActor>)Game.Services.GetService(typeof(IActorFactory<MainGame.ActorTypes, IDrawableActor>));
 
-            IDrawableActor car = actorFactory[MainGame.ActorTypes.Car];
-            car.SpriteBatch = _currentScene.currentSpriteBatch;
-            car.Visible = false;
-            car.Scrollable = false;
-            _ListofEnemies.Add((IEnemy)car);
-
-            IDrawableActor truck = actorFactory[MainGame.ActorTypes.Truck];
-            truck.SpriteBatch = _currentScene.currentSpriteBatch;
-            truck.Visible = false;
-            truck.Scrollable = false;
-            _ListofEnemies.Add((IEnemy)truck);
+            for (int i = 0; i < 10; i++) _ListofEnemies.Add(new Enemy(RandomEnemyType(), _currentScene ));
 
         }
+
+        public Enemy.EnemyTypes RandomEnemyType()
+        {
+            Enemy.EnemyTypes[] values = (Enemy.EnemyTypes[])Enum.GetValues(typeof(Enemy.EnemyTypes));
+            return values[new Random().Next(0, values.Length)];
+        } 
+
 
         private void RandomizeEnemy(IDrawableActor enemy)
         {
@@ -128,7 +125,6 @@ namespace TangoGames.RoadFighter.Levels
 
 
         #endregion
-
 
         #region Properties & Fields
 
