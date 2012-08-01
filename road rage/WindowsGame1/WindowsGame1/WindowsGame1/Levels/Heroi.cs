@@ -30,10 +30,12 @@ namespace TangoGames.RoadFighter.Levels
         private int faixaAnterior = 1;
         private int faixaAtual = 1;
 
+        private int _fixY;
+
         private IInputService input;
 
         public Heroi(Game game, Vector2 dimensions, SpriteBatch spriteBatch)
-            : base(game, dimensions, game.Content.Load<Texture2D>("Textures/CarroHeroi"))
+            : base(game, game.Content.Load<Texture2D>("Textures/CarroHeroi"))
         {
             this.game = game;
             Collidable = true;
@@ -51,15 +53,22 @@ namespace TangoGames.RoadFighter.Levels
 
             input = (IInputService)game.Services.GetService(typeof(IInputService));
 
-            //Location.Y = game.Window.ClientBounds.Height - Texture.Height * 2;
+
+            _fixY = game.Window.ClientBounds.Height - (Texture.Height * 2);
+
         }
 
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            this.Location = new Vector2(this.Location.X, _fixY);
+
             controleHeroi();
+
             movimentaHeroi();
+
         }
 
 
@@ -67,7 +76,10 @@ namespace TangoGames.RoadFighter.Levels
         {
             //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height),null, Color.White);
 
+            //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
+
             SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, game.Window.ClientBounds.Height - Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
+            
             //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, (int)Location.Y + Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
             //new Vector2(Texture.Width/2, Texture.Height)
 

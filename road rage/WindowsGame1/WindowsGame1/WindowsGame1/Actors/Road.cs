@@ -11,16 +11,24 @@ namespace TangoGames.RoadFighter.Actors
     public class StraightRoad : BasicDrawingActor,IRoad, ICollidable 
     {
         public StraightRoad(Game game, Vector2 dimensions, SpriteBatch spriteBatch)
-            : base(game, dimensions, game.Content.Load<Texture2D>("Textures/straight_road_4"))
+            : base(game,  game.Content.Load<Texture2D>("Textures/straight_road_4"))
         {
             lanes = new FourLanes();
             Collidable = true;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            
         }
 
         public override void Draw(GameTime gameTime)
         {
             SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
         }
+
+
+
 
         #region Implementação de estrada e pistas
 

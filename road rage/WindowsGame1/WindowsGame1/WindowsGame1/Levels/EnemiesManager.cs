@@ -25,6 +25,7 @@ namespace TangoGames.RoadFighter.Levels
     public class EnemiesManager: GameComponent, IEnemiesManager
     {
         private Random random;
+        private int _maxSpeed = 9;
 
         /// <summary>
         /// Contrutor do controle de inimigos
@@ -83,9 +84,9 @@ namespace TangoGames.RoadFighter.Levels
         {
             int numlane = random.Next (_lanes.StartIndex, _lanes.LastIndex + 1 );
 
-            enemy.Location = new Vector2(_lanes.LanesList[ numlane ] , -enemy.Bounds.Height);
+            enemy.Location = new Vector2(_lanes.LanesList[ numlane ] , -enemy.Bounds.Height );
 
-            enemy.Velocity = new Vector2(0, -random.Next (1, 9));
+            enemy.Velocity = new Vector2( 0 , - ( 1 + (float)( random.NextDouble() * (_maxSpeed-1) ) ) );
 
         }
 
@@ -110,17 +111,26 @@ namespace TangoGames.RoadFighter.Levels
                 IEnemy ene = EnemiesNotActive.ElementAtOrDefault( random.Next (EnemiesNotActive.Count()));
                 IDrawableActor enemyDraw = (IDrawableActor)ene;
 
+                int count = 0;
+                bool collid = true;
                 do
                 {
                   RandomizeEnemy( enemyDraw );
-  
-                } while ( CollisionTest((ICollidable) enemyDraw ));
+                  collid = CollisionTest((ICollidable)enemyDraw);
+                  count++;
 
-                enemyDraw.Outofscreen = false;
+                } while ((collid) && (count < 10));
 
-                _currentMap.Add(enemyDraw);
+                if (!collid)
+                {
+                    enemyDraw.Outofscreen = false;
 
-                ene.Active = true;
+                    _currentMap.Add(enemyDraw);
+
+                    ene.Active = true;
+
+                    Console.WriteLine("gerou" + ene);
+                }
 
             }
 
@@ -141,11 +151,11 @@ namespace TangoGames.RoadFighter.Levels
         {
             if (enemyA.Bounds.Y > enemyB.Bounds.Y)
             {
-                enemyA.Velocity = enemyB.Velocity + new Vector2( 0 , 1 );
+                enemyA.Velocity = enemyB.Velocity + new Vector2(0, (float) random.NextDouble() );
             }
             else
             {
-                enemyB.Velocity = enemyA.Velocity + new Vector2( 0 , 1 ); 
+                enemyB.Velocity = enemyA.Velocity + new Vector2(0, (float) random.NextDouble() ); 
             }
 
         }
@@ -156,8 +166,17 @@ namespace TangoGames.RoadFighter.Levels
         {
             if (args.OutActor is IEnemy) 
             {
-                ((IEnemy)args.OutActor).Active = false;
-                _currentMap.Remove(args.OutActor);
+                if (( args.OutActor.Bounds.Bottom < _currentScene.Game.Window.ClientBounds.Top - args.OutActor.Bounds.Height ) || ( args.OutActor.Bounds.Top > _currentScene.Game.Window.ClientBounds.Bottom ))
+                {
+                    ((IEnemy)args.OutActor).Active = false;
+                    _currentMap.Remove(args.OutActor);
+                    Console.WriteLine("Tirou" + args.OutActor);
+                }
+                else
+                {
+                    args.OutActor.Outofscreen = false;
+                }
+
             }
         }
 

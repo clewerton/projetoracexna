@@ -9,6 +9,9 @@ namespace TangoGames.RoadFighter.Levels
 {
     public class Fase1 : Scene
     {
+        private float _acceleration = 0.05F;
+        private int _maxSpeed = 15;
+
         public Fase1(Game game) : base(game) { }
 
         protected override void LoadContent()
@@ -23,7 +26,8 @@ namespace TangoGames.RoadFighter.Levels
 
             road1 = actorFactory[MainGame.ActorTypes.StraightRoad1];
             road1.SpriteBatch = this.SpriteBatch;
-            road1.Location = Vector2.Zero;
+            road1.Location = new Vector2(0.0F, 0.0F);
+            road1.Velocity  = Vector2.Zero;
             road1.Scrollable = true;
             map.Add(road1);
 
@@ -32,18 +36,19 @@ namespace TangoGames.RoadFighter.Levels
 
             road2 = actorFactory[MainGame.ActorTypes.StraightRoad2];
             road2.SpriteBatch = this.SpriteBatch;
-            road2.Location = new Vector2(road1.Bounds.Left, road1.Location.Y - road2.Bounds.Height + 30);
+            road2.Location = new Vector2((float)road1.Bounds.Left, (float)road1.Location.Y - road2.Bounds.Height);
+            road2.Velocity = Vector2.Zero;
             road2.Scrollable = true;
             map.Add(road2);
 
             hero = actorFactory[MainGame.ActorTypes.Hero];
             hero.SpriteBatch = this.SpriteBatch;
             hero.Location = new Vector2(300, 500);
-            hero.Velocity = new Vector2(0, -10);
+            hero.Velocity = Vector2.Zero;
             hero.Scrollable = true;
             map.Add(hero);
 
-            map.Velocity = -hero.Velocity;
+            map.Velocity = Vector2.Zero;
             
             base.LoadContent();
 
@@ -62,8 +67,13 @@ namespace TangoGames.RoadFighter.Levels
                 sceneManager.GoTo(MainGame.Scenes.Menu);
             }
 
+            //aceleração do heroi
+            map.Velocity = new Vector2(map.Velocity.X, map.Velocity.Y + _acceleration);
+            if (map.Velocity.Y > _maxSpeed) map.Velocity = new Vector2(map.Velocity.X, _maxSpeed);
+
             map.Update(gameTime);
             hud.Update(gameTime);
+
         }
 
         protected override void DrawBefore(GameTime gameTime)
@@ -93,30 +103,45 @@ namespace TangoGames.RoadFighter.Levels
             //o carro do heroi
             if (args.ColliderA is IRoad && args.ColliderB is Heroi) 
             {
-               args.ColliderA.Collidable = false;
-               ((Heroi)args.ColliderB).CurrentRoad = ((IRoad)args.ColliderA).Lanes;
+                args.ColliderA.Collidable = false;
+                ((Heroi)args.ColliderB).CurrentRoad = ((IRoad)args.ColliderA).Lanes;
+                return;
             }
             if (args.ColliderB is IRoad && args.ColliderA is Heroi)
             {
                 args.ColliderB.Collidable = false;
                 ((Heroi)args.ColliderB).CurrentRoad = ((IRoad)args.ColliderB).Lanes;
+                return;
             }
             #endregion
+
+            #region colisão do heroi com carro inimigo
+            if (args.ColliderA is IEnemy && args.ColliderB is Heroi) 
+            {
+                map.Velocity = ((Enemy)args.ColliderA).Velocity + new Vector2 ( 0, 1 ); 
+                return;
+            }
+            if (args.ColliderB is IEnemy && args.ColliderA is Heroi)
+            {
+                map.Velocity = ((Enemy)args.ColliderB).Velocity + new Vector2 (0, 1 ); 
+                return;
+            }
+            #endregion
+
 
             #region colisão entre os inimigos
             //colisão entre os inimigos
             if (args.ColliderA is Enemy && args.ColliderB is Enemy)
             {
                 enemies.EnemyInterCollision((Enemy)args.ColliderA, (Enemy)args.ColliderB);
+                return;
             }
+
             #endregion
 
 
-
-
-            //if (!(args.ColliderA is Heroi)) args.ColliderA.Collidable = false;
-            //if (!(args.ColliderB is Heroi)) args.ColliderB.Collidable = false;
         }
+
         #endregion
 
         #region Properties & Fields
