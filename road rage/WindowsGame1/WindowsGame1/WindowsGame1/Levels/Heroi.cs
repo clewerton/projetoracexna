@@ -78,8 +78,12 @@ namespace TangoGames.RoadFighter.Levels
 
             //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
 
-            SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, game.Window.ClientBounds.Height - Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
-            
+            //versão akochada do honorato
+            //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, game.Window.ClientBounds.Height - Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
+
+            //versão tentando acertar com bounds
+            SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, (int)Location.Y + Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
+
             //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, (int)Location.Y + Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
             //new Vector2(Texture.Width/2, Texture.Height)
 
@@ -157,6 +161,13 @@ namespace TangoGames.RoadFighter.Levels
         public ICollider Collider { get { return this.collider; } set { this.collider = value; } }
 
         public bool Collidable { get; set; }
+
+
+        public void EnemyCollide(Enemy enemy, IMap map)
+        {
+            map.Velocity =  - ( enemy.Velocity + new Vector2(0, 1));
+        }
+
 
         #endregion
 

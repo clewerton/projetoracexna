@@ -84,9 +84,24 @@ namespace TangoGames.RoadFighter.Levels
         {
             int numlane = random.Next (_lanes.StartIndex, _lanes.LastIndex + 1 );
 
-            enemy.Location = new Vector2(_lanes.LanesList[ numlane ] , -enemy.Bounds.Height );
+            //calcula da velocidade do carro
+            float speed = ( 1 + (float)( random.NextDouble() * (_maxSpeed-1) ) ) ;
 
-            enemy.Velocity = new Vector2( 0 , - ( 1 + (float)( random.NextDouble() * (_maxSpeed-1) ) ) );
+            float LocY;
+
+            enemy.Velocity = new Vector2( 0 , - speed );
+
+            //verifica se o carro inimigo e veloz ou lento em relação a velocidade atual do map;
+            if (_currentMap.Velocity.Y < speed ) 
+            {
+                LocY = _currentScene.Game.Window.ClientBounds.Bottom - 1;
+            }
+            else
+            {
+                LocY = -enemy.Bounds.Height;
+            }
+
+            enemy.Location = new Vector2(_lanes.LanesList[numlane], LocY);
 
         }
 
@@ -104,7 +119,7 @@ namespace TangoGames.RoadFighter.Levels
         {
             tempodecorrido += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (tempodecorrido >= 1500 && EnemiesNotActive.Count()>0)
+            if (tempodecorrido >= 1000 && EnemiesNotActive.Count()>0)
             {
                 tempodecorrido = 0;
 
@@ -166,7 +181,7 @@ namespace TangoGames.RoadFighter.Levels
         {
             if (args.OutActor is IEnemy) 
             {
-                if (( args.OutActor.Bounds.Bottom < _currentScene.Game.Window.ClientBounds.Top - args.OutActor.Bounds.Height ) || ( args.OutActor.Bounds.Top > _currentScene.Game.Window.ClientBounds.Bottom ))
+                if ((args.OutActor.Bounds.Bottom < _currentScene.Game.Window.ClientBounds.Top - args.OutActor.Bounds.Height) || (args.OutActor.Bounds.Top > _currentScene.Game.Window.ClientBounds.Bottom + args.OutActor.Bounds.Height))
                 {
                     ((IEnemy)args.OutActor).Active = false;
                     _currentMap.Remove(args.OutActor);
