@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using TangoGames.RoadFighter.Levels;
 
 
 namespace TangoGames.RoadFighter.Actors
@@ -28,10 +29,13 @@ namespace TangoGames.RoadFighter.Actors
     /// </summary>
     public class Map : DrawableGameComponent, IMap
     {
+        private List<IDrawableActor> _safeRemoveList;
+
         public Map(Game game)
             : base(game)
         {
             actors = new DrawAbleActorCollection(game);
+            _safeRemoveList = new List<IDrawableActor>();
         }
 
         /// <summary>
@@ -69,6 +73,9 @@ namespace TangoGames.RoadFighter.Actors
                 {
                     actor.Outofscreen = true;
                     if (OutOfBounds != null)
+                        if (actor is IEnemy)
+                            Remove(actor);
+
                         OutOfBounds(this, new OutOfBoundsEventArgs(actor));
                 }
 
@@ -92,6 +99,9 @@ namespace TangoGames.RoadFighter.Actors
             }
 
             base.Update(gameTime);
+
+            //remover com segurança os atores 
+            SafeRemove();
         }
 
 
@@ -107,7 +117,14 @@ namespace TangoGames.RoadFighter.Actors
 
         public void Remove(IDrawableActor actor)
         {
-            actors.Remove(actor);
+            _safeRemoveList.Add(actor);
+            //actors.Remove(actor);
+        }
+
+        private void SafeRemove()
+        {
+            foreach (IDrawableActor actor in _safeRemoveList) actors.Remove(actor);
+            _safeRemoveList.Clear();
         }
 
         private bool goingAway(Rectangle bounds, IActor actor, Vector2 delta)
