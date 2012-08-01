@@ -13,7 +13,7 @@ namespace TangoGames.RoadFighter.Actors
     {
 
         public Car(Game game, Vector2 dimensions, SpriteBatch spriteBatch)
-            : base(game, dimensions, game.Content.Load<Texture2D>("Textures/carSprite"))
+            : base(game, dimensions , game.Content.Load<Texture2D>("Textures/carSprite"))
         {
             Collidable = true;
         }
