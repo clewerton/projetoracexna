@@ -9,9 +9,6 @@ namespace TangoGames.RoadFighter.Levels
 {
     public class Fase1 : Scene
     {
-        private float _acceleration = 0.05F;
-        private int _maxSpeed = 15;
-
         public Fase1(Game game) : base(game) { }
 
         protected override void LoadContent()
@@ -20,8 +17,8 @@ namespace TangoGames.RoadFighter.Levels
 
             var actorFactory = GetService<IActorFactory<MainGame.ActorTypes, IDrawableActor>>();
 
-            hud = new HUD(Game.Content, _maxSpeed);
             map = new Map(Game);
+            hud = new HUD(Game.Content, map);
             enemies = new EnemiesManager(this);
 
             road1 = actorFactory[MainGame.ActorTypes.StraightRoad1];
@@ -66,10 +63,6 @@ namespace TangoGames.RoadFighter.Levels
             {
                 sceneManager.GoTo(MainGame.Scenes.Menu);
             }
-
-            //aceleração do heroi
-            map.Velocity = new Vector2(map.Velocity.X, map.Velocity.Y + _acceleration);
-            if (map.Velocity.Y > _maxSpeed) map.Velocity = new Vector2(map.Velocity.X, _maxSpeed);
 
             map.Update(gameTime);
             hud.Update(gameTime, map.Velocity);
