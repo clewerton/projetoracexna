@@ -24,6 +24,7 @@ namespace TangoGames.RoadFighter.Actors
         int MaxSpeed { get; set; }
         event EventHandler<CollisionEventArgs > ColisionsOccours;
         event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
+        IDrawableActor Road { get; set; }
     }
 
     /// <summary>
@@ -41,10 +42,12 @@ namespace TangoGames.RoadFighter.Actors
         {
             spritebatch = new SpriteBatch(game.GraphicsDevice);
             current = new StraightRoad(game, new Vector2(1024, 1024));
+            current.Scrollable = true;
             current.SpriteBatch = spritebatch;
             current.Location = Vector2.Zero;
 
             next = new StraightRoad(game, new Vector2(1024, 1024));
+            next.Scrollable = true;
             next.SpriteBatch = spritebatch;
             next.Location = new Vector2(current.Bounds.Left, current.Location.Y - next.Bounds.Height + 5);
 
@@ -216,6 +219,17 @@ namespace TangoGames.RoadFighter.Actors
             set
             {
                 _maxSpeed = value;
+            }
+        }
+        public IDrawableActor Road
+        {
+            get
+            {
+                return current;
+            }
+            set
+            {
+                current = value;
             }
         }
 
