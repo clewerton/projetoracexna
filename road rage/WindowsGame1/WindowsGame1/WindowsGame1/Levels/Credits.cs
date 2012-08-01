@@ -18,8 +18,9 @@ namespace TangoGames.RoadFighter.Levels
                 + "    Clewerton Coelho\n"
                 + "    Diogo Honorato\n"
                 + "    Humberto Anjos\n"
+                + "\n"
                 + "Professor:\n"
-                + "    Cléber Tavares";
+                + "    Cléber Tavares\n";
             
             Font = Game.Content.Load<SpriteFont>("arial");
             
@@ -28,17 +29,27 @@ namespace TangoGames.RoadFighter.Levels
             Back.Size = new Vector2(ButtonWidth, ButtonHeight);
             Back.OnClick += (sender, args) => GetService<ISceneManagerService<MainGame.Scenes>>().GoTo(MainGame.Scenes.Menu);
             Elements.Add(Back);
+
+            BackgroundImage = Game.Content.Load<Texture2D>("Textures/credits-background");
         }
 
         protected override void DrawBefore(GameTime gameTime)
         {
-            Game.GraphicsDevice.Clear(Color.Black);
+            Game.GraphicsDevice.Clear(Color.White);
 
-            // ajustar a posição do botão
+            // ajustando a posição do botão (mas não desenhe ainda!)
             var padding = 15;
             var size = Font.MeasureString(Text);
             var screenWidth = Game.Window.ClientBounds.Width;
             Back.Location = new Point((screenWidth - Back.Bounds.Width)/2, (int) (TextPosition.Y + size.Y + padding));
+            Back.Size = new Vector2(TextPosition.X, Back.Size.Y);
+
+            // desenhando o fundo
+            SpriteBatch.Begin();
+
+            SpriteBatch.Draw(BackgroundImage, Game.Window.ClientBounds, Color.White);
+
+            SpriteBatch.End();
         }
 
         protected override void DrawAfter(GameTime gameTime)
@@ -65,6 +76,7 @@ namespace TangoGames.RoadFighter.Levels
         private string Text { get; set; }
         private SpriteFont Font { get; set; }
         private Button Back { get; set; }
+        private Texture2D BackgroundImage { get; set; }
 
         private const int ButtonWidth = 200;
         private const int ButtonHeight = 60;
