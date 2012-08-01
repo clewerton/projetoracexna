@@ -39,7 +39,19 @@ namespace TangoGames.RoadFighter.Actors
         public Map(Game game)
             : base(game)
         {
+            spritebatch = new SpriteBatch(game.GraphicsDevice);
+            current = new StraightRoad(game, new Vector2(1024, 1024));
+            current.SpriteBatch = spritebatch;
+            current.Location = Vector2.Zero;
+
+            next = new StraightRoad(game, new Vector2(1024, 1024));
+            next.SpriteBatch = spritebatch;
+            next.Location = new Vector2(current.Bounds.Left, current.Location.Y - next.Bounds.Height + 5);
+
             actors = new DrawAbleActorCollection(game);
+            Add(current);
+            Add(next);
+
             _safeRemoveList = new List<IDrawableActor>();
         }
 
@@ -113,7 +125,9 @@ namespace TangoGames.RoadFighter.Actors
 
         public override void Draw(GameTime gameTime)
         {
+            spritebatch.Begin();
             actors.Draw(gameTime);
+            spritebatch.End();
         }
 
         public void Add(IDrawableActor actor)
@@ -210,6 +224,9 @@ namespace TangoGames.RoadFighter.Actors
         #region Map Fields
         private DrawAbleActorCollection actors;
         private Vector2 velocity;
+        private IDrawableActor current;
+        private IDrawableActor next;
+        private SpriteBatch spritebatch;
         #endregion
 
         #region Collision
