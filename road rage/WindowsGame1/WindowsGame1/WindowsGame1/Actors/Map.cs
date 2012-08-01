@@ -21,6 +21,7 @@ namespace TangoGames.RoadFighter.Actors
         void Update(GameTime gameTime);
         void Draw(GameTime gameTime);
         Vector2 Velocity {get; set; }
+        int MaxSpeed { get; set; }
         event EventHandler<CollisionEventArgs > ColisionsOccours;
         event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
     }
@@ -30,6 +31,9 @@ namespace TangoGames.RoadFighter.Actors
     /// </summary>
     public class Map : DrawableGameComponent, IMap
     {
+        private float _acceleration = 0.05F;
+        private int _maxSpeed = 15;
+
         private List<IDrawableActor> _safeRemoveList;
 
         public Map(Game game)
@@ -59,12 +63,17 @@ namespace TangoGames.RoadFighter.Actors
             Rectangle screenBounds = Game.Window.ClientBounds;
             Rectangle limits = new Rectangle(0, 0, screenBounds.Width, screenBounds.Height);
 
+            // Aceleracao
+            velocity = new Vector2(velocity.X, velocity.Y + _acceleration);
+            if (velocity.Y > _maxSpeed) velocity = new Vector2(velocity.X, _maxSpeed);
+
             foreach (IDrawableActor actor in actors)
             {
                 if (actor.Scrollable)
                 {
                     adjustPosition(ref screenBounds, ref limits, actor);
                 }
+
                 actor.Location += velocity;
                 actor.Update(gameTime);
 
@@ -184,6 +193,18 @@ namespace TangoGames.RoadFighter.Actors
                 velocity = value;
             }
         }
+        public int MaxSpeed
+        {
+            get
+            {
+                return _maxSpeed;
+            }
+            set
+            {
+                _maxSpeed = value;
+            }
+        }
+
         #endregion
 
         #region Map Fields

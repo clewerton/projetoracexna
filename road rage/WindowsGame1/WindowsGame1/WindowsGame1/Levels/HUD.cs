@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using TangoGames.RoadFighter.Scenes;
 using Microsoft.Xna.Framework.Content;
+using TangoGames.RoadFighter.Actors;
 
 
 namespace TangoGames.RoadFighter.Levels
@@ -34,12 +35,12 @@ namespace TangoGames.RoadFighter.Levels
         float tempodecorrido = 0;
 
 
-        public HUD(ContentManager Content, int maxspeed)
+        public HUD(ContentManager Content, IMap map)
         {
 
             Arial = Content.Load<SpriteFont>("arial");
 
-            velocidademaxima = maxspeed;
+            velocidademaxima = map.MaxSpeed;
                         
             marcadorPontos = Content.Load<Texture2D>("HUDElementos/Pontos");
             indicadorCombustivel = Content.Load<Texture2D>("HUDElementos/gasolina");
