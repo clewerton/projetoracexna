@@ -17,7 +17,7 @@ namespace TangoGames.RoadFighter
         /// <summary>
         /// Serão usados pelo gerenciador de cenas para identificar as cenas.
         /// </summary>
-        public enum Scenes { Intro, End, Fase, Menu }
+        public enum Scenes { Intro, End, Fase, Menu, Credits }
         public enum ActorTypes { Car, Truck, Hero, StraightRoad1, StraightRoad2 }
 
         private GraphicsDeviceManager _graphics;
@@ -92,6 +92,7 @@ namespace TangoGames.RoadFighter
             sceneManager[Scenes.End] = new End(this);
             sceneManager[Scenes.Fase] = new Fase1(this);
             sceneManager[Scenes.Menu] = new Menu(this);
+            sceneManager[Scenes.Credits] = new Credits(this);
 
             // a Intro começa como a cena atual
             sceneManager.GoTo(Scenes.Intro);
