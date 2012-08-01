@@ -104,8 +104,8 @@ namespace TangoGames.RoadFighter
             actorFactory[ActorTypes.Car] = new Car(this, new Vector2(100, 100), _spriteBatch);
             actorFactory[ActorTypes.Truck] = new Truck(this, new Vector2(85, 135), _spriteBatch);
             actorFactory[ActorTypes.Hero] = new Heroi(this, new Vector2(72, 155), _spriteBatch);
-            actorFactory[ActorTypes.StraightRoad1] = new StraightRoad(this, new Vector2(1024, 1024), _spriteBatch);
-            actorFactory[ActorTypes.StraightRoad2] = new StraightRoad(this, new Vector2(1024, 1024), _spriteBatch);
+            actorFactory[ActorTypes.StraightRoad1] = new StraightRoad(this, new Vector2(1024, 1024));
+            actorFactory[ActorTypes.StraightRoad2] = new StraightRoad(this, new Vector2(1024, 1024));
 
             // se registra como serviço
             Services.AddService(typeof(IActorFactory<ActorTypes, IDrawableActor>), actorFactory);

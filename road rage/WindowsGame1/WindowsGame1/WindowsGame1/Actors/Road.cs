@@ -10,7 +10,7 @@ namespace TangoGames.RoadFighter.Actors
 {
     public class StraightRoad : BasicDrawingActor,IRoad, ICollidable 
     {
-        public StraightRoad(Game game, Vector2 dimensions, SpriteBatch spriteBatch)
+        public StraightRoad(Game game, Vector2 dimensions)
             : base(game,  game.Content.Load<Texture2D>("Textures/straight_road_4"))
         {
             lanes = new FourLanes();
