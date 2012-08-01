@@ -121,8 +121,8 @@ namespace TangoGames.RoadFighter.Levels
         {
             if (args.OutActor is IEnemy) 
             {
-                //((IEnemy)args.OutActor).Active = false;
-                //_currentMap.Remove(args.OutActor);
+                ((IEnemy)args.OutActor).Active = false;
+                _currentMap.Remove(args.OutActor);
             }
         }
 
