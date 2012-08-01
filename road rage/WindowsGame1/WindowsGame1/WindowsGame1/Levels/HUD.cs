@@ -16,18 +16,23 @@ namespace TangoGames.RoadFighter.Levels
         public int pontos = 0;     // total de pomntos do player
         public float gasolina = 100; // quantidade de gasolina do herói
         float angulacaoGasolina = 90;
-        Single radianos;
+        float angulacaoVelocidade = -120;
+       
+        Single angponteiro1;
+        Single angponteiro2;
        
 
         Texture2D indicadorCombustivel;  // imagem do indicador de gasolina
-        Texture2D ponteiro;                // ponteiro do indicador de gasolina
         Texture2D marcadorPontos;
+        Texture2D velocimetro;
+        Texture2D ponteiro1;                // ponteiro do indicador de gasolina
+        Texture2D ponteiro2; // ponteiro para o velocimetro
         SpriteFont Arial;
         int contadordePontos = 0; // calcula o tempo decorrido para atribuição de pontos
         float tempodecorrido = 0;
 
 
-        public HUD(ContentManager Content)
+        public HUD(ContentManager Content, int maxspeed)
         {
 
             Arial = Content.Load<SpriteFont>("arial");
@@ -35,16 +40,19 @@ namespace TangoGames.RoadFighter.Levels
                         
             marcadorPontos = Content.Load<Texture2D>("HUDElementos/Pontos");
             indicadorCombustivel = Content.Load<Texture2D>("HUDElementos/gasolina");
-            ponteiro = Content.Load<Texture2D>("HUDElementos/ponteiro");
+            ponteiro1 = Content.Load<Texture2D>("HUDElementos/ponteiro");
+            velocimetro = Content.Load<Texture2D>("HUDElementos/velocimetro");
+            ponteiro2 = Content.Load<Texture2D>("HUDElementos/ponteirovelocimetro");
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Vector2 velocidade)
             
         {
 
             calculaparametros(gameTime);
 
             ponteirogasolina(gameTime);
+            ponteirovelocidade(gameTime);
         }
 
                     
@@ -59,8 +67,10 @@ namespace TangoGames.RoadFighter.Levels
 
             //spriteBatch.Draw(marcadorPontos, new Rectangle(0, 10, 204, 53),new Rectangle(18,10,204,53) , Color.White);
             //spriteBatch.Draw(indicadorCombustivel, new Rectangle(0, 90, 171, 233), new Rectangle(18, 10, 171, 205), Color.White);
-            spriteBatch.Draw(ponteiro, new Rectangle(35,305, 78, 6), null, Color.White, radianos, new Vector2(0, ponteiro.Height/2), SpriteEffects.None, 0);
+            spriteBatch.Draw(ponteiro1, new Rectangle(35,305, 78, 6), null, Color.White, angponteiro1, new Vector2(0, ponteiro1.Height/2), SpriteEffects.None, 0);
 
+            spriteBatch.Draw(velocimetro, new Rectangle(0, 200 + indicadorCombustivel.Height, velocimetro.Width, velocimetro.Height), Color.White);
+            spriteBatch.Draw(ponteiro2, new Rectangle(velocimetro.Width / 2 - ponteiro2.Width/2, 200 + indicadorCombustivel.Height + ponteiro2.Height + 45, ponteiro2.Width, ponteiro2.Height),null, Color.White,angponteiro2,new Vector2(ponteiro2.Width/2,ponteiro2.Height), SpriteEffects.None, 0);
             
         }
 
@@ -76,15 +86,32 @@ namespace TangoGames.RoadFighter.Levels
 
             angulacaoGasolina = angulacaoGasolina + 45; // ajusta o valor do angulo em relacao ao desenho do ponteiro
 
-            
+            angponteiro1 = calcularadianos(angulacaoGasolina);
 
-            radianos = (((float)Math.PI * angulacaoGasolina) / 180);       // converte de graus para radianos 
+            //radianos = (((float)Math.PI * angulacaoGasolina) / 180);       // converte de graus para radianos 
 
 
         }
 
 
+        void ponteirovelocidade(GameTime gametime)
+        {
+            angponteiro2 = calcularadianos(angulacaoVelocidade);
+            
+            
 
+        }
+
+
+        float calcularadianos(float angulo){
+
+            angulo = (((float)Math.PI * angulo) / 180);
+
+
+            return angulo;
+        }
+        
+       
         void calculaparametros(GameTime gametime) // calcula a quantidade de pontos ganhos
         {
             
