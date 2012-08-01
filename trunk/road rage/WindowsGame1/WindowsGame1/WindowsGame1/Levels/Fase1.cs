@@ -88,7 +88,7 @@ namespace TangoGames.RoadFighter.Levels
         {
             //Console.WriteLine(args.ColliderA + " bateu no ator " + args.ColliderB);
    
-            #region colisão com a estrada
+            #region colisão do heroi com a estrada
             //colisão com a estrada joga a configuração da nova estrada para 
             //o carro do heroi
             if (args.ColliderA is IRoad && args.ColliderB is Heroi) 
@@ -102,6 +102,17 @@ namespace TangoGames.RoadFighter.Levels
                 ((Heroi)args.ColliderB).CurrentRoad = ((IRoad)args.ColliderB).Lanes;
             }
             #endregion
+
+            #region colisão entre os inimigos
+            //colisão entre os inimigos
+            if (args.ColliderA is Enemy && args.ColliderB is Enemy)
+            {
+                enemies.EnemyInterCollision((Enemy)args.ColliderA, (Enemy)args.ColliderB);
+            }
+            #endregion
+
+
+
 
             //if (!(args.ColliderA is Heroi)) args.ColliderA.Collidable = false;
             //if (!(args.ColliderB is Heroi)) args.ColliderB.Collidable = false;
