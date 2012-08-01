@@ -37,9 +37,16 @@ namespace TangoGames.RoadFighter.Levels
             ToEnd.Text = "To END";
             Elements.Add(ToEnd);
 
+            ToCredits = new Button(Game);
+            ToCredits.OnClick += (sender, args) => GetService<ISceneManagerService<MainGame.Scenes>>().GoTo(MainGame.Scenes.Credits);
+            ToCredits.Location = new Point((clientBounds.Width - ButtonWidth) / 2, clientBounds.Height / 2 + 3 * ButtonHeight / 2 + 2 * Padding);
+            ToCredits.Size = new Vector2(ButtonWidth, ButtonHeight);
+            ToCredits.Text = "To CREDITS";
+            Elements.Add(ToCredits);
+
             ToExit = new Button(Game);
             ToExit.OnClick += (sender, args) => Game.Exit();
-            ToExit.Location = new Point((clientBounds.Width - ButtonWidth) / 2, clientBounds.Height / 2 + 3 * ButtonHeight / 2 + 2 * Padding);
+            ToExit.Location = new Point((clientBounds.Width - ButtonWidth) / 2, clientBounds.Height / 2 + 5 * ButtonHeight / 2 + 3 * Padding);
             ToExit.Size = new Vector2(ButtonWidth, ButtonHeight);
             ToExit.Text = "EXIT";
             Elements.Add(ToExit);
@@ -53,6 +60,7 @@ namespace TangoGames.RoadFighter.Levels
         public Button ToIntro { get; private set; }
         public Button ToFase { get; private set; }
         public Button ToEnd { get; private set; }
+        public Button ToCredits { get; private set; }
         public Button ToExit { get; private set; }
 
         private const int ButtonWidth = 150;
