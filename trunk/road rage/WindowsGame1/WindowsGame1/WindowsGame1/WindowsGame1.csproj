@@ -134,6 +134,7 @@
     <Compile Include="States\StateMachine.cs" />
     <Compile Include="States\Transition.cs" />
     <Compile Include="Widgets\Button.cs" />
+    <Compile Include="Widgets\TextArea.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
