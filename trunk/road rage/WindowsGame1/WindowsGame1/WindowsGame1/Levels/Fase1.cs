@@ -20,7 +20,7 @@ namespace TangoGames.RoadFighter.Levels
 
             var actorFactory = GetService<IActorFactory<MainGame.ActorTypes, IDrawableActor>>();
 
-            hud = new HUD(Game.Content);
+            hud = new HUD(Game.Content, _maxSpeed);
             map = new Map(Game);
             enemies = new EnemiesManager(this);
 
@@ -72,7 +72,7 @@ namespace TangoGames.RoadFighter.Levels
             if (map.Velocity.Y > _maxSpeed) map.Velocity = new Vector2(map.Velocity.X, _maxSpeed);
 
             map.Update(gameTime);
-            hud.Update(gameTime);
+            hud.Update(gameTime, map.Velocity);
 
         }
 
