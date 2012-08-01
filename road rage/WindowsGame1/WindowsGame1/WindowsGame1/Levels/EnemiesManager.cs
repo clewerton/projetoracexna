@@ -106,7 +106,7 @@ namespace TangoGames.RoadFighter.Levels
         {
             tempodecorrido += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (tempodecorrido >= 3000 && EnemiesNotActive.Count()>0)
+            if (tempodecorrido >= 1500 && EnemiesNotActive.Count()>0)
             {
                 tempodecorrido = 0;
 
@@ -116,6 +116,19 @@ namespace TangoGames.RoadFighter.Levels
 
                 ene.Active = true;
 
+            }
+
+        }
+
+        public void EnemyInterCollision(Enemy enemyA, Enemy enemyB)
+        {
+            if (enemyA.Bounds.Y > enemyB.Bounds.Y)
+            {
+                enemyA.Velocity = enemyB.Velocity + new Vector2( 0 , 1 );
+            }
+            else
+            {
+                enemyB.Velocity = enemyA.Velocity + new Vector2( 0 , 1 ); 
             }
 
         }
