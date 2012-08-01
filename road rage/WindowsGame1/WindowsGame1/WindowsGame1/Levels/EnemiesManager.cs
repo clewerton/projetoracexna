@@ -81,15 +81,12 @@ namespace TangoGames.RoadFighter.Levels
 
         private void RandomizeEnemy(IDrawableActor enemy)
         {
-            int numlane = random.Next (_lanes.StartIndex, _lanes.LastIndex);
+            int numlane = random.Next (_lanes.StartIndex, _lanes.LastIndex + 1 );
 
             enemy.Location = new Vector2(_lanes.LanesList[ numlane ] , -enemy.Bounds.Height);
 
-            enemy.Velocity = new Vector2(0, -random.Next (1, 5));
+            enemy.Velocity = new Vector2(0, -random.Next (1, 9));
 
-            enemy.Outofscreen = false;
-
-            _currentMap.Add( enemy );
         }
 
         /// <summary>
@@ -111,12 +108,32 @@ namespace TangoGames.RoadFighter.Levels
                 tempodecorrido = 0;
 
                 IEnemy ene = EnemiesNotActive.ElementAtOrDefault( random.Next (EnemiesNotActive.Count()));
+                IDrawableActor enemyDraw = (IDrawableActor)ene;
 
-                RandomizeEnemy((IDrawableActor)ene);
+                do
+                {
+                  RandomizeEnemy( enemyDraw );
+  
+                } while ( CollisionTest((ICollidable) enemyDraw ));
+
+                enemyDraw.Outofscreen = false;
+
+                _currentMap.Add(enemyDraw);
 
                 ene.Active = true;
 
             }
+
+        }
+
+        public bool CollisionTest(ICollidable enemyBase)
+        {
+            foreach (IEnemy e in EnemiesActive)
+            {
+                ICollidable enemyActor = (ICollidable)e;
+                if ((enemyActor != enemyBase) && (enemyBase.Collided(enemyActor))) return true;
+            }
+            return false;
 
         }
 

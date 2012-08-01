@@ -39,7 +39,7 @@ namespace TangoGames.RoadFighter.Levels
             hero = actorFactory[MainGame.ActorTypes.Hero];
             hero.SpriteBatch = this.SpriteBatch;
             hero.Location = new Vector2(300, 500);
-            hero.Velocity = new Vector2(0, -5);
+            hero.Velocity = new Vector2(0, -10);
             hero.Scrollable = true;
             map.Add(hero);
 
