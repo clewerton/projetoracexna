@@ -118,16 +118,15 @@ namespace TangoGames.RoadFighter.Levels
             #region colisão do heroi com carro inimigo
             if (args.ColliderA is IEnemy && args.ColliderB is Heroi) 
             {
-                map.Velocity = ((Enemy)args.ColliderA).Velocity + new Vector2 ( 0, 1 ); 
+                ((Heroi)args.ColliderB).EnemyCollide( (Enemy)args.ColliderA, map ); 
                 return;
             }
             if (args.ColliderB is IEnemy && args.ColliderA is Heroi)
             {
-                map.Velocity = ((Enemy)args.ColliderB).Velocity + new Vector2 (0, 1 ); 
+                ((Heroi)args.ColliderA).EnemyCollide( (Enemy)args.ColliderB, map );
                 return;
             }
             #endregion
-
 
             #region colisão entre os inimigos
             //colisão entre os inimigos
