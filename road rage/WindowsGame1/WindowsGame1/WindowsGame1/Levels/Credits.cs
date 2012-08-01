@@ -13,7 +13,8 @@ namespace TangoGames.RoadFighter.Levels
     {
         public Credits(Game game) : base(game) 
         {
-            Text = "Desenvolvedores:\n"
+            TextArea = new TextArea(game);
+            TextArea.Text = "Desenvolvedores:\n"
                 + "    Arthur Figueiredo\n"
                 + "    Clewerton Coelho\n"
                 + "    Diogo Honorato\n"
@@ -21,8 +22,7 @@ namespace TangoGames.RoadFighter.Levels
                 + "\n"
                 + "Professor:\n"
                 + "    Cléber Tavares\n";
-            
-            Font = Game.Content.Load<SpriteFont>("arial");
+            Elements.Add(TextArea);
             
             Back = new Button(Game);
             Back.Text = "Back to MENU";
@@ -37,12 +37,15 @@ namespace TangoGames.RoadFighter.Levels
         {
             Game.GraphicsDevice.Clear(Color.White);
 
+            // ajustando a posição da área de texto (mas não desenhe ainda!)
+            var screenWidth = Game.Window.ClientBounds.Width;
+            var screenHeight = Game.Window.ClientBounds.Height;
+            TextArea.Location = new Point((int) (screenWidth - TextArea.Size.X)/2, (int) (screenHeight - TextArea.Size.Y)/2);
+
             // ajustando a posição do botão (mas não desenhe ainda!)
             var padding = 15;
-            var size = Font.MeasureString(Text);
-            var screenWidth = Game.Window.ClientBounds.Width;
-            Back.Location = new Point((screenWidth - Back.Bounds.Width)/2, (int) (TextPosition.Y + size.Y + padding));
-            Back.Size = new Vector2(TextPosition.X, Back.Size.Y);
+            Back.Location = new Point((screenWidth - Back.Bounds.Width) / 2, (int)(TextArea.Location.Y + TextArea.Size.Y + padding));
+            Back.Size = new Vector2(TextArea.Size.X, Back.Size.Y);
 
             // desenhando o fundo
             SpriteBatch.Begin();
@@ -52,29 +55,7 @@ namespace TangoGames.RoadFighter.Levels
             SpriteBatch.End();
         }
 
-        protected override void DrawAfter(GameTime gameTime)
-        {
-            SpriteBatch.Begin();
-
-            SpriteBatch.DrawString(Font, Text, TextPosition, Color.White);
-
-            SpriteBatch.End();
-        }
-
-        private Vector2 TextPosition 
-        {
-            get
-            {
-                var size = Font.MeasureString(Text);
-                var screenWidth = Game.Window.ClientBounds.Width;
-                var screenHeight = Game.Window.ClientBounds.Height;
-
-                return new Vector2((screenWidth - size.X) / 2, (screenHeight - size.Y) / 2);
-            }
-        }
-
-        private string Text { get; set; }
-        private SpriteFont Font { get; set; }
+        private TextArea TextArea { get; set; }
         private Button Back { get; set; }
         private Texture2D BackgroundImage { get; set; }
 
