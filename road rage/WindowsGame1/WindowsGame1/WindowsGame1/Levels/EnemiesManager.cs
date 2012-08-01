@@ -166,12 +166,19 @@ namespace TangoGames.RoadFighter.Levels
         {
             if (enemyA.Bounds.Y > enemyB.Bounds.Y)
             {
-                enemyA.Velocity = enemyB.Velocity + new Vector2(0, (float) random.NextDouble() );
+                EnemyHit ( enemyA, enemyB ); 
             }
             else
             {
-                enemyB.Velocity = enemyA.Velocity + new Vector2(0, (float) random.NextDouble() ); 
+                EnemyHit ( enemyB, enemyA);
             }
+
+        }
+
+        public void EnemyHit(Enemy hit, Enemy reached)
+        {
+            hit.Velocity  = reached.Velocity + new Vector2(0, (float)random.NextDouble());
+            if (hit.Velocity.Y > 0) { hit.Velocity = new Vector2(hit.Velocity.X,0); }
 
         }
 
@@ -194,7 +201,6 @@ namespace TangoGames.RoadFighter.Levels
 
             }
         }
-
 
         #endregion
 

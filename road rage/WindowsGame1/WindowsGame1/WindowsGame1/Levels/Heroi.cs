@@ -162,10 +162,17 @@ namespace TangoGames.RoadFighter.Levels
 
         public bool Collidable { get; set; }
 
-
         public void EnemyCollide(Enemy enemy, IMap map)
         {
-            map.Velocity =  - ( enemy.Velocity + new Vector2(0, 1));
+            if (enemy.Location.Y < Location.Y)
+            {
+                map.Velocity = -(enemy.Velocity + new Vector2(0, 1));
+            }
+            else
+            {
+                enemy.Velocity = -map.Velocity;
+            }
+
         }
 
 
