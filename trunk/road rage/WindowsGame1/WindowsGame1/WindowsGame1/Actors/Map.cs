@@ -279,6 +279,7 @@ namespace TangoGames.RoadFighter.Actors
 
         public void ChangeLaneRegister(IChangeLanelistener listener)
         {
+            listener.NewLanes = ((IRoad)FifoRoad.First()).Lanes;
             listenersChangeLane.Add(listener);
         }
 
@@ -292,7 +293,7 @@ namespace TangoGames.RoadFighter.Actors
         private class BackGround : BasicDrawingActor
         {
             public BackGround(Game game, SpriteBatch spriteBatch)
-                : base(game, game.Content.Load<Texture2D>("Textures/grass1024"))
+                : base(game, game.Content.Load<Texture2D>("Textures/grass1920"))
             {
                 this.SpriteBatch = spriteBatch;
             }

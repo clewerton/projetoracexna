@@ -13,7 +13,7 @@ namespace TangoGames.RoadFighter.Actors
     {
         private Scene scene;
         private RoadTypes roadtype;
-        private float ajuste;
+        private int ajuste;
 
         public RoadTypes RoadType { get { return roadtype; } }
 
@@ -25,7 +25,7 @@ namespace TangoGames.RoadFighter.Actors
             this.SpriteBatch = scene.currentSpriteBatch;
             this.Scrollable = true;
             this.Location = Vector2.Zero;
-            ajuste = ValorAjuste();
+            commonInit();
         }
 
 
@@ -37,8 +37,15 @@ namespace TangoGames.RoadFighter.Actors
             this.SpriteBatch = scene.currentSpriteBatch;
             this.Scrollable = true;
             this.Location = Vector2.Zero;
-            ajuste = ValorAjuste();
+            commonInit();
         }
+
+        private void commonInit() 
+        {
+            ajuste = (scene.Game.Window.ClientBounds.Width / 2) - (Bounds.Width / 2);
+            ajuste += (int) ValorAjuste();
+        }
+
 
         public override void Update(GameTime gameTime) { }
 
@@ -97,25 +104,25 @@ namespace TangoGames.RoadFighter.Actors
             switch (roadtype)
             {
                 case RoadTypes.Road4:
-                    lanes = new FourLanes();
+                    lanes = new FourLanes(ajuste);
                     return 0.0F;
                 case RoadTypes.Road4to3:
-                    lanes = new TreeLanes();
+                    lanes = new TreeLanes(ajuste);
                     return 0.0F;
                 case RoadTypes.Road3:
-                    lanes = new TreeLanes();
+                    lanes = new TreeLanes(ajuste);
                     return 0.0F;
                 case RoadTypes.Road3to2:
-                    lanes = new TwoLanes();
+                    lanes = new TwoLanes(ajuste);
                     return 0.0F;
                 case RoadTypes.Road2:
-                    lanes = new TwoLanes();
+                    lanes = new TwoLanes(ajuste);
                     return 0.0F;
                 case RoadTypes.Road2to3:
-                    lanes = new TreeLanes();
+                    lanes = new TreeLanes(ajuste);
                     return 0.0F;
                 case RoadTypes.Road3to4:
-                    lanes = new FourLanes();
+                    lanes = new FourLanes(ajuste);
                     return 0.0F;
                 default:
                     return 0.0F;
@@ -256,12 +263,12 @@ namespace TangoGames.RoadFighter.Actors
         private int _lastindex = 0;
         private int _count = 4;
 
-        public FourLanes()
+        public FourLanes(int ajuste)
         {
             _laneslist = new List<int>();
             for (int i = _starindex; i < _count; i++)
             {
-                _laneslist.Add(270 + 130 * i);
+                _laneslist.Add(ajuste + 270 + 130 * i);
                 _lastindex = i;
             }
         }
@@ -280,12 +287,12 @@ namespace TangoGames.RoadFighter.Actors
         private int _lastindex = 0;
         private int _count = 3;
 
-        public TreeLanes()
+        public TreeLanes(int ajuste)
         {
             _laneslist = new List<int>();
             for (int i = _starindex; i < _count; i++)
             {
-                _laneslist.Add(270 + 130 * i);
+                _laneslist.Add(ajuste + 270 + 130 * i);
                 _lastindex = i;
             }
         }
@@ -303,12 +310,12 @@ namespace TangoGames.RoadFighter.Actors
         private int _lastindex = 0;
         private int _count = 2;
 
-        public TwoLanes()
+        public TwoLanes(int ajuste)
         {
             _laneslist = new List<int>();
             for (int i = _starindex; i < _count; i++)
             {
-                _laneslist.Add(270 + 130 * i);
+                _laneslist.Add(ajuste + 270 + 130 * i);
                 _lastindex = i;
             }
         }
