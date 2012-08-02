@@ -116,6 +116,7 @@
     <Compile Include="Actors\Enemy.cs" />
     <Compile Include="Actors\Road.cs" />
     <Compile Include="Actors\Truck.cs" />
+    <Compile Include="Shared\SharedState.cs" />
     <Compile Include="Input\InputService.cs" />
     <Compile Include="Levels\Credits.cs" />
     <Compile Include="Levels\EnemiesManager.cs" />
