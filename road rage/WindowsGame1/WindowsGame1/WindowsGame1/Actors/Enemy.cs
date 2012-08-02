@@ -18,8 +18,8 @@ namespace TangoGames.RoadFighter.Actors
         private EnemyTypes etype;
 
         private float angulo = 0;
-        private int faixaAnterior = -1;
-        private int faixaAtual = -1;
+
+        private int targetLane = 1;
 
 
         public Enemy(EnemyTypes etype, Scene scene)
@@ -36,10 +36,9 @@ namespace TangoGames.RoadFighter.Actors
         {
             base.Update(gameTime);
 
-            if (faixaAtual == -1)
+            if (targetLane == -1)
             {
-                faixaAtual = XtoLane(Location.X);
-                faixaAnterior = faixaAtual;
+                targetLane = XtoLane(Location.X);
             }
 
             movimenta();
@@ -49,39 +48,30 @@ namespace TangoGames.RoadFighter.Actors
 
         private void movimenta()
         {
-            if (faixaAtual > _lanes.LastIndex)
-            {
-                faixaAtual = _lanes.LastIndex;
-                faixaAnterior = faixaAtual;
-            }
+            if (targetLane > _lanes.LastIndex) { targetLane = _lanes.LastIndex; }
+            if (targetLane < _lanes.StartIndex) { targetLane = _lanes.StartIndex; }
 
 
-            if ((faixaAnterior <= faixaAtual) && (Location.X < _lanes.LanesList[faixaAtual]))
+            int targetX = _lanes.LanesList[targetLane];
+
+            int dif = Math.Abs(targetX - (int)Location.X);
+
+            if (Location.X < targetX)
             {
                 Move(new Vector2(3, 0));
                 angulo = (float)0.1;
-
-                if (Location.X >= _lanes.LanesList[faixaAtual])
-                {
-                    angulo = 0;
-                    Location = new Vector2(_lanes.LanesList[faixaAtual], Location.Y);
-                }
             }
-            if ((faixaAnterior >= faixaAtual) && (Location.X > _lanes.LanesList[faixaAtual]))
+            else if (Location.X > targetX)
             {
                 Move(new Vector2(-3, 0));
-                angulo = (float)-0.1;
-
-                if (Location.X <= _lanes.LanesList[faixaAtual])
-                {
-                    angulo = 0;
-                    Location = new Vector2(_lanes.LanesList[faixaAtual], Location.Y);
-                }
+                angulo = -(float)0.1;
             }
-            if (faixaAtual == faixaAnterior && (int)Location.X == (int)_lanes.LanesList[faixaAtual])
+            if (dif < 3)
             {
+                Location = new Vector2((float)targetX, Location.Y);
                 angulo = 0;
             }
+
         }
 
         public static Texture2D TextureEnemy(Game game, EnemyTypes etype)
@@ -122,13 +112,12 @@ namespace TangoGames.RoadFighter.Actors
 
         public bool ChangeLane(int swicth) 
         {
-            int go = faixaAtual + swicth;
+            int go = targetLane + swicth;
             if (go > _lanes.LastIndex || go < _lanes.StartIndex)
             { 
                 return false;
             }
-            faixaAnterior = faixaAtual;
-            faixaAtual = go;
+            targetLane = go;
             return true;
         }
 
@@ -140,7 +129,7 @@ namespace TangoGames.RoadFighter.Actors
             set
             {
                 _lanes = value;
-                faixaAtual = -1;
+                targetLane = -1;
             }
         }
 
