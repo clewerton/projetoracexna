@@ -21,24 +21,9 @@ namespace TangoGames.RoadFighter.Levels
             hud = new HUD(Game.Content, map);
             enemies = new EnemiesManager(this);
 
-            /*road1 = actorFactory[MainGame.ActorTypes.StraightRoad1];
-            road1.SpriteBatch = this.SpriteBatch;
-            road1.Location = new Vector2(0.0F, 0.0F);
-            road1.Velocity  = Vector2.Zero;
-            road1.Scrollable = true;
-            map.Add(road1);
-            */
-            
             //Atribui as pistas da estrada para o gestor de inimigos conhecer
             enemies.CurrentRoad = ((IRoad)map.Road).Lanes;
 
-            /*road2 = actorFactory[MainGame.ActorTypes.StraightRoad2];
-            road2.SpriteBatch = this.SpriteBatch;
-            road2.Location = new Vector2((float)road1.Bounds.Left, (float)road1.Location.Y - road2.Bounds.Height);
-            road2.Velocity = Vector2.Zero;
-            road2.Scrollable = true;
-            map.Add(road2);
-            */
             hero = actorFactory[MainGame.ActorTypes.Hero];
             hero.SpriteBatch = this.SpriteBatch;
             hero.Location = new Vector2(300, 500);

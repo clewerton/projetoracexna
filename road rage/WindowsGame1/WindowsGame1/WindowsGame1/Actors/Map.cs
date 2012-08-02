@@ -32,21 +32,38 @@ namespace TangoGames.RoadFighter.Actors
     /// </summary>
     public class Map : DrawableGameComponent, IMap
     {
-        private float _acceleration = 0.05F;
-        private int _maxSpeed = 15;
-
-        private List<IDrawableActor> _safeRemoveList;
 
         public Map(Game game)
             : base(game)
         {
+            first = new IDrawableActor[] {
+                new StraightRoad4(Game, new Vector2(1024, 1024)),
+                new StraightRoad3(Game, new Vector2(1024, 1024)),
+                new StraightRoad2(Game, new Vector2(1024, 1024)),
+                new StraightRoad43(Game, new Vector2(1024, 1024)),
+                new StraightRoad34(Game, new Vector2(1024, 1024)),
+                new StraightRoad32(Game, new Vector2(1024, 1024)),
+                new StraightRoad23(Game, new Vector2(1024, 1024))
+            };
+
+            second = new IDrawableActor[] {
+                new StraightRoad4(Game, new Vector2(1024, 1024)),
+                new StraightRoad3(Game, new Vector2(1024, 1024)),
+                new StraightRoad2(Game, new Vector2(1024, 1024)),
+                new StraightRoad43(Game, new Vector2(1024, 1024)),
+                new StraightRoad34(Game, new Vector2(1024, 1024)),
+                new StraightRoad32(Game, new Vector2(1024, 1024)),
+                new StraightRoad23(Game, new Vector2(1024, 1024))
+            };
+
             spritebatch = new SpriteBatch(game.GraphicsDevice);
-            current = new StraightRoad(game, new Vector2(1024, 1024));
+
+            current = first[0];
             current.Scrollable = true;
             current.SpriteBatch = spritebatch;
             current.Location = Vector2.Zero;
 
-            next = new StraightRoad(game, new Vector2(1024, 1024));
+            next = second[0];
             next.Scrollable = true;
             next.SpriteBatch = spritebatch;
             next.Location = new Vector2(current.Bounds.Left, current.Location.Y - next.Bounds.Height + 5);
@@ -241,6 +258,12 @@ namespace TangoGames.RoadFighter.Actors
         private IDrawableActor current;
         private IDrawableActor next;
         private SpriteBatch spritebatch;
+        private float _acceleration = 0.05F;
+        private int _maxSpeed = 15;
+        private List<IDrawableActor> _safeRemoveList;
+        private IDrawableActor[] first;
+        private IDrawableActor[] second;
+
         #endregion
 
         #region Collision
