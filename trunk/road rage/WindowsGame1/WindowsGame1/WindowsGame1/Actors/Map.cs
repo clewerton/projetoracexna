@@ -98,6 +98,12 @@ namespace TangoGames.RoadFighter.Actors
             velocity = new Vector2(velocity.X, velocity.Y + _acceleration);
             if (velocity.Y > _maxSpeed) velocity = new Vector2(velocity.X, _maxSpeed);
 
+            //Atualiza rolagem das estradas
+            current.Location += velocity;
+            current.Update(gameTime);
+            next.Location += velocity;
+            next.Update(gameTime);
+
             foreach (IDrawableActor actor in actors)
             {
                 adjustPosition(ref screenBounds, ref limits, current);
@@ -107,10 +113,6 @@ namespace TangoGames.RoadFighter.Actors
                 {
                     adjustPosition(ref screenBounds, ref limits, actor);
                 }
-                current.Location += velocity;
-                current.Update(gameTime);
-                next.Location += velocity;
-                next.Update(gameTime);
 
                 actor.Location += velocity;
                 actor.Update(gameTime);
