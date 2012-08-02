@@ -16,7 +16,7 @@ namespace TangoGames.RoadFighter.Levels
     {
         public int pontos = 0;     // total de pomntos do player
         public float gasolina = 100; // quantidade de gasolina do herói
-        float angulacaoGasolina = 90;
+        float angulacaoGasolina = 85;
         float angulacaoVelocidade = -115;
        
         Single angponteiro1;
@@ -43,7 +43,7 @@ namespace TangoGames.RoadFighter.Levels
             velocidademaxima = map.MaxSpeed;
                         
             marcadorPontos = Content.Load<Texture2D>("HUDElementos/Pontos");
-            indicadorCombustivel = Content.Load<Texture2D>("HUDElementos/gasolina");
+            indicadorCombustivel = Content.Load<Texture2D>("HUDElementos/gasolina2");
             ponteiro1 = Content.Load<Texture2D>("HUDElementos/ponteiro");
             velocimetro = Content.Load<Texture2D>("HUDElementos/velocimetro");
             ponteiro2 = Content.Load<Texture2D>("HUDElementos/ponteirovelocimetro");
@@ -69,7 +69,9 @@ namespace TangoGames.RoadFighter.Levels
 
             spriteBatch.Draw(marcadorPontos, new Rectangle(0, 100, 204, 53), new Rectangle(18, 10, 204, 53), Color.White);
 
-            spriteBatch.Draw(indicadorCombustivel, new Rectangle(30, 190, 171, 233), new Rectangle(18, 10, 171, 205), Color.White);
+            spriteBatch.Draw(indicadorCombustivel, new Rectangle(30, 195, indicadorCombustivel.Width, indicadorCombustivel.Height), new Rectangle(0, 0, indicadorCombustivel.Width, indicadorCombustivel.Height), Color.White);
+            //spriteBatch.Draw(indicadorCombustivel, new Rectangle(30, 190, 171, 233), new Rectangle(18, 10, 171, 205), Color.White);
+
             spriteBatch.Draw(ponteiro1, new Rectangle(65,305, 78, 6), null, Color.White, angponteiro1, new Vector2(0, ponteiro1.Height/2), SpriteEffects.None, 0);
 
             spriteBatch.Draw(velocimetro, new Rectangle(0, 200 + indicadorCombustivel.Height, velocimetro.Width, velocimetro.Height), Color.White);
@@ -83,11 +85,11 @@ namespace TangoGames.RoadFighter.Levels
         {
             
 
-            angulacaoGasolina = (-90 * gasolina) / 100; // calcula o angulo do ponteiro em relacao a quantidade de gasolina
+            angulacaoGasolina = (-80 * gasolina) / 100; // calcula o angulo do ponteiro em relacao a quantidade de gasolina
 
            
 
-            angulacaoGasolina = angulacaoGasolina + 45; // ajusta o valor do angulo em relacao ao desenho do ponteiro
+            angulacaoGasolina = angulacaoGasolina + 40; // ajusta o valor do angulo em relacao ao desenho do ponteiro
 
             angponteiro1 = calcularadianos(angulacaoGasolina);
 
