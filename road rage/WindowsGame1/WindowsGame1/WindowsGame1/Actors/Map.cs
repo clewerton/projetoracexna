@@ -32,7 +32,8 @@ namespace TangoGames.RoadFighter.Actors
     /// </summary>
     public class Map : DrawableGameComponent, IMap
     {
-
+        //private transitions
+        int i = 0;
         public Map(Game game)
             : base(game)
         {
@@ -64,13 +65,11 @@ namespace TangoGames.RoadFighter.Actors
             current.Location = Vector2.Zero;
 
             next = second[0];
-            next.Scrollable = true;
-            next.SpriteBatch = spritebatch;
-            next.Location = new Vector2(current.Bounds.Left, current.Location.Y - next.Bounds.Height + 5);
+            adjustNext();
 
             actors = new DrawAbleActorCollection(game);
-            Add(current);
-            Add(next);
+            //Add(current);
+            //Add(next);
 
             _safeRemoveList = new List<IDrawableActor>();
         }
@@ -101,10 +100,17 @@ namespace TangoGames.RoadFighter.Actors
 
             foreach (IDrawableActor actor in actors)
             {
+                adjustPosition(ref screenBounds, ref limits, current);
+                adjustPosition(ref screenBounds, ref limits, next);
+
                 if (actor.Scrollable)
                 {
                     adjustPosition(ref screenBounds, ref limits, actor);
                 }
+                current.Location += velocity;
+                current.Update(gameTime);
+                next.Location += velocity;
+                next.Update(gameTime);
 
                 actor.Location += velocity;
                 actor.Update(gameTime);
@@ -146,6 +152,8 @@ namespace TangoGames.RoadFighter.Actors
         public override void Draw(GameTime gameTime)
         {
             spritebatch.Begin();
+            current.Draw(gameTime);
+            next.Draw(gameTime);
             actors.Draw(gameTime);
             spritebatch.End();
         }
@@ -187,6 +195,14 @@ namespace TangoGames.RoadFighter.Actors
             }
             else if (goingAway(screenBounds, actor, delta))
             {
+                current = next;
+                current.Scrollable = true;
+                current.SpriteBatch = spritebatch;
+
+                next = second[++i % 4];
+                adjustNext();
+
+
                 Vector2 newPosition = actor.Location;
                 actor.Visible = false;
 
@@ -213,6 +229,13 @@ namespace TangoGames.RoadFighter.Actors
             {
                 actor.Visible = true;
             }
+        }
+
+        private void adjustNext()
+        {
+            next.Scrollable = true;
+            next.SpriteBatch = spritebatch;
+            next.Location = new Vector2(current.Bounds.Left, current.Location.Y - next.Bounds.Height + 5);
         }
 
         #region Map Properties
