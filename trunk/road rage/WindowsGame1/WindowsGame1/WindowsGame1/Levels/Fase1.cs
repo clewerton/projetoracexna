@@ -30,6 +30,7 @@ namespace TangoGames.RoadFighter.Levels
             hero.Velocity = Vector2.Zero;
             hero.Scrollable = true;
             map.Add(hero);
+            map.ChangeLaneRegister( (IChangeLanelistener )hero);
 
             map.Velocity = Vector2.Zero;
             
@@ -74,7 +75,7 @@ namespace TangoGames.RoadFighter.Levels
 
         public void OnChangeRoad(Object sender, ChangeRoadEventArgs  args)
         {
-            ((Heroi)hero).CurrentRoad = args.CurrentLanes;
+            //((Heroi)hero).NewLanes = args.CurrentLanes;
         }
 
 

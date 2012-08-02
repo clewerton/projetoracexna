@@ -118,7 +118,7 @@ namespace TangoGames.RoadFighter.Levels
         {
             tempodecorrido += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (tempodecorrido >= 1000 && EnemiesNotActive.Count()>0)
+            if (tempodecorrido >= 100000 && EnemiesNotActive.Count()>0)
             {
                 tempodecorrido = 0;
 
