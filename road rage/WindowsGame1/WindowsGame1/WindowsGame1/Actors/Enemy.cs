@@ -49,6 +49,13 @@ namespace TangoGames.RoadFighter.Actors
 
         private void movimenta()
         {
+            if (faixaAtual > _lanes.LastIndex)
+            {
+                faixaAtual = _lanes.LastIndex;
+                faixaAnterior = faixaAtual;
+            }
+
+
             if ((faixaAnterior <= faixaAtual) && (Location.X < _lanes.LanesList[faixaAtual]))
             {
                 Move(new Vector2(3, 0));
@@ -70,6 +77,10 @@ namespace TangoGames.RoadFighter.Actors
                     angulo = 0;
                     Location = new Vector2(_lanes.LanesList[faixaAtual], Location.Y);
                 }
+            }
+            if (faixaAtual == faixaAnterior && (int)Location.X == (int)_lanes.LanesList[faixaAtual])
+            {
+                angulo = 0;
             }
         }
 
@@ -107,6 +118,20 @@ namespace TangoGames.RoadFighter.Actors
         }
 
         #region Controle de Pistas
+
+
+        public bool ChangeLane(int swicth) 
+        {
+            int go = faixaAtual + swicth;
+            if (go > _lanes.LastIndex || go < _lanes.StartIndex)
+            { 
+                return false;
+            }
+            faixaAnterior = faixaAtual;
+            faixaAtual = go;
+            return true;
+        }
+
 
         private ILanes _lanes;
         public ILanes CurrentLanes { get { return _lanes; } }
