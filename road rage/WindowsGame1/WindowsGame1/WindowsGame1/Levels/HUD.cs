@@ -18,11 +18,13 @@ namespace TangoGames.RoadFighter.Levels
         public float gasolina = 100; // quantidade de gasolina do herói
         float angulacaoGasolina = 82;
         float angulacaoVelocidade = -115;
+
+        int pixel;
        
         Single angponteiro1;
         Single angponteiro2;
 
-        Vector2 velocidadeatual;
+        float velocidadeatual;
         int velocidademaxima;
 
         Texture2D indicadorCombustivel;  // imagem do indicador de gasolina
@@ -52,7 +54,7 @@ namespace TangoGames.RoadFighter.Levels
         public void Update(GameTime gameTime, Vector2 velocidade)
             
         {
-            velocidadeatual = velocidade;
+            velocidadeatual = velocidade.Y;
 
             calculaparametros(gameTime);
 
@@ -104,7 +106,7 @@ namespace TangoGames.RoadFighter.Levels
            // angponteiro2 = calcularadianos(angulacaoVelocidade);
            // (velatual * 240) / velmax = x;
 
-            angulacaoVelocidade = (velocidadeatual.Y * 230) / velocidademaxima;
+            angulacaoVelocidade = (velocidadeatual * 230) / velocidademaxima;
 
             angulacaoVelocidade = angulacaoVelocidade - 115;
 
@@ -127,24 +129,32 @@ namespace TangoGames.RoadFighter.Levels
        
         void calculaparametros(GameTime gametime) // calcula a quantidade de pontos ganhos
         {
-            
-            
+                        
             //if( velocidade herói == velmax)   // verifica se a velocidade do heroi está maxima e contabiliza os pontos
 
             tempodecorrido += (float)gametime.ElapsedGameTime.TotalMilliseconds;
 
 
+            //pontos += (int)velocidadeatual;
 
+            pixel += (int)velocidadeatual;
+           
 
             if (tempodecorrido >= 1000)
             {
                 tempodecorrido = 0;
-                contadordePontos += 1;
+                contadordePontos = pixel / 20;
+                //contadordePontos += (int)velocidadeatual;
+                pontos += contadordePontos;
 
                 gasolina --;
+
+                pixel = 0;
             }
 
-            pontos = contadordePontos * 10;
+            //pontos = contadordePontos * 10;
+            
+
 
             
             if (gasolina <= 0)
