@@ -97,14 +97,13 @@ namespace TangoGames.RoadFighter.Levels
         {
             if ((input.KeyPressOnce(Keys.Left) || input.MouseClick(retEsquerda)) && (faixaAtual > 0))
             {
-                faixaAnterior = faixaAtual;
                 faixaAtual--;
             }
             if ((input.KeyPressOnce(Keys.Right) || input.MouseClick(retDireita)) && (faixaAtual < _lanes.Count  - 1))
             {
-                faixaAnterior = faixaAtual;
                 faixaAtual++;
             }
+
         }
 
 
@@ -113,7 +112,6 @@ namespace TangoGames.RoadFighter.Levels
             if (faixaAtual > _lanes.LastIndex)
             {
                 faixaAtual = _lanes.LastIndex;
-                faixaAnterior = faixaAtual;
             }
 
             if ((faixaAnterior <= faixaAtual) && (Location.X < _lanes.LanesList[faixaAtual]))
@@ -125,6 +123,7 @@ namespace TangoGames.RoadFighter.Levels
                 {
                     angulo = 0;
                     Location = new Vector2(_lanes.LanesList[faixaAtual], Location.Y);
+                    faixaAnterior = faixaAtual;
                 }
             }
             if ((faixaAnterior >= faixaAtual) && (Location.X > _lanes.LanesList[faixaAtual]))
@@ -136,6 +135,7 @@ namespace TangoGames.RoadFighter.Levels
                 {
                     angulo = 0;
                     Location = new Vector2(_lanes.LanesList[faixaAtual], Location.Y);
+                    faixaAnterior = faixaAtual;
                 }
             }
 
