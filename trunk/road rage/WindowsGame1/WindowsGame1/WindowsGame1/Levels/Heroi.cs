@@ -177,17 +177,12 @@ namespace TangoGames.RoadFighter.Levels
             }
 
             //heroi bateu do lado esquerdo do carro inimigo
-            if (enemy.Location.X > Location.X) 
+            if (enemy.Location.X != Location.X) 
             {
-                
+                int temp = faixaAnterior;
+                faixaAnterior = faixaAtual;
+                faixaAtual = temp;
             }
-            //heroi bateu do lado direito do carro inimigo
-            if (enemy.Location.X < Location.X)
-            {
-            }
-
-
-
         }
 
 
