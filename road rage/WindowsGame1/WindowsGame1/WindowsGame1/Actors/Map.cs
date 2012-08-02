@@ -99,7 +99,7 @@ namespace TangoGames.RoadFighter.Actors
                 road.Update(gameTime);
                 foreach (IChangeLanelistener cll in listenersChangeLane)
                 {
-                    if (road.Bounds.Bottom >= cll.Bounds.Y && road.Bounds.Top <= cll.Bounds.Y && cll.CurrentLanes != ((IRoad)road).Lanes)
+                    if (road.Bounds.Bottom >= cll.Bounds.Y && road.Bounds.Top <= cll.Bounds.Y && cll.CurrentLanes.Count  != ((IRoad)road).Lanes.Count )
                             cll.NewLanes = ((IRoad)road).Lanes;
                 }
             }
