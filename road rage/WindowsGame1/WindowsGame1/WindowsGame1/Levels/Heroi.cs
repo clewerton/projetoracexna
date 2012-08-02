@@ -170,8 +170,23 @@ namespace TangoGames.RoadFighter.Levels
             }
             else
             {
-                enemy.Velocity = -map.Velocity;
+                if ((-enemy.Velocity.Y) > map.Velocity.Y)
+                { 
+                   enemy.Velocity = -map.Velocity;
+                }
             }
+
+            //heroi bateu do lado esquerdo do carro inimigo
+            if (enemy.Location.X > Location.X) 
+            {
+                
+            }
+            //heroi bateu do lado direito do carro inimigo
+            if (enemy.Location.X < Location.X)
+            {
+            }
+
+
 
         }
 
