@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using TangoGames.RoadFighter.Scenes;
 using TangoGames.RoadFighter.Levels;
 using TangoGames.RoadFighter.Actors ;
 
@@ -24,6 +25,7 @@ namespace TangoGames.RoadFighter.Actors
         int MaxSpeed { get; set; }
         event EventHandler<CollisionEventArgs > ColisionsOccours;
         event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
+        event EventHandler<ChangeRoadEventArgs> ChangeRoadType;
         IDrawableActor Road { get; set; }
     }
 
@@ -32,46 +34,28 @@ namespace TangoGames.RoadFighter.Actors
     /// </summary>
     public class Map : DrawableGameComponent, IMap
     {
-        //private transitions
-        int i = 0;
-        public Map(Game game)
-            : base(game)
+
+        public Map(Scene scene)
+            : base(scene.Game)
         {
-            first = new IDrawableActor[] {
-                new StraightRoad4(Game, new Vector2(1024, 1024)),
-                new StraightRoad3(Game, new Vector2(1024, 1024)),
-                new StraightRoad2(Game, new Vector2(1024, 1024)),
-                new StraightRoad43(Game, new Vector2(1024, 1024)),
-                new StraightRoad34(Game, new Vector2(1024, 1024)),
-                new StraightRoad32(Game, new Vector2(1024, 1024)),
-                new StraightRoad23(Game, new Vector2(1024, 1024))
-            };
+            this.scene=scene;
 
-            second = new IDrawableActor[] {
-                new StraightRoad4(Game, new Vector2(1024, 1024)),
-                new StraightRoad3(Game, new Vector2(1024, 1024)),
-                new StraightRoad2(Game, new Vector2(1024, 1024)),
-                new StraightRoad43(Game, new Vector2(1024, 1024)),
-                new StraightRoad34(Game, new Vector2(1024, 1024)),
-                new StraightRoad32(Game, new Vector2(1024, 1024)),
-                new StraightRoad23(Game, new Vector2(1024, 1024))
-            };
+            //gera background
+            background1 = new BackGround(scene.Game, scene.currentSpriteBatch);
+            background2 = new BackGround(scene.Game, scene.currentSpriteBatch);
+            adjustNext(background1, ref background2);
 
-            spritebatch = new SpriteBatch(game.GraphicsDevice);
+            //gera instancia de gestor de estradas
+            roads = new RoadManager(scene);
 
-            current = first[0];
-            current.Scrollable = true;
-            current.SpriteBatch = spritebatch;
-            current.Location = Vector2.Zero;
+            current = roads.CurrentRoad;
+            next = roads.NextRoad();
+            adjustNext(current, ref next);
 
-            next = second[0];
-            adjustNext();
-
-            actors = new DrawAbleActorCollection(game);
-            //Add(current);
-            //Add(next);
+            actors = new DrawAbleActorCollection(scene.Game);
 
             _safeRemoveList = new List<IDrawableActor>();
+
         }
 
         /// <summary>
@@ -91,35 +75,43 @@ namespace TangoGames.RoadFighter.Actors
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            Rectangle screenBounds = Game.Window.ClientBounds;
-            Rectangle limits = new Rectangle(0, 0, screenBounds.Width, screenBounds.Height);
-
             // Aceleracao
             velocity = new Vector2(velocity.X, velocity.Y + _acceleration);
             if (velocity.Y > _maxSpeed) velocity = new Vector2(velocity.X, _maxSpeed);
 
-            //Atualiza rolagem das estradas
+            //Atualiza rolagem das estradas e background
+            background1.Location += velocity;
+            background1.Update(gameTime);
+            background2.Location += velocity;
+            background2.Update(gameTime);
+
             current.Location += velocity;
             current.Update(gameTime);
             next.Location += velocity;
             next.Update(gameTime);
 
+            if (!adjustPosition(ref background1, ref background2)) adjustPosition(ref background2, ref background1);
+
+
+            if (adjustPosition(ref current, ref next))
+            {
+                current = next;
+                next = roads.NextRoad();
+                adjustNext(current, ref next);
+                //raise event roadchange
+                if (ChangeRoadType != null)
+                    ChangeRoadType(this, new ChangeRoadEventArgs( ((IRoad)current).Lanes , ((StraightRoad)current).RoadType  ));
+            }
+
             foreach (IDrawableActor actor in actors)
             {
-                adjustPosition(ref screenBounds, ref limits, current);
-                adjustPosition(ref screenBounds, ref limits, next);
-
-                if (actor.Scrollable)
-                {
-                    adjustPosition(ref screenBounds, ref limits, actor);
-                }
 
                 actor.Location += velocity;
                 actor.Update(gameTime);
 
 
                 //Testa se ator saiu da tela e dispara evento OutOfBounds
-                if (!actor.Outofscreen && !screenBounds.Intersects (actor.Bounds))
+                if (!actor.Outofscreen && ! scene.Game.Window.ClientBounds.Intersects (actor.Bounds))
                 {
                     actor.Outofscreen = true;
                     if (OutOfBounds != null)
@@ -153,11 +145,11 @@ namespace TangoGames.RoadFighter.Actors
 
         public override void Draw(GameTime gameTime)
         {
-            spritebatch.Begin();
+            background1.Draw(gameTime);
+            background2.Draw(gameTime);
             current.Draw(gameTime);
             next.Draw(gameTime);
             actors.Draw(gameTime);
-            spritebatch.End();
         }
 
         public void Add(IDrawableActor actor)
@@ -177,67 +169,19 @@ namespace TangoGames.RoadFighter.Actors
             _safeRemoveList.Clear();
         }
 
-        private bool goingAway(Rectangle bounds, IActor actor, Vector2 delta)
+        private bool adjustPosition(ref IDrawableActor cur, ref IDrawableActor nex)
         {
-            return
-                (actor.Location.X >= bounds.Width) && (delta.X > 0) ||
-                (actor.Location.Y >= bounds.Height) && (delta.Y > 0) ||
-                (actor.Location.X <= 0) && (delta.X < 0) ||
-                (actor.Location.Y <= 0) && (delta.Y < 0);
+            if (cur.Bounds.Top > scene.Game.Window.ClientBounds.Bottom  )
+            {
+                adjustNext(nex, ref cur);
+                return true;
+            }
+            return false;
         }
 
-        private void adjustPosition(ref Rectangle screenBounds, ref Rectangle limits, IDrawableActor actor)
+        private void adjustNext(IDrawableActor cur, ref IDrawableActor nex)
         {
-            Rectangle actorRect = new Rectangle((int)actor.Location.X, (int)actor.Location.Y, actor.Bounds.Width, actor.Bounds.Height);
-            Vector2 delta = actor.Velocity + velocity;
-
-            if (actorRect.Intersects(limits))
-            {
-                actor.Visible = true;
-            }
-            else if (goingAway(screenBounds, actor, delta))
-            {
-                current = next;
-                current.Scrollable = true;
-                current.SpriteBatch = spritebatch;
-
-                next = second[++i % 4];
-                adjustNext();
-
-
-                Vector2 newPosition = actor.Location;
-                actor.Visible = false;
-
-                if (delta.X > 0)
-                {
-                    newPosition.X = -actor.Bounds.Width;
-                }
-                else if (delta.X < 0)
-                {
-                    newPosition.X = limits.Width;
-                }
-                if (delta.Y > 0)
-                {
-                    newPosition.Y = -actor.Bounds.Height;
-                }
-                else if (delta.Y < 0)
-                {
-                    newPosition.Y = limits.Height;
-                }
-                actor.Location = newPosition;
-                if (actor is ICollidable) ((ICollidable)actor).Collidable = true;
-            }
-            else
-            {
-                actor.Visible = true;
-            }
-        }
-
-        private void adjustNext()
-        {
-            next.Scrollable = true;
-            next.SpriteBatch = spritebatch;
-            next.Location = new Vector2(current.Bounds.Left, current.Location.Y - next.Bounds.Height + 5);
+            nex.Location = new Vector2(nex.Bounds.X , cur.Location.Y - nex.Bounds.Height);
         }
 
         #region Map Properties
@@ -280,14 +224,22 @@ namespace TangoGames.RoadFighter.Actors
         #region Map Fields
         private DrawAbleActorCollection actors;
         private Vector2 velocity;
+        private IDrawableActor background1;
+        private IDrawableActor background2;
         private IDrawableActor current;
         private IDrawableActor next;
-        private SpriteBatch spritebatch;
+        //private SpriteBatch spritebatch;
         private float _acceleration = 0.05F;
         private int _maxSpeed = 15;
         private List<IDrawableActor> _safeRemoveList;
-        private IDrawableActor[] first;
-        private IDrawableActor[] second;
+        //private IDrawableActor[] first;
+        //private IDrawableActor[] second;
+
+        //roads manager
+        private IRoadManager roads;
+
+        //Current Scene 
+        private Scene scene;
 
         #endregion
 
@@ -315,6 +267,21 @@ namespace TangoGames.RoadFighter.Actors
         public event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
 
         #endregion
+
+        public event EventHandler<ChangeRoadEventArgs> ChangeRoadType;
+
+        private class BackGround : BasicDrawingActor
+        {
+            public BackGround(Game game, SpriteBatch spriteBatch)
+                : base(game, game.Content.Load<Texture2D>("Textures/grass1024"))
+            {
+                this.SpriteBatch = spriteBatch;
+            }
+            public override void Draw(GameTime gameTime)
+            {
+                SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
+            }
+        }
 
     }
     
@@ -359,5 +326,24 @@ namespace TangoGames.RoadFighter.Actors
 
     }
 
+
+    /// <summary>
+    /// Class para eventos de troca de tipo da estrada
+    /// </summary>
+    public class ChangeRoadEventArgs : EventArgs
+    {
+        ILanes lanes;
+        RoadTypes roadtype;
+
+        public ILanes CurrentLanes { get { return lanes; } private set { lanes = value; } }
+        public RoadTypes Roadtype { get { return roadtype; } private set { roadtype = value; } }
+
+        public ChangeRoadEventArgs(ILanes lanes, RoadTypes roadtype ) 
+        { 
+            this.lanes = lanes;
+            this.roadtype = roadtype;
+        }
+
+    }
 
 }
