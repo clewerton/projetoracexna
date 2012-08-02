@@ -178,13 +178,25 @@ namespace TangoGames.RoadFighter.Levels
             }
             else
             {
+                if (enemyA.Velocity.Y > enemyB.Velocity.Y)
+                {
+                    EnemyHit(enemyA, enemyB);
+                }
+                else
+                {
+                    EnemyHit(enemyB, enemyA);
+                }
+
                 if (enemyA.Bounds.X > enemyB.Bounds.X)
                 {
-                    if (!enemyB.ChangeLane(-1)) { enemyA.ChangeLane(1); } 
+                    if (!enemyB.ChangeLane(-1) && !enemyA.ChangeLane(1))
+                    { enemyA.Velocity = Vector2.Zero; }
                 }
                 else 
                 {
-                    if (!enemyA.ChangeLane(-1)) { enemyB.ChangeLane(1); } 
+                    if (!enemyA.ChangeLane(-1) && !enemyB.ChangeLane(1))
+                    { enemyA.Velocity = Vector2.Zero; }
+ 
                 }
 
 
