@@ -112,10 +112,10 @@ namespace TangoGames.RoadFighter.Actors
                     lanes = new TwoLanes();
                     return 0.0F;
                 case RoadTypes.Road2to3:
-                    lanes = new TwoLanes();
+                    lanes = new TreeLanes();
                     return 0.0F;
                 case RoadTypes.Road3to4:
-                    lanes = new TreeLanes();
+                    lanes = new FourLanes();
                     return 0.0F;
                 default:
                     return 0.0F;
@@ -171,25 +171,25 @@ namespace TangoGames.RoadFighter.Actors
             //define a sequencia das estradas
 
             //estrada 4 pistas
-            AddInNextList(RoadTypes.Road4, new RoadTypes[] { RoadTypes.Road4, RoadTypes.Road4to3 });
+            AddInNextList(RoadTypes.Road4, new RoadTypes[] { RoadTypes.Road4, RoadTypes.Road4, RoadTypes.Road4, RoadTypes.Road4, RoadTypes.Road4to3 });
 
             //estrada 4 p/ 3 pistas
-            AddInNextList(RoadTypes.Road4to3, new RoadTypes[] { RoadTypes.Road3 });
+            AddInNextList(RoadTypes.Road4to3, new RoadTypes[] { RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3to4 });
 
             //estrada 3 pistas
-            AddInNextList(RoadTypes.Road3, new RoadTypes[] { RoadTypes.Road3, RoadTypes.Road3to2, RoadTypes.Road3to4 });
+            AddInNextList(RoadTypes.Road3, new RoadTypes[] { RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3to2, RoadTypes.Road3to4 });
 
             //estrada 3 p/ 2 pistas
-            AddInNextList(RoadTypes.Road3to2, new RoadTypes[] { RoadTypes.Road2 });
+            AddInNextList(RoadTypes.Road3to2, new RoadTypes[] { RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2to3 });
 
             //estrada 2 pistas
-            AddInNextList(RoadTypes.Road2, new RoadTypes[] { RoadTypes.Road2to3 });
+            AddInNextList(RoadTypes.Road2, new RoadTypes[] { RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2to3 });
 
             //estrada 2 p/ 3 pistas
-            AddInNextList(RoadTypes.Road2to3, new RoadTypes[] { RoadTypes.Road3 });
+            AddInNextList(RoadTypes.Road2to3, new RoadTypes[] { RoadTypes.Road3, RoadTypes.Road3to2 });
 
             //estrada 3 p/ 4 pistas
-            AddInNextList(RoadTypes.Road3to4, new RoadTypes[] { RoadTypes.Road4 });
+            AddInNextList(RoadTypes.Road3to4, new RoadTypes[] { RoadTypes.Road4, RoadTypes.Road4to3 });
 
             #endregion
 

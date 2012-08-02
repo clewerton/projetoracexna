@@ -147,7 +147,8 @@ namespace TangoGames.RoadFighter.Levels
             set
             {
                 _lanes = value;
-                faixaAtual = XtoLane(Location.X);
+                if (Location.X > _lanes.LanesList[_lanes.LastIndex])
+                    faixaAtual = XtoLane(Location.X);
             }
         }
 
