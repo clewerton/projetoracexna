@@ -75,7 +75,7 @@ namespace TangoGames.RoadFighter.Levels
 
         public void OnChangeRoad(Object sender, ChangeRoadEventArgs  args)
         {
-            //((Heroi)hero).NewLanes = args.CurrentLanes;
+            enemies.CurrentRoad = args.CurrentLanes;
         }
 
 

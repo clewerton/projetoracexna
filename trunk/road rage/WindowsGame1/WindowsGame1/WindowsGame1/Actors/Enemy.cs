@@ -10,13 +10,16 @@ using TangoGames.RoadFighter.Scenes;
 
 namespace TangoGames.RoadFighter.Actors
 {
-    public class Enemy : BasicDrawingActor, ICollidable, IEnemy 
+    public class Enemy : BasicDrawingActor, ICollidable, IEnemy, IChangeLanelistener  
     {
         public enum EnemyTypes { Inimigo1, Inimigo2, Inimigo3, Inimigo4, Inimigo5, Inimigo6, Inimigo7, Inimigo8 }
 
         private Scene scene;
         private EnemyTypes etype;
 
+        private float angulo = 0;
+        private int faixaAnterior = -1;
+        private int faixaAtual = -1;
 
 
         public Enemy(EnemyTypes etype, Scene scene)
@@ -26,6 +29,48 @@ namespace TangoGames.RoadFighter.Actors
             this.etype = etype;
             this.SpriteBatch = scene.currentSpriteBatch;
             Collidable = true;
+            _lanes = new FourLanes();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (faixaAtual == -1)
+            {
+                faixaAtual = XtoLane(Location.X);
+                faixaAnterior = faixaAtual;
+            }
+
+            movimenta();
+
+        }
+
+
+        private void movimenta()
+        {
+            if ((faixaAnterior <= faixaAtual) && (Location.X < _lanes.LanesList[faixaAtual]))
+            {
+                Move(new Vector2(3, 0));
+                angulo = (float)0.1;
+
+                if (Location.X >= _lanes.LanesList[faixaAtual])
+                {
+                    angulo = 0;
+                    Location = new Vector2(_lanes.LanesList[faixaAtual], Location.Y);
+                }
+            }
+            if ((faixaAnterior >= faixaAtual) && (Location.X > _lanes.LanesList[faixaAtual]))
+            {
+                Move(new Vector2(-3, 0));
+                angulo = (float)-0.1;
+
+                if (Location.X <= _lanes.LanesList[faixaAtual])
+                {
+                    angulo = 0;
+                    Location = new Vector2(_lanes.LanesList[faixaAtual], Location.Y);
+                }
+            }
         }
 
         public static Texture2D TextureEnemy(Game game, EnemyTypes etype)
@@ -56,8 +101,39 @@ namespace TangoGames.RoadFighter.Actors
 
         public override void Draw(GameTime gameTime)
         {
-            SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
+            //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
+            SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, (int)Location.Y + Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
+
         }
+
+        #region Controle de Pistas
+
+        private ILanes _lanes;
+        public ILanes CurrentLanes { get { return _lanes; } }
+        public ILanes NewLanes
+        {
+            set
+            {
+                _lanes = value;
+                faixaAtual = -1;
+            }
+        }
+
+        private int XtoLane(float x)
+        {
+            int lane = 0;
+
+            while ((x > _lanes.LanesList[lane]) && (lane < _lanes.LastIndex))
+            {
+                lane++;
+            }
+
+            return lane;
+        }
+
+        #endregion
+
+
 
         #region Collision implementation
         /// <summary>
