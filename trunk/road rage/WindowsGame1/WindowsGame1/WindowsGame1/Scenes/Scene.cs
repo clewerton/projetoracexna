@@ -32,6 +32,11 @@ namespace TangoGames.RoadFighter.Scenes
         void Resume();
 
         /// <summary>
+        /// Chamado quando esta cena é reiniciada.
+        /// </summary>
+        void Reset();
+
+        /// <summary>
         /// Retorna verdadeiro se esta cena estiver pausada.
         /// </summary>
         bool Paused { get; }
@@ -91,6 +96,8 @@ namespace TangoGames.RoadFighter.Scenes
         {
             Enabled = true; // habilita o Update
         }
+
+        public virtual void Reset() {}
 
         public bool Paused { get { return ! Enabled; } }
 
