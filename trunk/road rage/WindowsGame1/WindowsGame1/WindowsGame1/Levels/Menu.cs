@@ -31,6 +31,7 @@ namespace TangoGames.RoadFighter.Levels
             ToFase.Size = new Vector2(ButtonWidth, ButtonHeight);
             ToFase.Text = "To FASE";
             ToFase.Texture = Game.Content.Load<Texture2D>("Widgets/Button");
+            ToFase.Background = Color.White;
             Elements.Add(ToFase);
 
             ToEnd = new Button(Game);

@@ -1,6 +1,7 @@
-﻿using TangoGames.RoadFighter.Scenes;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using TangoGames.RoadFighter.Scenes;
+using TangoGames.RoadFighter.Utils;
 using TangoGames.RoadFighter.Widgets;
 
 namespace TangoGames.RoadFighter.Levels
@@ -18,6 +19,8 @@ namespace TangoGames.RoadFighter.Levels
                 + "\n\n"
                 + "Professor:\n"
                 + "    Cléber Tavares";
+            TextArea.Background = Color.Gray;
+            TextArea.Alpha = 128;
             Elements.Add(TextArea);
             
             Back = new Button(Game);
