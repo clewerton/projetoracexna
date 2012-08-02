@@ -41,17 +41,19 @@ namespace TangoGames.RoadFighter.Actors
             this.scene=scene;
 
             //gera background
-            FifoBackground = new MyFifo<IDrawableActor>();
+            FifoBackground = new MyFifo();
+            //gerar tres backgounds que ficam rolando na fila
             FifoBackground.Enqueue(new BackGround(scene.Game, scene.currentSpriteBatch));
             FifoBackground.Enqueue(new BackGround(scene.Game, scene.currentSpriteBatch));
-            adjustNext(FifoBackground);
+            FifoBackground.Enqueue(new BackGround(scene.Game, scene.currentSpriteBatch));
 
             //gera instancia de gestor de estradas
             roads = new RoadManager(scene);
-            FifoRoad = new MyFifo<IDrawableActor>();
+            FifoRoad = new MyFifo();
+            //gera a fila de estradas pelo gerenciado de extradas 
             FifoRoad.Enqueue(roads.CurrentRoad);
             FifoRoad.Enqueue(roads.NextRoad());
-            adjustNext(FifoRoad);
+            FifoRoad.Enqueue(roads.NextRoad());
 
             actors = new DrawAbleActorCollection(scene.Game);
 
@@ -165,7 +167,7 @@ namespace TangoGames.RoadFighter.Actors
             _safeRemoveList.Clear();
         }
 
-        private bool adjustPosition(MyFifo<IDrawableActor> fifo, bool enqueue)
+        private bool adjustPosition(MyFifo fifo, bool enqueue)
         {
             if ( fifo.Peek().Bounds.Top > scene.Game.Window.ClientBounds.Bottom)
             {
@@ -178,15 +180,9 @@ namespace TangoGames.RoadFighter.Actors
                     fifo.Dequeue();
                     fifo.Enqueue(roads.NextRoad());
                 }
-                adjustNext(fifo);
                 return true;
             }
             return false;
-        }
-
-        private void adjustNext(MyFifo<IDrawableActor> fifo)
-        {
-            fifo.Last().Location = new Vector2(fifo.Last.Bounds.X, fifo.SecondLast.Location.Y - fifo.Last.Bounds.Height);
         }
 
         #region Map Properties
@@ -227,15 +223,13 @@ namespace TangoGames.RoadFighter.Actors
         private Vector2 velocity;
 
         //filas de fundo e estrada
-        private MyFifo <IDrawableActor> FifoBackground;
-        private MyFifo <IDrawableActor> FifoRoad;
+        private MyFifo FifoBackground;
+        private MyFifo FifoRoad;
 
         //private SpriteBatch spritebatch;
         private float _acceleration = 0.05F;
         private int _maxSpeed = 15;
         private List<IDrawableActor> _safeRemoveList;
-        //private IDrawableActor[] first;
-        //private IDrawableActor[] second;
 
         //roads manager
         private IRoadManager roads;
@@ -285,19 +279,23 @@ namespace TangoGames.RoadFighter.Actors
             }
         }
 
-        private class MyFifo<T> : Queue<T> 
-        { 
-            public T Last { get; private set; }
-            public T SecondLast { get; private set; }
-            public T Fist { get { return base.Peek(); } }
- 
-            public new void Enqueue(T item) 
+        private class MyFifo : Queue<IDrawableActor> 
+        {
+            public IDrawableActor Last { get; private set; }
+            public IDrawableActor SecondLast { get; private set; }
+            public IDrawableActor Fist { get { return base.Peek(); } }
+
+            public new void Enqueue(IDrawableActor item) 
             {
                 SecondLast = Last;
                 Last = item;
- 
                 base.Enqueue(item);
-            } 
+                if (SecondLast != null) adjustNext();
+            }
+            private void adjustNext()
+            {
+                Last.Location = new Vector2(Last.Bounds.X, SecondLast.Location.Y - Last.Bounds.Height);
+            }
         } 
  
 
