@@ -27,9 +27,8 @@ namespace TangoGames.RoadFighter.Levels
         //private IList<int> listadepistas;
         //private int numeroPistas = 4;
 
-        private int faixaAnterior = 1;
-        private int faixaAtual = 1;
-
+        private int targetLane = 1;
+ 
         private int _fixY;
 
         private IInputService input;
@@ -95,62 +94,45 @@ namespace TangoGames.RoadFighter.Levels
 
         private void controleHeroi()
         {
-            if ((input.KeyPressOnce(Keys.Left) || input.MouseClick(retEsquerda)) && (faixaAtual > 0))
+            if ((input.KeyPressOnce(Keys.Left) || input.MouseClick(retEsquerda)) && (targetLane > 0))
             {
-                faixaAtual--;
+                targetLane--;
             }
-            if ((input.KeyPressOnce(Keys.Right) || input.MouseClick(retDireita)) && (faixaAtual < _lanes.Count  - 1))
+            if ((input.KeyPressOnce(Keys.Right) || input.MouseClick(retDireita)) && (targetLane < _lanes.Count - 1))
             {
-                faixaAtual++;
+                targetLane++;
             }
 
         }
 
 
         private void movimentaHeroi()
+        
         {
-            if (faixaAtual > _lanes.LastIndex)
-            {
-                faixaAtual = _lanes.LastIndex;
-            }
+            if ( targetLane > _lanes.LastIndex )  { targetLane = _lanes.LastIndex;}
+            if ( targetLane < _lanes.StartIndex ) { targetLane = _lanes.StartIndex;}
 
-            if ((faixaAnterior <= faixaAtual) && (Location.X < _lanes.LanesList[faixaAtual]))
+
+            int targetX = _lanes.LanesList[targetLane];
+
+            int dif = Math.Abs(targetX - (int)Location.X);
+
+            if ( Location.X < targetX )
             {
                 Move(new Vector2(3, 0));
                 angulo = (float)0.1;
-
-                if (Location.X >= _lanes.LanesList[faixaAtual])
-                {
-                    angulo = 0;
-                    Location = new Vector2(_lanes.LanesList[faixaAtual], Location.Y);
-                    faixaAnterior = faixaAtual;
-                }
             }
-            if ((faixaAnterior >= faixaAtual) && (Location.X > _lanes.LanesList[faixaAtual]))
-            {
+            else if ( Location.X > targetX )
+            {    
                 Move(new Vector2(-3, 0));
-                angulo = (float)-0.1;
-
-                if (Location.X <= _lanes.LanesList[faixaAtual])
-                {
-                    angulo = 0;
-                    Location = new Vector2(_lanes.LanesList[faixaAtual], Location.Y);
-                    faixaAnterior = faixaAtual;
-                }
+                angulo = -(float)0.1;
             }
-
-            if (faixaAtual == faixaAnterior && (int)Location.X == (int)_lanes.LanesList[faixaAtual])
+            if (dif < 3)
             {
+                Location= new Vector2((float)targetX,Location.Y) ;
                 angulo = 0;
             }
 
-
-            //if (Location.X == listadepistas[faixaAtual]  )
-            //{
-
-                //angulo = 0.261;
-
-           // }
         }
 
         #region Controle de Pistas
@@ -163,7 +145,7 @@ namespace TangoGames.RoadFighter.Levels
             {
                 _lanes = value;
                 if (Location.X > _lanes.LanesList[_lanes.LastIndex])
-                    faixaAtual = XtoLane(Location.X);
+                   targetLane = XtoLane(Location.X);
             }
         }
 
@@ -212,19 +194,19 @@ namespace TangoGames.RoadFighter.Levels
                 }
             }
 
-            //heroi bateu do lado esquerdo do carro inimigo
-            if ( (enemy.Location.X != Location.X) && ( XtoLane ( enemy.Location.X ) != faixaAnterior ) )
+            //heroi bateu na esquerda do carro inimigo
+            if ( enemy.Location.X > Location.X ) 
             {
-                if (faixaAnterior > _lanes.LastIndex)
-                {
+                targetLane = XtoLane(enemy.Location.X) - 1;
+            }
+            else if ( enemy.Location.X < Location.X ) 
+            {
+                targetLane = XtoLane(enemy.Location.X) + 1;
+            }
+           
+            if ( (targetLane > _lanes.LastIndex) || (targetLane< _lanes.StartIndex) )
+            {    
                     map.Velocity = new Vector2(map.Velocity.X , 0);
-                }
-                else
-                {
-                    int temp = faixaAnterior;
-                    faixaAnterior = faixaAtual;
-                    faixaAtual = temp;
-                }
             }
         }
 
