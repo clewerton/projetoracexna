@@ -26,6 +26,8 @@ namespace TangoGames.RoadFighter.Levels
         private Random random;
         private int _maxSpeed = 9;
 
+        private int maxEnemies = 3;
+
         /// <summary>
         /// Contrutor do controle de inimigos
         /// </summary>
@@ -108,7 +110,7 @@ namespace TangoGames.RoadFighter.Levels
             Game.Components.Remove(this);
         }
 
-        float tempodecorrido = 0;
+        //float tempodecorrido = 0;
 
 
         /// <summary>
@@ -117,11 +119,11 @@ namespace TangoGames.RoadFighter.Levels
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime) 
         {
-            tempodecorrido += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            //tempodecorrido += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (tempodecorrido >= 2000 && EnemiesNotActive.Count()>0)
+            if ( EnemiesActive.Count() <  maxEnemies && EnemiesNotActive.Count() >  0 )
             {
-                tempodecorrido = 0;
+                //tempodecorrido = 0;
 
                 IEnemy ene = EnemiesNotActive.ElementAtOrDefault( random.Next (EnemiesNotActive.Count()));
                 IDrawableActor enemyDraw = (IDrawableActor)ene;
