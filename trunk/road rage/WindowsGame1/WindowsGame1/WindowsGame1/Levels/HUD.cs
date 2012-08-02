@@ -15,8 +15,8 @@ namespace TangoGames.RoadFighter.Levels
     public class HUD
     {
         public int pontos = 0;     // total de pomntos do player
-        public float gasolina = 100; // quantidade de gasolina do herói
-        float angulacaoGasolina = 85;
+        public float gasolina = 20; // quantidade de gasolina do herói
+        float angulacaoGasolina = 82;
         float angulacaoVelocidade = -115;
        
         Single angponteiro1;
@@ -85,11 +85,11 @@ namespace TangoGames.RoadFighter.Levels
         {
             
 
-            angulacaoGasolina = (-80 * gasolina) / 100; // calcula o angulo do ponteiro em relacao a quantidade de gasolina
+            angulacaoGasolina = (-82 * gasolina) / 100; // calcula o angulo do ponteiro em relacao a quantidade de gasolina
 
            
 
-            angulacaoGasolina = angulacaoGasolina + 40; // ajusta o valor do angulo em relacao ao desenho do ponteiro
+            angulacaoGasolina = angulacaoGasolina + 41; // ajusta o valor do angulo em relacao ao desenho do ponteiro
 
             angponteiro1 = calcularadianos(angulacaoGasolina);
 
