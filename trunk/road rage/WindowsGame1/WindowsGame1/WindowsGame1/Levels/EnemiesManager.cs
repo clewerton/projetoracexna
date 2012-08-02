@@ -165,13 +165,29 @@ namespace TangoGames.RoadFighter.Levels
 
         public void EnemyInterCollision(Enemy enemyA, Enemy enemyB)
         {
-            if (enemyA.Bounds.Y > enemyB.Bounds.Y)
+            if (enemyA.Bounds.X == enemyB.Bounds.X)
             {
-                EnemyHit ( enemyA, enemyB ); 
+                if (enemyA.Bounds.Y > enemyB.Bounds.Y)
+                {
+                    EnemyHit(enemyA, enemyB);
+                }
+                else
+                {
+                    EnemyHit(enemyB, enemyA);
+                }
             }
             else
             {
-                EnemyHit ( enemyB, enemyA);
+                if (enemyA.Bounds.X > enemyB.Bounds.X)
+                {
+                    if (!enemyB.ChangeLane(-1)) { enemyA.ChangeLane(1); } 
+                }
+                else 
+                {
+                    if (!enemyA.ChangeLane(-1)) { enemyB.ChangeLane(1); } 
+                }
+
+
             }
 
         }

@@ -110,6 +110,12 @@ namespace TangoGames.RoadFighter.Levels
 
         private void movimentaHeroi()
         {
+            if (faixaAtual > _lanes.LastIndex)
+            {
+                faixaAtual = _lanes.LastIndex;
+                faixaAnterior = faixaAtual;
+            }
+
             if ((faixaAnterior <= faixaAtual) && (Location.X < _lanes.LanesList[faixaAtual]))
             {
                 Move(new Vector2(3, 0));
@@ -132,6 +138,12 @@ namespace TangoGames.RoadFighter.Levels
                     Location = new Vector2(_lanes.LanesList[faixaAtual], Location.Y);
                 }
             }
+
+            if (faixaAtual == faixaAnterior && (int)Location.X == (int)_lanes.LanesList[faixaAtual])
+            {
+                angulo = 0;
+            }
+
 
             //if (Location.X == listadepistas[faixaAtual]  )
             //{
