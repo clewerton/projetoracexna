@@ -15,7 +15,7 @@ namespace TangoGames.RoadFighter.Levels
     public class HUD
     {
         public int pontos = 0;     // total de pomntos do player
-        public float gasolina = 20; // quantidade de gasolina do herói
+        public float gasolina = 100; // quantidade de gasolina do herói
         float angulacaoGasolina = 82;
         float angulacaoVelocidade = -115;
        
