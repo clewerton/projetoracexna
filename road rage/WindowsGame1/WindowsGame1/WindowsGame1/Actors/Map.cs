@@ -26,7 +26,7 @@ namespace TangoGames.RoadFighter.Actors
         event EventHandler<CollisionEventArgs > ColisionsOccours;
         event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
         event EventHandler<ChangeRoadEventArgs> ChangeRoadType;
-        IDrawableActor Road { get; set; }
+        IDrawableActor Road { get; }
     }
 
     /// <summary>
@@ -41,16 +41,17 @@ namespace TangoGames.RoadFighter.Actors
             this.scene=scene;
 
             //gera background
-            background1 = new BackGround(scene.Game, scene.currentSpriteBatch);
-            background2 = new BackGround(scene.Game, scene.currentSpriteBatch);
-            adjustNext(background1, ref background2);
+            FifoBackground = new MyFifo<IDrawableActor>();
+            FifoBackground.Enqueue(new BackGround(scene.Game, scene.currentSpriteBatch));
+            FifoBackground.Enqueue(new BackGround(scene.Game, scene.currentSpriteBatch));
+            adjustNext(FifoBackground);
 
             //gera instancia de gestor de estradas
             roads = new RoadManager(scene);
-
-            current = roads.CurrentRoad;
-            next = roads.NextRoad();
-            adjustNext(current, ref next);
+            FifoRoad = new MyFifo<IDrawableActor>();
+            FifoRoad.Enqueue(roads.CurrentRoad);
+            FifoRoad.Enqueue(roads.NextRoad());
+            adjustNext(FifoRoad);
 
             actors = new DrawAbleActorCollection(scene.Game);
 
@@ -80,27 +81,24 @@ namespace TangoGames.RoadFighter.Actors
             if (velocity.Y > _maxSpeed) velocity = new Vector2(velocity.X, _maxSpeed);
 
             //Atualiza rolagem das estradas e background
-            background1.Location += velocity;
-            background1.Update(gameTime);
-            background2.Location += velocity;
-            background2.Update(gameTime);
-
-            current.Location += velocity;
-            current.Update(gameTime);
-            next.Location += velocity;
-            next.Update(gameTime);
-
-            if (!adjustPosition(ref background1, ref background2)) adjustPosition(ref background2, ref background1);
-
-
-            if (adjustPosition(ref current, ref next))
+            foreach (IDrawableActor bkg in FifoBackground)
             {
-                current = next;
-                next = roads.NextRoad();
-                adjustNext(current, ref next);
+                bkg.Location += velocity;
+                bkg.Update(gameTime);
+            }
+            foreach (IDrawableActor road in FifoRoad)
+            {
+                road.Location += velocity;
+                road.Update(gameTime);
+            }
+
+            adjustPosition(FifoBackground, true );
+
+            if (adjustPosition(FifoRoad , false))
+            {
                 //raise event roadchange
                 if (ChangeRoadType != null)
-                    ChangeRoadType(this, new ChangeRoadEventArgs( ((IRoad)current).Lanes , ((StraightRoad)current).RoadType  ));
+                    ChangeRoadType(this, new ChangeRoadEventArgs(((IRoad)FifoRoad.First()).Lanes, ((StraightRoad)FifoRoad.First()).RoadType));
             }
 
             foreach (IDrawableActor actor in actors)
@@ -145,10 +143,8 @@ namespace TangoGames.RoadFighter.Actors
 
         public override void Draw(GameTime gameTime)
         {
-            background1.Draw(gameTime);
-            background2.Draw(gameTime);
-            current.Draw(gameTime);
-            next.Draw(gameTime);
+            foreach (IDrawableActor bkg in FifoBackground) bkg.Draw(gameTime);
+            foreach (IDrawableActor road in FifoRoad) road.Draw(gameTime);
             actors.Draw(gameTime);
         }
 
@@ -169,19 +165,28 @@ namespace TangoGames.RoadFighter.Actors
             _safeRemoveList.Clear();
         }
 
-        private bool adjustPosition(ref IDrawableActor cur, ref IDrawableActor nex)
+        private bool adjustPosition(MyFifo<IDrawableActor> fifo, bool enqueue)
         {
-            if (cur.Bounds.Top > scene.Game.Window.ClientBounds.Bottom  )
+            if ( fifo.Peek().Bounds.Top > scene.Game.Window.ClientBounds.Bottom)
             {
-                adjustNext(nex, ref cur);
+                if (enqueue) 
+                {
+                    fifo.Enqueue(fifo.Dequeue());
+                }
+                else
+                { 
+                    fifo.Dequeue();
+                    fifo.Enqueue(roads.NextRoad());
+                }
+                adjustNext(fifo);
                 return true;
             }
             return false;
         }
 
-        private void adjustNext(IDrawableActor cur, ref IDrawableActor nex)
+        private void adjustNext(MyFifo<IDrawableActor> fifo)
         {
-            nex.Location = new Vector2(nex.Bounds.X , cur.Location.Y - nex.Bounds.Height);
+            fifo.Last().Location = new Vector2(fifo.Last.Bounds.X, fifo.SecondLast.Location.Y - fifo.Last.Bounds.Height);
         }
 
         #region Map Properties
@@ -211,11 +216,7 @@ namespace TangoGames.RoadFighter.Actors
         {
             get
             {
-                return current;
-            }
-            set
-            {
-                current = value;
+                return FifoRoad.First();
             }
         }
 
@@ -224,10 +225,11 @@ namespace TangoGames.RoadFighter.Actors
         #region Map Fields
         private DrawAbleActorCollection actors;
         private Vector2 velocity;
-        private IDrawableActor background1;
-        private IDrawableActor background2;
-        private IDrawableActor current;
-        private IDrawableActor next;
+
+        //filas de fundo e estrada
+        private MyFifo <IDrawableActor> FifoBackground;
+        private MyFifo <IDrawableActor> FifoRoad;
+
         //private SpriteBatch spritebatch;
         private float _acceleration = 0.05F;
         private int _maxSpeed = 15;
@@ -282,6 +284,22 @@ namespace TangoGames.RoadFighter.Actors
                 SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
             }
         }
+
+        private class MyFifo<T> : Queue<T> 
+        { 
+            public T Last { get; private set; }
+            public T SecondLast { get; private set; }
+            public T Fist { get { return base.Peek(); } }
+ 
+            public new void Enqueue(T item) 
+            {
+                SecondLast = Last;
+                Last = item;
+ 
+                base.Enqueue(item);
+            } 
+        } 
+ 
 
     }
     

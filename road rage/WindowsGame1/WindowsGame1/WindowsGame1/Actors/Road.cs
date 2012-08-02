@@ -117,14 +117,14 @@ namespace TangoGames.RoadFighter.Actors
                     return 0.0F;
                 case RoadTypes.Road4to3:
                     lanes = new TreeLanes();
-                    return -25.0F;
+                    return 0.0F;
                 case RoadTypes.Road3:
                 case RoadTypes.Road3Clone:
                     lanes = new TreeLanes();
                     return 0.0F;
                 case RoadTypes.Road3to2:
                     lanes = new TwoLanes();
-                    return -155.0F;
+                    return 0.0F;
                 case RoadTypes.Road2:
                 case RoadTypes.Road2Clone:
                     lanes = new TwoLanes();
@@ -134,7 +134,7 @@ namespace TangoGames.RoadFighter.Actors
                     return 0.0F;
                 case RoadTypes.Road3to4:
                     lanes = new TreeLanes();
-                    return -125.0F;
+                    return 0.0F;
                 default:
                     return 0.0F;
             }
