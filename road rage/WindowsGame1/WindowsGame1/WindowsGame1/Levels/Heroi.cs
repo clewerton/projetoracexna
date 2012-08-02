@@ -12,7 +12,7 @@ using TangoGames.RoadFighter.Actors;
 
 namespace TangoGames.RoadFighter.Levels
 {
-    public class Heroi : BasicDrawingActor, ICollidable 
+    public class Heroi : BasicDrawingActor, ICollidable , IChangeLanelistener 
     {
         private Game game;
 
@@ -141,13 +141,14 @@ namespace TangoGames.RoadFighter.Levels
         #region Controle de Pistas
 
         private ILanes _lanes;
-        public ILanes CurrentRoad 
-        { get { return _lanes; } 
-          set 
-          { 
-              _lanes = value;
-              faixaAtual = XtoLane(Location.X);
-          } 
+        public ILanes CurrentLanes { get { return _lanes; }  }
+        public ILanes NewLanes
+        {
+            set
+            {
+                _lanes = value;
+                faixaAtual = XtoLane(Location.X);
+            }
         }
 
         private int XtoLane(float x)

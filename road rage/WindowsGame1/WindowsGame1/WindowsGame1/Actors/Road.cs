@@ -133,7 +133,6 @@ namespace TangoGames.RoadFighter.Actors
     {
         StraightRoad NextRoad();
         StraightRoad CurrentRoad { get; }
-
     }
 
     public class RoadManager:GameComponent, IRoadManager
@@ -232,10 +231,17 @@ namespace TangoGames.RoadFighter.Actors
 
     #region Road & Lanes
 
+    public interface IChangeLanelistener : IDrawableActor
+    {
+        ILanes NewLanes { set; }
+        ILanes CurrentLanes { get; }
+    }
+
     public interface IRoad
     {
         ILanes Lanes { get; set; }
     }
+
     public interface ILanes
     {
         List<int> LanesList { get; set; }

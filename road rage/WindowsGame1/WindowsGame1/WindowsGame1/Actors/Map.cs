@@ -27,6 +27,9 @@ namespace TangoGames.RoadFighter.Actors
         event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
         event EventHandler<ChangeRoadEventArgs> ChangeRoadType;
         IDrawableActor Road { get; }
+        void ChangeLaneRegister(IChangeLanelistener listener);
+        void ChangeLaneUnRegister(IChangeLanelistener listener);
+
     }
 
     /// <summary>
@@ -58,6 +61,8 @@ namespace TangoGames.RoadFighter.Actors
             actors = new DrawAbleActorCollection(scene.Game);
 
             _safeRemoveList = new List<IDrawableActor>();
+
+            listenersChangeLane = new List<IChangeLanelistener>() ;
 
         }
 
@@ -92,6 +97,11 @@ namespace TangoGames.RoadFighter.Actors
             {
                 road.Location += velocity;
                 road.Update(gameTime);
+                foreach (IChangeLanelistener cll in listenersChangeLane)
+                {
+                    if (road.Bounds.Bottom >= cll.Bounds.Y && road.Bounds.Top <= cll.Bounds.Y && cll.CurrentLanes != ((IRoad)road).Lanes)
+                            cll.NewLanes = ((IRoad)road).Lanes;
+                }
             }
 
             adjustPosition(FifoBackground, true );
@@ -237,6 +247,9 @@ namespace TangoGames.RoadFighter.Actors
         //Current Scene 
         private Scene scene;
 
+        //
+        private List<IChangeLanelistener> listenersChangeLane;
+
         #endregion
 
         #region Collision
@@ -263,6 +276,16 @@ namespace TangoGames.RoadFighter.Actors
         public event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
 
         #endregion
+
+        public void ChangeLaneRegister(IChangeLanelistener listener)
+        {
+            listenersChangeLane.Add(listener);
+        }
+
+        public void ChangeLaneUnRegister(IChangeLanelistener listener)
+        {
+            listenersChangeLane.Remove(listener);
+        }
 
         public event EventHandler<ChangeRoadEventArgs> ChangeRoadType;
 
@@ -300,8 +323,6 @@ namespace TangoGames.RoadFighter.Actors
  
 
     }
-    
-
 
     /// <summary>
     /// Classe para eventos colisão entre atores
