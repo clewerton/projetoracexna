@@ -107,7 +107,7 @@ namespace TangoGames.RoadFighter.Levels
 
         private void movimentaHeroi()
         {
-            if ((faixaAnterior <= faixaAtual) && (Location.X < _lanes.LanesList [faixaAtual]))
+            if ((faixaAnterior <= faixaAtual) && (Location.X < _lanes.LanesList[faixaAtual]))
             {
                 Move(new Vector2(3, 0));
                 angulo = (float)0.1;
@@ -199,9 +199,16 @@ namespace TangoGames.RoadFighter.Levels
             //heroi bateu do lado esquerdo do carro inimigo
             if ( (enemy.Location.X != Location.X) && ( XtoLane ( enemy.Location.X ) != faixaAnterior ) )
             {
-                int temp = faixaAnterior;
-                faixaAnterior = faixaAtual;
-                faixaAtual = temp;
+                if (faixaAnterior > _lanes.LastIndex)
+                {
+                    map.Velocity = new Vector2(map.Velocity.X , 0);
+                }
+                else
+                {
+                    int temp = faixaAnterior;
+                    faixaAnterior = faixaAtual;
+                    faixaAtual = temp;
+                }
             }
         }
 

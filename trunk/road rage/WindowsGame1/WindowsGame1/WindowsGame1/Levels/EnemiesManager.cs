@@ -119,7 +119,7 @@ namespace TangoGames.RoadFighter.Levels
         {
             tempodecorrido += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (tempodecorrido >= 5000 && EnemiesNotActive.Count()>0)
+            if (tempodecorrido >= 2000 && EnemiesNotActive.Count()>0)
             {
                 tempodecorrido = 0;
 
@@ -178,8 +178,10 @@ namespace TangoGames.RoadFighter.Levels
 
         public void EnemyHit(Enemy hit, Enemy reached)
         {
-            hit.Velocity  = reached.Velocity + new Vector2(0, (float)random.NextDouble());
+            hit.Velocity = reached.Velocity + new Vector2(0, (float)random.NextDouble());
+            reached.Velocity = reached.Velocity - new Vector2(0, (float)random.NextDouble());
             if (hit.Velocity.Y > 0) { hit.Velocity = new Vector2(hit.Velocity.X,0); }
+            if (-reached.Velocity.Y > _maxSpeed) { reached.Velocity = new Vector2(0, -(float)_maxSpeed); }
 
         }
 
