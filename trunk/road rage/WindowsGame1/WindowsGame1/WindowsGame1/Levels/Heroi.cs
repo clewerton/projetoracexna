@@ -144,6 +144,18 @@ namespace TangoGames.RoadFighter.Levels
         private ILanes _lanes;
         public ILanes CurrentRoad { get { return _lanes; } set {  _lanes = value; } }
 
+        private int XtoLane(float x)
+        {
+            int lane = 0;
+
+            while ( ( x > _lanes.LanesList[lane] ) && ( lane < _lanes.LastIndex ) )
+            {
+                lane++;                
+            }
+
+            return lane;
+        }
+
         #endregion
 
         #region Collision implementation
@@ -177,7 +189,7 @@ namespace TangoGames.RoadFighter.Levels
             }
 
             //heroi bateu do lado esquerdo do carro inimigo
-            if (enemy.Location.X != Location.X) 
+            if ( (enemy.Location.X != Location.X) && ( XtoLane ( enemy.Location.X ) != faixaAnterior ) )
             {
                 int temp = faixaAnterior;
                 faixaAnterior = faixaAtual;

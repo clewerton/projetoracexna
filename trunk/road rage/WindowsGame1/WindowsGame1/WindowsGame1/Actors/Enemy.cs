@@ -26,7 +26,6 @@ namespace TangoGames.RoadFighter.Actors
             this.etype = etype;
             this.SpriteBatch = scene.currentSpriteBatch;
             Collidable = true;
-
         }
 
         public static Texture2D TextureEnemy(Game game, EnemyTypes etype)
