@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TangoGames.RoadFighter.Scenes;
+﻿using TangoGames.RoadFighter.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TangoGames.RoadFighter.Widgets;
@@ -19,9 +15,9 @@ namespace TangoGames.RoadFighter.Levels
                 + "    Clewerton Coelho\n"
                 + "    Diogo Honorato\n"
                 + "    Humberto Anjos\n"
-                + "\n"
+                + "\n\n"
                 + "Professor:\n"
-                + "    Cléber Tavares\n";
+                + "    Cléber Tavares";
             Elements.Add(TextArea);
             
             Back = new Button(Game);
