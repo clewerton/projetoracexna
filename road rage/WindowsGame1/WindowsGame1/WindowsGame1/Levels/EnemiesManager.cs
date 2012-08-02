@@ -36,7 +36,7 @@ namespace TangoGames.RoadFighter.Levels
             _currentScene = scene;
 
             //cria definicão de pistas inicial deve ser atualizado pelo método CurrentRoad
-            _lanes = new FourLanes(); 
+            _lanes = new FourLanes(0); 
 
             //lista de inimigos fora de ação
             _ListofEnemies = new List<IEnemy>();
@@ -178,7 +178,7 @@ namespace TangoGames.RoadFighter.Levels
 
         public void EnemyHit(Enemy hit, Enemy reached)
         {
-            hit.Velocity = reached.Velocity + new Vector2(0, (float)random.NextDouble());
+            hit.Velocity = reached.Velocity +new Vector2(0, (float)random.NextDouble());
             reached.Velocity = reached.Velocity - new Vector2(0, (float)random.NextDouble());
             if (hit.Velocity.Y > 0) { hit.Velocity = new Vector2(hit.Velocity.X,0); }
             if (-reached.Velocity.Y > _maxSpeed) { reached.Velocity = new Vector2(0, -(float)_maxSpeed); }

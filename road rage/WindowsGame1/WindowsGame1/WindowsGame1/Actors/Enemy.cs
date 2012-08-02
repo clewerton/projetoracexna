@@ -29,7 +29,7 @@ namespace TangoGames.RoadFighter.Actors
             this.etype = etype;
             this.SpriteBatch = scene.currentSpriteBatch;
             Collidable = true;
-            _lanes = new FourLanes();
+            _lanes = new FourLanes(0);
         }
 
         public override void Update(GameTime gameTime)

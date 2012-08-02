@@ -34,14 +34,13 @@ namespace TangoGames.RoadFighter.Levels
 
         private IInputService input;
 
+        private Random random;
+
         public Heroi(Game game, Vector2 dimensions, SpriteBatch spriteBatch)
             : base(game, game.Content.Load<Texture2D>("Textures/CarroHeroi"))
         {
             this.game = game;
             Collidable = true;
-
-            //cria definicão de pistas inicial deve ser atualizado pelo método CurrentRoad
-            _lanes = new FourLanes(); 
 
             //Move(new Vector2(listadepistas.ElementAt(1), 0));
 
@@ -55,6 +54,10 @@ namespace TangoGames.RoadFighter.Levels
 
             _fixY = game.Window.ClientBounds.Height - (Texture.Height * 2);
 
+            Location= new Vector2( game.Window.ClientBounds.Width / 2 , _fixY);
+
+            int TheSeed = (int)DateTime.Now.Ticks;
+            random = new Random(TheSeed);
         }
 
 
@@ -187,6 +190,7 @@ namespace TangoGames.RoadFighter.Levels
             if (enemy.Location.Y < Location.Y)
             {
                 map.Velocity = -(enemy.Velocity + new Vector2(0, 1));
+                enemy.Velocity += new Vector2(0, -(float)random.NextDouble());
             }
             else
             {
