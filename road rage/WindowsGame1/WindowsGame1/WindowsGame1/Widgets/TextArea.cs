@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using TangoGames.RoadFighter.Utils;
 
 namespace TangoGames.RoadFighter.Widgets
 {
@@ -11,7 +8,10 @@ namespace TangoGames.RoadFighter.Widgets
     {
         public TextArea(Game game) : base(game)
         {
-            Background = new Color(Color.Gray.R, Color.Gray.G, Color.Gray.B, 0.2f);
+            Shader = new Texture2D(Game.GraphicsDevice, 1, 1);
+            Shader.SetData(new Color[] { Color.Transparent });
+
+            Background = Color.Gray;
             Foreground = Color.White;
             Padding = 5;
             Font = Game.Content.Load<SpriteFont>("arial");
@@ -23,37 +23,38 @@ namespace TangoGames.RoadFighter.Widgets
         {
             SpriteBatch.Begin();
 
-            SpriteBatch.Draw(Texture, new Rectangle(Location.X, Location.Y, (int) Size.X, (int) Size.Y), Color.White);
+            SpriteBatch.Draw(Shader, new Rectangle(Location.X, Location.Y, (int) Size.X, (int) Size.Y), Background);
             SpriteBatch.DrawString(Font, Text, new Vector2(Location.X + Padding, Location.Y + Padding), Foreground);
 
             SpriteBatch.End();
         }
 
-        private Texture2D _texture;
-        public Texture2D Texture
-        {
-            get
-            {
-                if (_texture == null)
-                {
-                    var dummyTexture = new Texture2D(Game.GraphicsDevice, 1, 1);
-                    dummyTexture.SetData(new Color[] { Color.FromNonPremultiplied(Background.R, Background.G, Background.B, Background.A) });
-
-                    return dummyTexture;
-                }
-
-                return _texture;
-            }
-            set { _texture = value; }
-        }
-
         public Point Location { get; set; }
+
         public Vector2 Size 
         {
-            get {
+            get 
+            {
                 return Font.MeasureString(Text) + new Vector2(2 * Padding, 2 * Padding); 
             }
         }
+
+        public int Alpha 
+        { 
+            get
+            {
+                var data = new Color[1];
+                Shader.GetData(data);
+
+                return data[0].A;
+            }
+            set
+            {
+                Shader.SetData(new Color[] { Color.Transparent.WithAlpha(value) });
+            }
+        }
+        
+        private Texture2D Shader { get; set; }
         public Color Background { get; set; }
         public Color Foreground { get; set; }
         public int Padding { get; set; }
