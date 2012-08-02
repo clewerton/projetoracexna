@@ -17,7 +17,7 @@ namespace TangoGames.RoadFighter.Levels
 
             var actorFactory = GetService<IActorFactory<MainGame.ActorTypes, IDrawableActor>>();
 
-            map = new Map(Game);
+            map = new Map(this);
             hud = new HUD(Game.Content, map);
             enemies = new EnemiesManager(this);
 
@@ -36,6 +36,7 @@ namespace TangoGames.RoadFighter.Levels
             base.LoadContent();
 
             map.ColisionsOccours += OnColisionsOccours;
+            map.ChangeRoadType += OnChangeRoad;
 
             //inicia a geração de inimigos na estrada
             enemies.startGeneration(map);
@@ -71,28 +72,17 @@ namespace TangoGames.RoadFighter.Levels
             SpriteBatch.End();
         }
 
+        public void OnChangeRoad(Object sender, ChangeRoadEventArgs  args)
+        {
+            ((Heroi)hero).CurrentRoad = args.CurrentLanes;
+        }
+
+
         #region colision
 
         public void OnColisionsOccours(Object sender, CollisionEventArgs args)
         {
             //Console.WriteLine(args.ColliderA + " bateu no ator " + args.ColliderB);
-   
-            #region colisão do heroi com a estrada
-            //colisão com a estrada joga a configuração da nova estrada para 
-            //o carro do heroi
-            if (args.ColliderA is IRoad && args.ColliderB is Heroi) 
-            {
-                args.ColliderA.Collidable = false;
-                ((Heroi)args.ColliderB).CurrentRoad = ((IRoad)args.ColliderA).Lanes;
-                return;
-            }
-            if (args.ColliderB is IRoad && args.ColliderA is Heroi)
-            {
-                args.ColliderB.Collidable = false;
-                ((Heroi)args.ColliderB).CurrentRoad = ((IRoad)args.ColliderB).Lanes;
-                return;
-            }
-            #endregion
 
             #region colisão do heroi com carro inimigo
             if (args.ColliderA is IEnemy && args.ColliderB is Heroi) 

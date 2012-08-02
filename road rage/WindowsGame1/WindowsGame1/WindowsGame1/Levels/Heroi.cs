@@ -53,7 +53,6 @@ namespace TangoGames.RoadFighter.Levels
 
             input = (IInputService)game.Services.GetService(typeof(IInputService));
 
-
             _fixY = game.Window.ClientBounds.Height - (Texture.Height * 2);
 
         }
@@ -142,7 +141,14 @@ namespace TangoGames.RoadFighter.Levels
         #region Controle de Pistas
 
         private ILanes _lanes;
-        public ILanes CurrentRoad { get { return _lanes; } set {  _lanes = value; } }
+        public ILanes CurrentRoad 
+        { get { return _lanes; } 
+          set 
+          { 
+              _lanes = value;
+              faixaAtual = XtoLane(Location.X);
+          } 
+        }
 
         private int XtoLane(float x)
         {
@@ -150,7 +156,7 @@ namespace TangoGames.RoadFighter.Levels
 
             while ( ( x > _lanes.LanesList[lane] ) && ( lane < _lanes.LastIndex ) )
             {
-                lane++;                
+                lane++;
             }
 
             return lane;
