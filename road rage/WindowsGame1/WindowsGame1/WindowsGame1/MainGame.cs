@@ -6,6 +6,7 @@ using TangoGames.RoadFighter.Actors;
 using TangoGames.RoadFighter.Input;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
+using TangoGames.RoadFighter.Shared;
 
 namespace TangoGames.RoadFighter
 {
@@ -47,6 +48,7 @@ namespace TangoGames.RoadFighter
             StartInputService(); // detecção de input
             StartSceneManager(); // o gerenciamento de cenas
             StartActorFactory(); // fábrica de atores
+            StartSharedState();  // o estado global das cenas
 
             // inicializa todos os componentes registrados no jogo
             base.Initialize();
@@ -60,9 +62,11 @@ namespace TangoGames.RoadFighter
         protected override void Update(GameTime gameTime)
         {
             Window.Title = _graphics.PreferredBackBufferWidth.ToString();
-            var sceneManager = (ISceneManagerService<MainGame.Scenes>) Services.GetService(typeof(ISceneManagerService<MainGame.Scenes>));
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            var sceneManager = (ISceneManagerService<MainGame.Scenes>) Services.GetService(typeof(ISceneManagerService<MainGame.Scenes>));
+            var input = (IInputService) Services.GetService(typeof (IInputService));
+
+            if (input.KeyPressOnce(Keys.Space)) // espaço pausa a cena corrente
             {
                 var current = sceneManager.Current;
                 if (current.Paused)
@@ -120,6 +124,14 @@ namespace TangoGames.RoadFighter
 
             // se registra como GameComponent
             Components.Add(inputservice);
+        }
+
+        private void StartSharedState()
+        {
+            var sharedState = new SharedState();
+
+            // se registra como serviço
+            Services.AddService(typeof(ISharedState), sharedState);
         }
     }
 }
