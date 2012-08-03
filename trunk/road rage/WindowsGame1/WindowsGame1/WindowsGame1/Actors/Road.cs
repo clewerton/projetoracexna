@@ -14,6 +14,8 @@ namespace TangoGames.RoadFighter.Actors
         private Scene scene;
         private RoadTypes roadtype;
         private int ajuste;
+        int roadsign = 0 ;
+        private BasicDrawingActor sign1;
 
         public RoadTypes RoadType { get { return roadtype; } }
 
@@ -44,14 +46,24 @@ namespace TangoGames.RoadFighter.Actors
         {
             ajuste = (scene.Game.Window.ClientBounds.Width / 2) - (Bounds.Width / 2);
             ajuste += (int) ValorAjuste();
+            sign1  = new Sign1(scene.Game,scene.currentSpriteBatch );
         }
 
 
-        public override void Update(GameTime gameTime) { }
+        public override void Update(GameTime gameTime) 
+        {
+            sign1.Location = new Vector2((float)roadsign, Location.Y + Bounds.Height / 2);
+        }
 
         public override void Draw(GameTime gameTime)
         {
             SpriteBatch.Draw(Texture, new Rectangle((int)(Location.X + ajuste), (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
+
+            if ( roadsign > 0 ) 
+            {
+                sign1.Draw(gameTime);
+            }
+
         }
         public StraightRoad Clone()
         {
@@ -129,6 +141,21 @@ namespace TangoGames.RoadFighter.Actors
             }
         }
 
+        public int RoadSign { get { return roadsign; } set { roadsign=value; } }
+
+        private class Sign1 : BasicDrawingActor
+        {
+            public Sign1(Game game, SpriteBatch spriteBatch)
+                : base(game, game.Content.Load<Texture2D>("Textures/setaPista"))
+            {
+                this.SpriteBatch = spriteBatch;
+            }
+            public override void Draw(GameTime gameTime)
+            {
+                SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
+            }
+        }
+
     }
 
 
@@ -185,14 +212,14 @@ namespace TangoGames.RoadFighter.Actors
             //AddInNextList(RoadTypes.Road4to3, new RoadTypes[] { RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3to4 });
 
             //estrada 3 pistas
-            AddInNextList(RoadTypes.Road3, new RoadTypes[] { RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3to2, RoadTypes.Road3, RoadTypes.Road3to2, RoadTypes.Road3to4 });
+            AddInNextList(RoadTypes.Road3, new RoadTypes[] { RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3to2, RoadTypes.Road3, RoadTypes.Road3to2, RoadTypes.Road3to4, RoadTypes.Road3to4, RoadTypes.Road3to4 });
 
             //estrada 3 p/ 2 pistas
-            AddInNextList(RoadTypes.Road3to2, new RoadTypes[] { RoadTypes.Road2 });
+            AddInNextList(RoadTypes.Road3to2, new RoadTypes[] { RoadTypes.Road2 , RoadTypes.Road2to3  });
             //AddInNextList(RoadTypes.Road3to2, new RoadTypes[] { RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2to3 });
 
             //estrada 2 pistas
-            AddInNextList(RoadTypes.Road2, new RoadTypes[] { RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2to3 });
+            AddInNextList(RoadTypes.Road2, new RoadTypes[] { RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2to3 });
 
             //estrada 2 p/ 3 pistas
             AddInNextList(RoadTypes.Road2to3, new RoadTypes[] { RoadTypes.Road3});
@@ -214,10 +241,13 @@ namespace TangoGames.RoadFighter.Actors
 
         public StraightRoad NextRoad()
         {
-            int index = random.Next(NextList[current ].NextRoads.Count);
+            int contLaneAnt = RoadList[ current ].Lanes.Count;
+
+            int index = random.Next ( NextList[ current ].NextRoads.Count);
+            
             current = NextList[current].NextRoads[index];
 
-            return RoadList [current ].Clone() ;
+            return RoadList[current].Clone();
         }
 
         public StraightRoad CurrentRoad { get { return RoadList [current ].Clone()  ; } }
@@ -235,6 +265,7 @@ namespace TangoGames.RoadFighter.Actors
                 this.roadtype = roadtype;
             }
         }
+
     }
 
     #endregion
@@ -251,6 +282,7 @@ namespace TangoGames.RoadFighter.Actors
     public interface IRoad
     {
         ILanes Lanes { get; set; }
+        int RoadSign { get; set; }
     }
 
     public interface ILanes

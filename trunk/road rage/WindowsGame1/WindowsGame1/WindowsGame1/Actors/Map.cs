@@ -189,10 +189,26 @@ namespace TangoGames.RoadFighter.Actors
                 { 
                     fifo.Dequeue();
                     fifo.Enqueue(roads.NextRoad());
+                    CheckRoadSign (fifo);
                 }
                 return true;
             }
             return false;
+        }
+
+
+        /// <summary>
+        /// Atualiza a Estada que conterá a sinalização no chão
+        /// </summary>
+        /// <param name="fifo"></param>
+        private void CheckRoadSign(MyFifo fifo) 
+        {
+            if (((IRoad)fifo.Last).Lanes.Count < ((IRoad)fifo.SecondLast).Lanes.Count)
+            {
+                int lane = ((IRoad)fifo.SecondLast).Lanes.LastIndex;
+                int X = ((IRoad)fifo.SecondLast).Lanes.LanesList[lane];
+                ((IRoad)fifo.SecondLast).RoadSign = X;
+            }
         }
 
         #region Map Properties
