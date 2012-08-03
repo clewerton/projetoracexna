@@ -121,6 +121,21 @@ namespace TangoGames.RoadFighter.Levels
         {
             //tempodecorrido += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
+            if (_lanes.Count == 2)
+            {
+                maxEnemies = 1;
+            }
+            else if (_lanes.Count == 3)
+            {
+                maxEnemies = 2;
+            }
+            else
+            {
+                maxEnemies = 3;
+            }
+                
+
+
             if ( EnemiesActive.Count() <  maxEnemies && EnemiesNotActive.Count() >  0 )
             {
                 //tempodecorrido = 0;
