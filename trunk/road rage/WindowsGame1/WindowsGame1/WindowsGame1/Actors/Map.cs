@@ -12,9 +12,11 @@ using TangoGames.RoadFighter.Scenes;
 using TangoGames.RoadFighter.Levels;
 using TangoGames.RoadFighter.Actors ;
 
-
 namespace TangoGames.RoadFighter.Actors
 {
+    /// <summary>
+    /// Essa é Interface do Mapa controle dos elementos da cena
+    /// </summary>
     public interface IMap
     {
         void Add(IDrawableActor actor);
@@ -37,6 +39,8 @@ namespace TangoGames.RoadFighter.Actors
     /// </summary>
     public class Map : DrawableGameComponent, IMap
     {
+
+        #region Construção e inicialização
 
         public Map(Scene scene)
             : base(scene.Game)
@@ -77,6 +81,10 @@ namespace TangoGames.RoadFighter.Actors
             base.Initialize();
         }
 
+        #endregion
+
+        #region Área do Update do Map
+
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
@@ -88,30 +96,7 @@ namespace TangoGames.RoadFighter.Actors
             if (velocity.Y > _maxSpeed) velocity = new Vector2(velocity.X, _maxSpeed);
 
             //Atualiza rolagem das estradas e background
-            foreach (IDrawableActor bkg in FifoBackground)
-            {
-                bkg.Location += velocity;
-                bkg.Update(gameTime);
-            }
-            foreach (IDrawableActor road in FifoRoad)
-            {
-                road.Location += velocity;
-                road.Update(gameTime);
-                foreach (IChangeLanelistener cll in listenersChangeLane)
-                {
-                    if (road.Bounds.Bottom >= cll.Bounds.Y && road.Bounds.Top <= cll.Bounds.Y && cll.CurrentLanes.Count  != ((IRoad)road).Lanes.Count )
-                            cll.NewLanes = ((IRoad)road).Lanes;
-                }
-            }
-
-            adjustPosition(FifoBackground, true );
-
-            if (adjustPosition(FifoRoad , false))
-            {
-                //raise event roadchange
-                if (ChangeRoadType != null)
-                    ChangeRoadType(this, new ChangeRoadEventArgs(((IRoad)FifoRoad.First()).Lanes, ((StraightRoad)FifoRoad.First()).RoadType));
-            }
+            UpdateRoads(gameTime);
 
             foreach (IDrawableActor actor in actors)
             {
@@ -153,6 +138,52 @@ namespace TangoGames.RoadFighter.Actors
             SafeRemove();
         }
 
+        /// <summary>
+        /// Atualização das rolagem do fundo e da estrada
+        /// </summary>
+        /// <param name="gameTime">faixa de tempo do jogo</param>
+        private void UpdateRoads(GameTime gameTime)
+        {
+
+            //Atualiza a posição das imagems de fundo na fila
+            foreach (IDrawableActor bkg in FifoBackground)
+            {
+                bkg.Location += velocity;
+                bkg.Update(gameTime);
+            }
+
+            //Atualiza a posição das imagems das estradas na fila
+            foreach (IDrawableActor road in FifoRoad)
+            {
+                road.Location += velocity;
+                road.Update(gameTime);
+
+                //Processa a liata de ouvintes de troca de estrada atualiza a informação das pista para o ator ouvinte
+                foreach (IChangeLanelistener cll in listenersChangeLane)
+                {
+                    if (road.Bounds.Bottom >= cll.Bounds.Y && road.Bounds.Top <= cll.Bounds.Y && cll.CurrentLanes != ((IRoad)road).Lanes)
+                        cll.NewLanes = ((IRoad)road).Lanes;
+                }
+            }
+
+            //atuliza a rolagem de fundo
+            adjustPosition(FifoBackground, true);
+
+            //atualiza a rolagem de estradas
+            if (adjustPosition(FifoRoad, false))
+            {
+                //dispara o evento de troca de estrada
+                if (ChangeRoadType != null)
+                    ChangeRoadType(this, new ChangeRoadEventArgs(((IRoad)FifoRoad.First()).Lanes, ((StraightRoad)FifoRoad.First()).RoadType));
+            }
+
+        }
+
+
+        #endregion
+
+        #region metodos Interface IMAP
+
         public override void Draw(GameTime gameTime)
         {
             foreach (IDrawableActor bkg in FifoBackground) bkg.Draw(gameTime);
@@ -177,18 +208,33 @@ namespace TangoGames.RoadFighter.Actors
             _safeRemoveList.Clear();
         }
 
+        #endregion
+
+        #region Controle de Rolagem de atores
+
+        /// <summary>
+        /// Verifica se o primeiro elemento da fila saiu da tela e reposiciona para último da fila
+        /// e atualiza o posição para anterior ao penúltimo.
+        /// </summary>
+        /// <param name="fifo">Fila que será atualizada</param>
+        /// <param name="enqueue">Flag que indica modo de rolagem. True: rolagem simples( o primeiro movido para último ). False: GERAÇÃO DE ESTRADAS.  </param>
+        /// <returns></returns>
         private bool adjustPosition(MyFifo fifo, bool enqueue)
         {
             if ( fifo.Peek().Bounds.Top > scene.Game.Window.ClientBounds.Bottom)
             {
+
                 if (enqueue) 
                 {
+                    //move o primeiro para úlima posição da fila
                     fifo.Enqueue(fifo.Dequeue());
                 }
                 else
                 { 
+                    //GERAÇÃO DE ESTRADAS
                     fifo.Dequeue();
                     fifo.Enqueue(roads.NextRoad());
+                    //Verifica sinalização das estradas
                     CheckRoadSign (fifo);
                 }
                 return true;
@@ -221,6 +267,7 @@ namespace TangoGames.RoadFighter.Actors
             this.distancesign = distance;
             flagsign=true;
         }
+        #endregion
 
         #region Map Properties
         public Vector2 Velocity
@@ -259,7 +306,7 @@ namespace TangoGames.RoadFighter.Actors
         private DrawAbleActorCollection actors;
         private Vector2 velocity;
 
-        //filas de fundo e estrada
+        //filas para rolagem de fundo e estradas
         private MyFifo FifoBackground;
         private MyFifo FifoRoad;
 
@@ -308,6 +355,8 @@ namespace TangoGames.RoadFighter.Actors
 
         #endregion
 
+        #region ChangeRoad Event
+
         public void ChangeLaneRegister(IChangeLanelistener listener)
         {
             listener.NewLanes = ((IRoad)FifoRoad.First()).Lanes;
@@ -334,6 +383,10 @@ namespace TangoGames.RoadFighter.Actors
             }
         }
 
+        #endregion
+
+        #region MyFifo Class
+
         private class MyFifo : Queue<IDrawableActor> 
         {
             public IDrawableActor Last { get; private set; }
@@ -351,11 +404,13 @@ namespace TangoGames.RoadFighter.Actors
             {
                 Last.Location = new Vector2(Last.Bounds.X, SecondLast.Location.Y - Last.Bounds.Height);
             }
-        } 
- 
+        }
+
+        #endregion
 
     }
 
+    #region EventsArgs
     /// <summary>
     /// Classe para eventos colisão entre atores
     /// </summary>
@@ -395,7 +450,6 @@ namespace TangoGames.RoadFighter.Actors
 
     }
 
-
     /// <summary>
     /// Class para eventos de troca de tipo da estrada
     /// </summary>
@@ -414,5 +468,7 @@ namespace TangoGames.RoadFighter.Actors
         }
 
     }
+
+    #endregion
 
 }
