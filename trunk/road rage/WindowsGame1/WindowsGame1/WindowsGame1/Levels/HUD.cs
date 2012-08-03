@@ -106,7 +106,7 @@ namespace TangoGames.RoadFighter.Levels
            // angponteiro2 = calcularadianos(angulacaoVelocidade);
            // (velatual * 240) / velmax = x;
 
-            angulacaoVelocidade = (velocidadeatual * 230) / velocidademaxima;
+            angulacaoVelocidade = (velocidadeatual * 230) / 20; // regra de 3 pa calcular a angulação do ponteiro em relação a velocidade maxima
 
             angulacaoVelocidade = angulacaoVelocidade - 115;
 
