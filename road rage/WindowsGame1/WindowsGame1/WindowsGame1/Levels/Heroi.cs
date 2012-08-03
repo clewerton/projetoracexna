@@ -78,23 +78,17 @@ namespace TangoGames.RoadFighter.Levels
 
         public override void Draw(GameTime gameTime)
         {
-            //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height),null, Color.White);
-
-            //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
-
-            //versão akochada do honorato
-            //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, game.Window.ClientBounds.Height - Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
-
-            //versão tentando acertar com bounds
+            
             SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, (int)Location.Y + Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
-
-            //SpriteBatch.Draw(Texture, new Rectangle((int)Location.X + Texture.Width / 2, (int)Location.Y + Texture.Height, Bounds.Width, Bounds.Height), null, Color.White, (float)angulo, new Vector2(Texture.Width / 2, Texture.Height), SpriteEffects.None, 0);
-            //new Vector2(Texture.Width/2, Texture.Height)
 
             SpriteBatch.Draw(botaoEsquerda, retEsquerda, Color.White);
             SpriteBatch.Draw(botaoDireita, retDireita, Color.White);
         }
 
+
+        /// <summary>
+        /// Função de interface de comandos para usuário
+        /// </summary>
         private void controleHeroi()
         {
             if ((input.KeyPressOnce(Keys.Left) || input.MouseClick(retEsquerda)) && (targetLane > 0))
@@ -108,7 +102,9 @@ namespace TangoGames.RoadFighter.Levels
 
         }
 
-
+        /// <summary>
+        /// aplica a movimentação no herói
+        /// </summary>
         private void movimentaHeroi()
         
         {

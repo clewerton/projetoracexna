@@ -16,7 +16,7 @@ namespace TangoGames.RoadFighter.Levels
     {
         private IMap map;
 
-        public int pontos = 0;     // total de pomntos do player
+        public int pontos = 0;      // total de pomntos do player
         public float gasolina = 100; // quantidade de gasolina do herói
 
         private int[] marks = new int[] { 3000, 2000, 1500, 1000, 500, 0 };
@@ -42,9 +42,9 @@ namespace TangoGames.RoadFighter.Levels
         Texture2D marcadorPontos;
         Texture2D velocimetro;
         Texture2D ponteiro1;                // ponteiro do indicador de gasolina
-        Texture2D ponteiro2; // ponteiro para o velocimetro
+        Texture2D ponteiro2;                // ponteiro para o velocimetro
         SpriteFont Arial;
-        int contadordePontos = 0; // calcula o tempo decorrido para atribuição de pontos
+        int contadordePontos = 0;           // calcula o tempo decorrido para atribuição de pontos
         float tempodecorrido = 0;
 
 
@@ -71,8 +71,8 @@ namespace TangoGames.RoadFighter.Levels
 
             calculaparametros(gameTime);
 
-            ponteirogasolina(gameTime);
-            ponteirovelocidade(gameTime);
+            ponteirogasolina();
+            ponteirovelocidade();
 
 
         }
@@ -87,8 +87,7 @@ namespace TangoGames.RoadFighter.Levels
             spriteBatch.Draw(marcadorPontos, new Rectangle(0, 100, 204, 53), new Rectangle(18, 10, 204, 53), Color.White);
 
             spriteBatch.Draw(indicadorCombustivel, new Rectangle(30, 195, indicadorCombustivel.Width, indicadorCombustivel.Height), new Rectangle(0, 0, indicadorCombustivel.Width, indicadorCombustivel.Height), Color.White);
-            //spriteBatch.Draw(indicadorCombustivel, new Rectangle(30, 190, 171, 233), new Rectangle(18, 10, 171, 205), Color.White);
-
+            
             spriteBatch.Draw(ponteiro1, new Rectangle(65,305, 78, 6), null, Color.White, angponteiro1, new Vector2(0, ponteiro1.Height/2), SpriteEffects.None, 0);
 
             spriteBatch.Draw(velocimetro, new Rectangle(0, 200 + indicadorCombustivel.Height, velocimetro.Width, velocimetro.Height), Color.White);
@@ -96,9 +95,11 @@ namespace TangoGames.RoadFighter.Levels
             
         }
 
+        /// <summary>
+        /// Função controladora do comportamento do medidor de gasolina
+        /// </summary>
 
-
-        void ponteirogasolina(GameTime gametime) // calcula a angulacao do ponteiro
+        void ponteirogasolina() // calcula a angulacao do ponteiro
         {
             
 
@@ -108,28 +109,30 @@ namespace TangoGames.RoadFighter.Levels
 
             angulacaoGasolina = angulacaoGasolina + 41; // ajusta o valor do angulo em relacao ao desenho do ponteiro
 
-            angponteiro1 = calcularadianos(angulacaoGasolina);
+            angponteiro1 = calcularadianos(angulacaoGasolina);// converte de graus para radianos 
 
-            //radianos = (((float)Math.PI * angulacaoGasolina) / 180);       // converte de graus para radianos 
-
-
+            
         }
 
-
-        void ponteirovelocidade(GameTime gametime)
+        /// <summary>
+        /// Função controladora do comportamento do velocimetro
+        /// </summary>
+        void ponteirovelocidade()
         {
-           // angponteiro2 = calcularadianos(angulacaoVelocidade);
-           // (velatual * 240) / velmax = x;
-
+           
             angulacaoVelocidade = (velocidadeatual * 230) / 20; // regra de 3 pa calcular a angulação do ponteiro em relação a velocidade maxima
 
-            angulacaoVelocidade = angulacaoVelocidade - 115;
+            angulacaoVelocidade = angulacaoVelocidade - 115; // faz o ajuste em relação ao angulo máximo
 
             angponteiro2 = calcularadianos(angulacaoVelocidade);
 
         }
 
-
+        /// <summary>
+        /// função para converter graus em radianos
+        /// </summary>
+        /// <param name="angulo"></param>
+        /// <returns></returns>
         float calcularadianos(float angulo){
 
             angulo = (((float)Math.PI * angulo) / 180);
@@ -139,32 +142,31 @@ namespace TangoGames.RoadFighter.Levels
         }
         
        
-        void calculaparametros(GameTime gametime) // calcula a quantidade de pontos ganhos
+        /// <summary>
+        /// faz o calculo de parametros gerais
+        /// </summary>
+        /// <param name="gametime"></param>
+        void calculaparametros(GameTime gametime) 
         {
                         
-            //if( velocidade herói == velmax)   // verifica se a velocidade do heroi está maxima e contabiliza os pontos
-
             tempodecorrido += (float)gametime.ElapsedGameTime.TotalMilliseconds;
-
-
-            //pontos += (int)velocidadeatual;
-
-            pixel += (int)velocidadeatual;
+                       
+            pixel += (int)velocidadeatual; //adiciona por um segundo todos os pixels percorridos
            
 
-            if (tempodecorrido >= 1000)
+            if (tempodecorrido >= 1000) // if ocorrido a cada segundo
             {
                 tempodecorrido = 0;
-                contadordePontos = pixel / 20;
-                //contadordePontos += (int)velocidadeatual;
-                pontos += contadordePontos;
+                contadordePontos = pixel / 20; // converte pixel para metros aproximados
+                
+                pontos += contadordePontos;   // aumenta os metros percorridos por segundo no contador total
 
                 gasolina --;
 
                 pixel = 0;
             }
 
-            //pontos = contadordePontos * 10;
+            
             
             if (gasolina <= 0)
             {
