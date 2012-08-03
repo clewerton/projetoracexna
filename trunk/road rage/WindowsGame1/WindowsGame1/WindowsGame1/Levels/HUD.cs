@@ -14,8 +14,19 @@ namespace TangoGames.RoadFighter.Levels
 {
     public class HUD
     {
+        private IMap map;
+
         public int pontos = 0;     // total de pomntos do player
         public float gasolina = 100; // quantidade de gasolina do herói
+
+        private int[] marks = new int[] { 2000, 1500, 1000, 500, 0 };
+
+        private int nextmark = 0;
+
+        private int checkPoint = 2000;
+
+        private int distance = 0;
+
         float angulacaoGasolina = 82;
         float angulacaoVelocidade = -115;
 
@@ -40,6 +51,8 @@ namespace TangoGames.RoadFighter.Levels
         public HUD(ContentManager Content, IMap map)
         {
 
+            this.map = map;
+
             Arial = Content.Load<SpriteFont>("arial");
 
             velocidademaxima = map.MaxSpeed;
@@ -60,6 +73,8 @@ namespace TangoGames.RoadFighter.Levels
 
             ponteirogasolina(gameTime);
             ponteirovelocidade(gameTime);
+
+
         }
 
                     
@@ -112,9 +127,6 @@ namespace TangoGames.RoadFighter.Levels
 
             angponteiro2 = calcularadianos(angulacaoVelocidade);
 
-
-            
-
         }
 
 
@@ -162,6 +174,16 @@ namespace TangoGames.RoadFighter.Levels
 
                 gasolina = 0;
             }
+
+
+            //calculo da distancia para o check point
+            distance = checkPoint - contadordePontos;
+            if (marks[nextmark] > distance) 
+            {
+                map.FlagSign(marks[nextmark]);
+                nextmark++;
+            }
+
 
         }
         

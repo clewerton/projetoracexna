@@ -15,7 +15,9 @@ namespace TangoGames.RoadFighter.Actors
         private RoadTypes roadtype;
         private int ajuste;
         int roadsign = 0 ;
+        int distance = 0;
         private BasicDrawingActor sign1;
+        private BasicDrawingActor sign2;
 
         public RoadTypes RoadType { get { return roadtype; } }
 
@@ -47,12 +49,13 @@ namespace TangoGames.RoadFighter.Actors
             ajuste = (scene.Game.Window.ClientBounds.Width / 2) - (Bounds.Width / 2);
             ajuste += (int) ValorAjuste();
             sign1  = new Sign1(scene.Game,scene.currentSpriteBatch );
+            sign2  = new Sign2(scene.Game, scene.currentSpriteBatch);
         }
 
 
         public override void Update(GameTime gameTime) 
         {
-            sign1.Location = new Vector2((float)roadsign, Location.Y + Bounds.Height / 2);
+            //sign1.Location = new Vector2((float)roadsign, Location.Y + Bounds.Height / 2);
         }
 
         public override void Draw(GameTime gameTime)
@@ -61,10 +64,23 @@ namespace TangoGames.RoadFighter.Actors
 
             if ( roadsign > 0 ) 
             {
+                sign1.Location = new Vector2((float)roadsign, Location.Y + Bounds.Height / 3);
+                sign1.Draw(gameTime);
+                sign1.Location = new Vector2((float)roadsign, Location.Y + Bounds.Height*2 / 3);
                 sign1.Draw(gameTime);
             }
 
+            if (distance  > 0)
+            {
+                foreach (float item in lanes.LanesList )
+                {
+                    sign2.Location = new Vector2(item, Location.Y + Bounds.Height / 2);
+                    sign2.Draw(gameTime);                    
+                }
+            }
+
         }
+
         public StraightRoad Clone()
         {
             StraightRoad sr = new StraightRoad(scene, roadtype, this.Texture );
@@ -143,10 +159,25 @@ namespace TangoGames.RoadFighter.Actors
 
         public int RoadSign { get { return roadsign; } set { roadsign=value; } }
 
+        public int Distance { get { return distance; } set { distance=value;} }
+
         private class Sign1 : BasicDrawingActor
         {
             public Sign1(Game game, SpriteBatch spriteBatch)
                 : base(game, game.Content.Load<Texture2D>("Textures/setaPista"))
+            {
+                this.SpriteBatch = spriteBatch;
+            }
+            public override void Draw(GameTime gameTime)
+            {
+                SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
+            }
+        }
+
+        private class Sign2 : BasicDrawingActor
+        {
+            public Sign2(Game game, SpriteBatch spriteBatch)
+                : base(game, game.Content.Load<Texture2D>("Textures/sinalgasolina"))
             {
                 this.SpriteBatch = spriteBatch;
             }
@@ -283,6 +314,7 @@ namespace TangoGames.RoadFighter.Actors
     {
         ILanes Lanes { get; set; }
         int RoadSign { get; set; }
+        int Distance { get; set; }
     }
 
     public interface ILanes
@@ -364,4 +396,5 @@ namespace TangoGames.RoadFighter.Actors
     }
 
     #endregion
+
 }

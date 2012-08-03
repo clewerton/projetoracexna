@@ -133,8 +133,6 @@ namespace TangoGames.RoadFighter.Levels
             {
                 maxEnemies = 3;
             }
-                
-
 
             if ( EnemiesActive.Count() <  maxEnemies && EnemiesNotActive.Count() >  0 )
             {
@@ -247,7 +245,6 @@ namespace TangoGames.RoadFighter.Levels
                 {
                     args.OutActor.Outofscreen = false;
                 }
-
             }
         }
 
