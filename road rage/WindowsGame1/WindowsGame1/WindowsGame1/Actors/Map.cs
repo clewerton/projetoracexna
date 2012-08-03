@@ -25,7 +25,8 @@ namespace TangoGames.RoadFighter.Actors
         void Draw(GameTime gameTime);
         Vector2 Velocity {get; set; }
         int MaxSpeed { get; set; }
-        event EventHandler<CollisionEventArgs > ColisionsOccours;
+        int MaxSpeedGlobal { get; set; }
+        event EventHandler<CollisionEventArgs> ColisionsOccours;
         event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
         event EventHandler<ChangeRoadEventArgs> ChangeRoadType;
         IDrawableActor Road { get; }
@@ -270,35 +271,20 @@ namespace TangoGames.RoadFighter.Actors
         #endregion
 
         #region Map Properties
-        public Vector2 Velocity
-        {
-            get
-            {
-                return velocity;
-            }
-            set
-            {
-                velocity = value;
-            }
-        }
-        public int MaxSpeed
-        {
-            get
-            {
-                return _maxSpeed;
-            }
-            set
-            {
-                _maxSpeed = value;
-            }
-        }
-        public IDrawableActor Road
-        {
-            get
-            {
-                return FifoRoad.First();
-            }
-        }
+        
+        public Vector2 Velocity    { get { return velocity; }       set { velocity = value;  } }
+
+        /// <summary>
+        /// Velocidade máxima na sessão do check point
+        /// </summary>
+        public int MaxSpeed { get { return _maxSpeed; } set { _maxSpeed = value; } }
+
+        /// <summary>
+        /// Velocidade máxima global - máxima do jogo
+        /// </summary>
+        public int MaxSpeedGlobal  { get { return _maxSpeedGlobal; } set { _maxSpeedGlobal = value; } }
+
+        public IDrawableActor Road { get { return FifoRoad.First(); } }
 
         #endregion
 
@@ -313,6 +299,7 @@ namespace TangoGames.RoadFighter.Actors
         //private SpriteBatch spritebatch;
         private float _acceleration = 0.05F;
         private int _maxSpeed = 14;
+        private int _maxSpeedGlobal = 20;
         private List<IDrawableActor> _safeRemoveList;
 
         //roads manager
