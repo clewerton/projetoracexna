@@ -19,11 +19,11 @@ namespace TangoGames.RoadFighter.Levels
         public int pontos = 0;     // total de pomntos do player
         public float gasolina = 100; // quantidade de gasolina do herói
 
-        private int[] marks = new int[] { 2000, 1500, 1000, 500, 0 };
+        private int[] marks = new int[] { 3000, 2000, 1500, 1000, 500, 0 };
 
         private int nextmark = 0;
 
-        private int checkPoint = 2000;
+        private int checkPoint = 3000;
 
         private int distance = 0;
 
@@ -166,9 +166,6 @@ namespace TangoGames.RoadFighter.Levels
 
             //pontos = contadordePontos * 10;
             
-
-
-            
             if (gasolina <= 0)
             {
 
@@ -177,14 +174,12 @@ namespace TangoGames.RoadFighter.Levels
 
 
             //calculo da distancia para o check point
-            distance = checkPoint - contadordePontos;
-            if (marks[nextmark] > distance) 
+            distance = checkPoint - pontos;
+            if ( nextmark < marks.Count() &&  marks[nextmark] > distance) 
             {
                 map.FlagSign(marks[nextmark]);
                 nextmark++;
             }
-
-
         }
         
 
