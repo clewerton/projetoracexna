@@ -104,13 +104,13 @@ namespace TangoGames.RoadFighter
 
         private void StartActorFactory()
         {
-            var actorFactory = new ActorFactory<ActorTypes, IDrawableActor>(); 
-            actorFactory[ActorTypes.Car] = new Car(this, new Vector2(100, 100), _spriteBatch);
-            actorFactory[ActorTypes.Truck] = new Truck(this, new Vector2(85, 135), _spriteBatch);
-            actorFactory[ActorTypes.Hero] = new Heroi(this, new Vector2(72, 155), _spriteBatch);
+            //var actorFactory = new ActorFactory<ActorTypes, IDrawableActor>(); 
+            //actorFactory[ActorTypes.Car] = new Car(this, new Vector2(100, 100), _spriteBatch);
+            //actorFactory[ActorTypes.Truck] = new Truck(this, new Vector2(85, 135), _spriteBatch);
+            //actorFactory[ActorTypes.Hero] = new Heroi(this, new Vector2(72, 155), _spriteBatch);
 
-            // se registra como serviço
-            Services.AddService(typeof(IActorFactory<ActorTypes, IDrawableActor>), actorFactory);
+            //// se registra como serviço
+            //Services.AddService(typeof(IActorFactory<ActorTypes, IDrawableActor>), actorFactory);
         }
 
         private void StartInputService()

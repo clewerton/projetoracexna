@@ -35,10 +35,13 @@ namespace TangoGames.RoadFighter.Levels
 
         private Random random;
 
-        public Heroi(Game game, Vector2 dimensions, SpriteBatch spriteBatch)
+        private IMap map;
+
+        public Heroi(Game game, IMap map)
             : base(game, game.Content.Load<Texture2D>("Textures/CarroHeroi"))
         {
             this.game = game;
+            this.map = map;
             Collidable = true;
 
             //Move(new Vector2(listadepistas.ElementAt(1), 0));
@@ -117,22 +120,30 @@ namespace TangoGames.RoadFighter.Levels
 
             int dif = Math.Abs(targetX - (int)Location.X);
 
+            if (dif < ratioSpeed())
+            {
+                Location = new Vector2((float)targetX, Location.Y);
+                angulo = 0;
+                return;
+            }
+
+
             if ( Location.X < targetX )
             {
-                Move(new Vector2(3, 0));
+                Move(new Vector2(ratioSpeed(), 0));
                 angulo = (float)0.1;
             }
             else if ( Location.X > targetX )
-            {    
-                Move(new Vector2(-3, 0));
+            {
+                Move(new Vector2(-ratioSpeed(), 0));
                 angulo = -(float)0.1;
             }
-            if (dif < 3)
-            {
-                Location= new Vector2((float)targetX,Location.Y) ;
-                angulo = 0;
-            }
 
+        }
+
+        private float ratioSpeed()
+        {
+            return (1 + map.Velocity.Y / 4);
         }
 
         #region Controle de Pistas

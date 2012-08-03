@@ -254,7 +254,7 @@ namespace TangoGames.RoadFighter.Actors
 
         //private SpriteBatch spritebatch;
         private float _acceleration = 0.05F;
-        private int _maxSpeed = 15;
+        private int _maxSpeed = 20;
         private List<IDrawableActor> _safeRemoveList;
 
         //roads manager

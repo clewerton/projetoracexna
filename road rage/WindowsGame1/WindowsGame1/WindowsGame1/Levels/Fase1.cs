@@ -24,7 +24,7 @@ namespace TangoGames.RoadFighter.Levels
             //Atribui as pistas da estrada para o gestor de inimigos conhecer
             enemies.CurrentRoad = ((IRoad)map.Road).Lanes;
 
-            hero = actorFactory[MainGame.ActorTypes.Hero];
+            hero = new Heroi(Game, map);
             hero.SpriteBatch = this.SpriteBatch;
             hero.Velocity = Vector2.Zero;
             hero.Scrollable = true;
