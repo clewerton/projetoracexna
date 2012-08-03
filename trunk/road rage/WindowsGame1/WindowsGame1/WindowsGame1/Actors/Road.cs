@@ -17,7 +17,7 @@ namespace TangoGames.RoadFighter.Actors
         int roadsign = 0 ;
         int distance = 0;
         private BasicDrawingActor sign1;
-        private BasicDrawingActor sign2;
+        private Sign2 sign2;
 
         public RoadTypes RoadType { get { return roadtype; } }
 
@@ -72,10 +72,12 @@ namespace TangoGames.RoadFighter.Actors
 
             if (distance  > 0)
             {
+                sign2.V = distance;
                 foreach (float item in lanes.LanesList )
                 {
                     sign2.Location = new Vector2(item, Location.Y + Bounds.Height / 2);
-                    sign2.Draw(gameTime);                    
+                    sign2.Draw(gameTime);
+                    
                 }
             }
 
@@ -176,14 +178,21 @@ namespace TangoGames.RoadFighter.Actors
 
         private class Sign2 : BasicDrawingActor
         {
+            SpriteFont Arial;
+
+            int v ;
+            public int V { set { v = value; } }
+
             public Sign2(Game game, SpriteBatch spriteBatch)
                 : base(game, game.Content.Load<Texture2D>("Textures/sinalgasolina"))
             {
                 this.SpriteBatch = spriteBatch;
+                Arial = game.Content.Load<SpriteFont>("arial");
             }
             public override void Draw(GameTime gameTime)
             {
                 SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
+                SpriteBatch.DrawString(Arial, v + " m", new Vector2(Location.X, Location.Y + Bounds.Height), Color.White);
             }
         }
 
