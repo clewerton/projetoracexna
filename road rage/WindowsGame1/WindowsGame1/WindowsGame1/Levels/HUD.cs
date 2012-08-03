@@ -17,7 +17,12 @@ namespace TangoGames.RoadFighter.Levels
         private IMap map;
 
         public int pontos = 0;      // total de pomntos do player
-        public float gasolina = 100; // quantidade de gasolina do herói
+
+        public float gasolina = 0;               //percentual de gasolina do heroi ( é o percentual de tempo decorrido)
+
+        public float checkPointTimer = 90000;    //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos)
+
+        public float timerCount = 0;             //Contador do tempo decorrido em milisegundos
 
         private int[] marks = new int[] { 3000, 2000, 1500, 1000, 500, 0 };
 
@@ -27,10 +32,9 @@ namespace TangoGames.RoadFighter.Levels
 
         private int distance = 0;
 
-        float angulacaoGasolina = 82;
         float angulacaoVelocidade = -115;
 
-        int pixel;
+        int pixel = 0;
        
         Single angponteiro1;
         Single angponteiro2;
@@ -64,6 +68,12 @@ namespace TangoGames.RoadFighter.Levels
             ponteiro2 = Content.Load<Texture2D>("HUDElementos/ponteirovelocimetro");
         }
 
+
+        /// <summary>
+        /// Update da classe
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="velocidade"></param>
         public void Update(GameTime gameTime, Vector2 velocidade)
             
         {
@@ -71,9 +81,11 @@ namespace TangoGames.RoadFighter.Levels
 
             calculaparametros(gameTime);
 
-            ponteirogasolina();
-            ponteirovelocidade();
+            //calcula o angulo do ponteiro no marcador da gasolina
+            angponteiro1 = ponteirogasolina( gasolina );
+    
 
+            ponteirovelocidade();
 
         }
 
@@ -98,20 +110,15 @@ namespace TangoGames.RoadFighter.Levels
         /// <summary>
         /// Função controladora do comportamento do medidor de gasolina
         /// </summary>
-
-        void ponteirogasolina() // calcula a angulacao do ponteiro
+        private float ponteirogasolina(float percentual) // calcula a angulacao do ponteiro
         {
-            
 
-            angulacaoGasolina = (-82 * gasolina) / 100; // calcula o angulo do ponteiro em relacao a quantidade de gasolina
-
-           
+            float angulacaoGasolina = (-82 * percentual) / 100; // calcula o angulo do ponteiro em relacao a quantidade de gasolina
 
             angulacaoGasolina = angulacaoGasolina + 41; // ajusta o valor do angulo em relacao ao desenho do ponteiro
 
-            angponteiro1 = calcularadianos(angulacaoGasolina);// converte de graus para radianos 
+            return calcularadianos(angulacaoGasolina);// converte de graus para radianos 
 
-            
         }
 
         /// <summary>
@@ -137,23 +144,29 @@ namespace TangoGames.RoadFighter.Levels
 
             angulo = (((float)Math.PI * angulo) / 180);
 
-
             return angulo;
+
         }
         
        
         /// <summary>
-        /// faz o calculo de parametros gerais
+        /// faz o calculo da distancia percorrida e parametros gerais
         /// </summary>
         /// <param name="gametime"></param>
         void calculaparametros(GameTime gametime) 
         {
-                        
-            tempodecorrido += (float)gametime.ElapsedGameTime.TotalMilliseconds;
+            //milisegundo decorridos desde o último frame            
+            float ElapseTime = (float)gametime.ElapsedGameTime.TotalMilliseconds;
+
+            //atualiza o tempo decorrido do checkPoint
+            timerCount +=  ElapseTime;
+
+            gasolina = ( ( checkPointTimer - timerCount) * 100) / checkPointTimer;
+
+            tempodecorrido += ElapseTime;
                        
             pixel += (int)velocidadeatual; //adiciona por um segundo todos os pixels percorridos
            
-
             if (tempodecorrido >= 1000) // if ocorrido a cada segundo
             {
                 tempodecorrido = 0;
@@ -161,7 +174,7 @@ namespace TangoGames.RoadFighter.Levels
                 
                 pontos += contadordePontos;   // aumenta os metros percorridos por segundo no contador total
 
-                gasolina --;
+                //gasolina --;
 
                 pixel = 0;
             }

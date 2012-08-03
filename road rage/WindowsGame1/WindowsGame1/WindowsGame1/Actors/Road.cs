@@ -198,33 +198,58 @@ namespace TangoGames.RoadFighter.Actors
 
     }
 
-
     #region RoadManager
-
+    /// <summary>
+    /// Tipo de estrada diferentes
+    /// </summary>
     public enum RoadTypes { Road4, Road4to3, Road3, Road3to2, Road2, Road2to3, Road3to4 }
 
+    /// <summary>
+    /// Define a interface do sequenciador de estradas
+    /// </summary>
     public interface IRoadManager 
     {
         StraightRoad NextRoad();
         StraightRoad CurrentRoad { get; }
     }
 
+    /// <summary>
+    /// Implementa o gerenciamento de estadas. gerar as estradas aleatórias na sequência correta de transição entre as pistas
+    /// </summary>
     public class RoadManager:GameComponent, IRoadManager
-
     {
+        #region variaveis da classe
+        
+        //cena corrente
         private Scene scene;
-        private Dictionary< RoadTypes, StraightRoad> RoadList;
-        private Dictionary< RoadTypes, NodeRoad> NextList;
-        private Random random;
 
+        //lista de estradas
+        private Dictionary< RoadTypes, StraightRoad> RoadList;
+
+        //Controle de coerencia de transição de estradas
+        private Dictionary< RoadTypes, NodeRoad> NextList;
+
+        //estrada corrente
         private RoadTypes current;
 
+        private Random random;
+
+        #endregion 
+
+        #region Inicialização
+
+        /// <summary>
+        /// construção
+        /// </summary>
+        /// <param name="scene"></param>
         public RoadManager(Scene scene)
             : base(scene.Game)
         {
             this.scene = scene;
+
             RoadList = new Dictionary<RoadTypes, StraightRoad>();
             NextList = new Dictionary<RoadTypes, NodeRoad>();
+
             int TheSeed = (int)DateTime.Now.Ticks;
             random = new Random(TheSeed);
 
@@ -232,13 +257,18 @@ namespace TangoGames.RoadFighter.Actors
             Init();
         }
 
+        /// <summary>
+        /// Inicialização. definição da transição das estradas
+        /// </summary>
         private void Init()
         {
+            //Carrega a lista de tipos de estrada
             foreach (RoadTypes roadtype in Enum.GetValues(typeof(RoadTypes)))
             {
                 RoadList.Add(roadtype, new StraightRoad(scene, roadtype));
             }
 
+            //define o tipo de estrada inicial
             current = RoadList.FirstOrDefault().Key;
 
             #region sequencia das estradas
@@ -273,16 +303,26 @@ namespace TangoGames.RoadFighter.Actors
 
         }
 
-
+        /// <summary>
+        /// metodo auxiliar para incluir as transições das estradas
+        /// </summary>
+        /// <param name="roadtype"></param>
+        /// <param name="nextroads"></param>
         private void AddInNextList(RoadTypes roadtype, RoadTypes[] nextroads)
         {
             NextList.Add(roadtype, new NodeRoad(RoadList[roadtype], new List<RoadTypes>(nextroads), roadtype));
         }
 
+        #endregion
+
+        #region metodos e propriedade públicas da classe
+        /// <summary>
+        /// gera aleatóriamente um novo trecho de estrada baseado na estrada corrente
+        /// e atualiza a estrada corrente com a nova estrada
+        /// </summary>
+        /// <returns></returns>
         public StraightRoad NextRoad()
         {
-            int contLaneAnt = RoadList[ current ].Lanes.Count;
-
             int index = random.Next ( NextList[ current ].NextRoads.Count);
             
             current = NextList[current].NextRoads[index];
@@ -292,6 +332,12 @@ namespace TangoGames.RoadFighter.Actors
 
         public StraightRoad CurrentRoad { get { return RoadList [current ].Clone()  ; } }
 
+        #endregion 
+
+        #region NodeRoad
+        /// <summary>
+        /// No de relacionamento para a transição de estradas
+        /// </summary>
         private class NodeRoad
         {
             public StraightRoad road;
@@ -305,11 +351,11 @@ namespace TangoGames.RoadFighter.Actors
                 this.roadtype = roadtype;
             }
         }
+        #endregion
 
     }
 
     #endregion
-
 
     #region Road & Lanes
 
