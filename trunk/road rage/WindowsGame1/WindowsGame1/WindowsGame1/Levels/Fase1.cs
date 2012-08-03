@@ -18,7 +18,7 @@ namespace TangoGames.RoadFighter.Levels
             var actorFactory = GetService<IActorFactory<MainGame.ActorTypes, IDrawableActor>>();
 
             map = new Map(this);
-            hud = new HUD(Game.Content, map);
+            hud = new HUD(this, map);
             enemies = new EnemiesManager(this);
 
             //Atribui as pistas da estrada para o gestor de inimigos conhecer
@@ -51,7 +51,9 @@ namespace TangoGames.RoadFighter.Levels
             }
 
             map.Update(gameTime);
-            hud.Update(gameTime, map.Velocity);
+
+            //update da HUD deve ser feito depois do calcula da velocidade do mapa
+            hud.Update(gameTime);
 
         }
 
@@ -68,6 +70,7 @@ namespace TangoGames.RoadFighter.Levels
 
             map.Draw(gameTime);
             hud.Draw(gameTime, SpriteBatch);
+
             SpriteBatch.End();
         }
 
