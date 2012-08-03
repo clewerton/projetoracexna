@@ -12,6 +12,9 @@ namespace TangoGames.RoadFighter.Actors
     public class StraightRoad : BasicDrawingActor, IRoad
     {
         private Scene scene;
+
+        private IMap map;
+
         private RoadTypes roadtype;
         private int ajuste;
         int roadsign = 0 ;
@@ -21,10 +24,11 @@ namespace TangoGames.RoadFighter.Actors
 
         public RoadTypes RoadType { get { return roadtype; } }
 
-        protected StraightRoad(Scene scene, RoadTypes roadtype, Texture2D texture)
+        protected StraightRoad(Scene scene, IMap map, RoadTypes roadtype, Texture2D texture)
             : base(scene.Game, texture)
         {
             this.scene = scene;
+            this.map = map;
             this.roadtype = roadtype;
             this.SpriteBatch = scene.currentSpriteBatch;
             this.Scrollable = true;
@@ -33,10 +37,11 @@ namespace TangoGames.RoadFighter.Actors
         }
 
 
-        public StraightRoad(Scene scene, RoadTypes roadtype)
+        public StraightRoad(Scene scene, IMap map, RoadTypes roadtype)
             : base(scene.Game, RoadTexture(roadtype, scene.Game))
         {
             this.scene = scene;
+            this.map = map;
             this.roadtype = roadtype;
             this.SpriteBatch = scene.currentSpriteBatch;
             this.Scrollable = true;
@@ -85,24 +90,42 @@ namespace TangoGames.RoadFighter.Actors
 
         public StraightRoad Clone()
         {
-            StraightRoad sr = new StraightRoad(scene, roadtype, this.Texture );
+            StraightRoad sr = new StraightRoad(scene, map, roadtype, this.Texture );
             return sr;
         }
 
         #region Implementação de estrada e pistas
 
         private ILanes lanes;
-        public ILanes Lanes
+        public ILanes Lanes { get { return lanes; }  set { Lanes = value; } }
+
+
+        public int GlobalPixelPosition { get; set; }
+        public IRoad nextroad { get; set; }
+        public IRoad prevroad { get; set; }
+
+        public void UpdateRoadSequence(IRoad nextroad) 
         {
-            get
+            if (nextroad == null)
             {
-                return lanes;
+                GlobalPixelPosition = 0;
+                return;
             }
-            set
-            {
-                Lanes = value;
-            }
+            this.nextroad = nextroad;
+            GlobalPixelPosition = nextroad.GlobalPixelPosition + ((IDrawableActor)nextroad).Bounds.Height;
+            nextroad.prevroad = this;
+
+            //coloca a marcação de distancia do check point
+            int Y1 = map.CheckPointPixelDistance - GlobalPixelPosition;
+            int Y2 = map.CheckPointPixelDistance - GlobalPixelPosition - Bounds.Height;
+            int div = 1000;
+            if ( Y1 < (1000*map.RatioPxMt) ) div=500;
+
+            int mark = (int) ( Y1 / (div * map.RatioPxMt) );
+            int markpx = (int) ( mark * div * map.RatioPxMt );
+            if (Y1 >= markpx && Y2 < markpx) { this.Distance = mark * div;}
         }
+
 
         #endregion
 
@@ -162,6 +185,7 @@ namespace TangoGames.RoadFighter.Actors
         public int RoadSign { get { return roadsign; } set { roadsign=value; } }
 
         public int Distance { get { return distance; } set { distance=value;} }
+
 
         private class Sign1 : BasicDrawingActor
         {
@@ -223,6 +247,9 @@ namespace TangoGames.RoadFighter.Actors
         //cena corrente
         private Scene scene;
 
+        //Map
+        private IMap map;
+
         //lista de estradas
         private Dictionary< RoadTypes, StraightRoad> RoadList;
 
@@ -242,10 +269,12 @@ namespace TangoGames.RoadFighter.Actors
         /// construção
         /// </summary>
         /// <param name="scene"></param>
-        public RoadManager(Scene scene)
+        public RoadManager(Scene scene , IMap map)
             : base(scene.Game)
         {
             this.scene = scene;
+
+            this.map = map;
 
             RoadList = new Dictionary<RoadTypes, StraightRoad>();
             NextList = new Dictionary<RoadTypes, NodeRoad>();
@@ -265,7 +294,7 @@ namespace TangoGames.RoadFighter.Actors
             //Carrega a lista de tipos de estrada
             foreach (RoadTypes roadtype in Enum.GetValues(typeof(RoadTypes)))
             {
-                RoadList.Add(roadtype, new StraightRoad(scene, roadtype));
+                RoadList.Add(roadtype, new StraightRoad(scene, map, roadtype));
             }
 
             //define o tipo de estrada inicial
@@ -370,6 +399,10 @@ namespace TangoGames.RoadFighter.Actors
         ILanes Lanes { get; set; }
         int RoadSign { get; set; }
         int Distance { get; set; }
+        void UpdateRoadSequence(IRoad nextroad);
+        int GlobalPixelPosition { get; set; }
+        IRoad nextroad { get; set; }
+        IRoad prevroad { get; set; }
     }
 
     public interface ILanes
