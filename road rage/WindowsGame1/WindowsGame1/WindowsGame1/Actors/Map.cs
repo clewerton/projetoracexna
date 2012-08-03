@@ -29,7 +29,7 @@ namespace TangoGames.RoadFighter.Actors
         IDrawableActor Road { get; }
         void ChangeLaneRegister(IChangeLanelistener listener);
         void ChangeLaneUnRegister(IChangeLanelistener listener);
-
+        void FlagSign(int distance);
     }
 
     /// <summary>
@@ -209,6 +209,17 @@ namespace TangoGames.RoadFighter.Actors
                 int X = ((IRoad)fifo.SecondLast).Lanes.LanesList[lane];
                 ((IRoad)fifo.SecondLast).RoadSign = X;
             }
+            if (flagsign)
+            {
+                flagsign = false;
+                ((IRoad)fifo.Last).Distance = distancesign ;
+            }
+        }
+
+        public void FlagSign(int distance) 
+        {
+            this.distancesign = distance;
+            flagsign=true;
         }
 
         #region Map Properties
@@ -254,7 +265,7 @@ namespace TangoGames.RoadFighter.Actors
 
         //private SpriteBatch spritebatch;
         private float _acceleration = 0.05F;
-        private int _maxSpeed = 20;
+        private int _maxSpeed = 14;
         private List<IDrawableActor> _safeRemoveList;
 
         //roads manager
@@ -265,6 +276,10 @@ namespace TangoGames.RoadFighter.Actors
 
         //
         private List<IChangeLanelistener> listenersChangeLane;
+
+        //
+        bool flagsign = false;
+        int distancesign = 0;
 
         #endregion
 
