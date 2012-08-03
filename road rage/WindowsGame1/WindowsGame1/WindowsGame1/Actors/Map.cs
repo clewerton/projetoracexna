@@ -26,13 +26,14 @@ namespace TangoGames.RoadFighter.Actors
         Vector2 Velocity {get; set; }
         int MaxSpeed { get; set; }
         int MaxSpeedGlobal { get; set; }
+        int CheckPointPixelDistance { get; set; }
         event EventHandler<CollisionEventArgs> ColisionsOccours;
         event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
         event EventHandler<ChangeRoadEventArgs> ChangeRoadType;
         IDrawableActor Road { get; }
         void ChangeLaneRegister(IChangeLanelistener listener);
         void ChangeLaneUnRegister(IChangeLanelistener listener);
-        void FlagSign(int distance);
+        float RatioPxMt { get; }        //razão 20 pixel por metros
     }
 
     /// <summary>
@@ -56,7 +57,7 @@ namespace TangoGames.RoadFighter.Actors
             FifoBackground.Enqueue(new BackGround(scene.Game, scene.currentSpriteBatch));
 
             //gera instancia de gestor de estradas
-            roads = new RoadManager(scene);
+            roads = new RoadManager(scene, this);
             FifoRoad = new MyFifo();
             //gera a fila de estradas pelo gerenciado de extradas 
             FifoRoad.Enqueue(roads.CurrentRoad);
@@ -256,18 +257,8 @@ namespace TangoGames.RoadFighter.Actors
                 int X = ((IRoad)fifo.SecondLast).Lanes.LanesList[lane];
                 ((IRoad)fifo.SecondLast).RoadSign = X;
             }
-            if (flagsign)
-            {
-                flagsign = false;
-                ((IRoad)fifo.Last).Distance = distancesign ;
-            }
         }
 
-        public void FlagSign(int distance) 
-        {
-            this.distancesign = distance;
-            flagsign=true;
-        }
         #endregion
 
         #region Map Properties
@@ -283,6 +274,11 @@ namespace TangoGames.RoadFighter.Actors
         /// Velocidade máxima global - máxima do jogo
         /// </summary>
         public int MaxSpeedGlobal  { get { return _maxSpeedGlobal; } set { _maxSpeedGlobal = value; } }
+
+        public int CheckPointPixelDistance { get { return _checkPointPixelDistance; } set{ _checkPointPixelDistance=value;} }
+        
+        //razão 20 pixel por metros
+        public float RatioPxMt { get { return 20.0F; } }  
 
         public IDrawableActor Road { get { return FifoRoad.First(); } }
 
@@ -300,6 +296,9 @@ namespace TangoGames.RoadFighter.Actors
         private float _acceleration = 0.05F;
         private int _maxSpeed = 14;
         private int _maxSpeedGlobal = 20;
+        //distancia em pixel para o checkpoint
+        private int _checkPointPixelDistance = 60000;
+
         private List<IDrawableActor> _safeRemoveList;
 
         //roads manager
@@ -308,12 +307,8 @@ namespace TangoGames.RoadFighter.Actors
         //Current Scene 
         private Scene scene;
 
-        //
+        //lista de ouvinte do evento de troca de pista
         private List<IChangeLanelistener> listenersChangeLane;
-
-        //
-        bool flagsign = false;
-        int distancesign = 0;
 
         #endregion
 
@@ -372,7 +367,7 @@ namespace TangoGames.RoadFighter.Actors
 
         #endregion
 
-        #region MyFifo Class
+        #region MyFifo Class Fila de controle de Rolagem
 
         private class MyFifo : Queue<IDrawableActor> 
         {
@@ -384,6 +379,7 @@ namespace TangoGames.RoadFighter.Actors
             {
                 SecondLast = Last;
                 Last = item;
+                if (item is IRoad) { ((IRoad)item).UpdateRoadSequence((IRoad)SecondLast); }
                 base.Enqueue(item);
                 if (SecondLast != null) adjustNext();
             }
@@ -391,6 +387,7 @@ namespace TangoGames.RoadFighter.Actors
             {
                 Last.Location = new Vector2(Last.Bounds.X, SecondLast.Location.Y - Last.Bounds.Height);
             }
+
         }
 
         #endregion

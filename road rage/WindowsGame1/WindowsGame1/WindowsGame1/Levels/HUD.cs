@@ -9,11 +9,11 @@ using TangoGames.RoadFighter.Scenes;
 using Microsoft.Xna.Framework.Content;
 using TangoGames.RoadFighter.Actors;
 
-
 namespace TangoGames.RoadFighter.Levels
 {
     interface IHUD
     { 
+
     }
 
     public class HUD : DrawableGameComponent, IHUD
@@ -27,8 +27,6 @@ namespace TangoGames.RoadFighter.Levels
 
         private int pontos = 0;                   // total de pontos em metros do player 
 
-        private float ratioPxMt = 20.0F;          //razão 20 pixel por metros
-
         private float gas = 0;                    //percentual de gasolina do heroi ( é o percentual de tempo decorrido)
 
         private float checkPointTimer = 90000;    //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos)
@@ -40,14 +38,6 @@ namespace TangoGames.RoadFighter.Levels
         private Vector2 speedMap;                 //Velocidade do atual do rolamento
 
         private float maxSpeed = 20.0F;           //Velocidade Máxima;
-
-        private int[] marks = new int[] { 3000, 2000, 1500, 1000, 500, 0 };
-
-        private int nextmark = 0;
-
-        private int checkPoint = 3000;
-
-        private int distance = 0;
 
         private Single angponteiro1;
         private Single angponteiro2;
@@ -87,7 +77,7 @@ namespace TangoGames.RoadFighter.Levels
         /// </summary>
         /// <param name="gameTime"></param>
         /// <param name="velocidade"></param>
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         
         {   //atualiza a velocidade atual do rolamento
             speedMap = map.Velocity;
@@ -108,7 +98,6 @@ namespace TangoGames.RoadFighter.Levels
         /// </summary>
         /// <param name="gameTime"></param>
         /// <param name="spriteBatch"></param>
-            
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
             
         {
@@ -185,18 +174,12 @@ namespace TangoGames.RoadFighter.Levels
             gas = ( ( checkPointTimer - timerCount) * 100) / checkPointTimer;
 
             //atualiza contador de pontos ( razão 20 pixel por metros )
-            pontos = (int) ( pixelsCount / ratioPxMt ); //pontos em metros            
-            
-            //calculo da distancia para o check point
-            distance = checkPoint - pontos;
-            if ( nextmark < marks.Count() &&  marks[nextmark] > distance) 
-            {
-                map.FlagSign(marks[nextmark]);
-                nextmark++;
-            }
+            pontos = (int) ( pixelsCount / map.RatioPxMt ); //pontos em metros
+
         }
 
         #endregion
 
     }
+
 }
