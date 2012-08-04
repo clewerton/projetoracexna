@@ -28,6 +28,10 @@ namespace TangoGames.RoadFighter.Levels
 
         private int maxEnemies = 3;
 
+        private int interval = 1000;
+
+        private int timepass = 0;
+
         /// <summary>
         /// Contrutor do controle de inimigos
         /// </summary>
@@ -58,7 +62,7 @@ namespace TangoGames.RoadFighter.Levels
 
             var actorFactory = (IActorFactory<MainGame.ActorTypes, IDrawableActor>)Game.Services.GetService(typeof(IActorFactory<MainGame.ActorTypes, IDrawableActor>));
 
-            for (int i = 0; i < 20; i++) _ListofEnemies.Add(new Enemy(RandomEnemyType(), _currentScene ));
+            for (int i = 0; i < 16; i++) _ListofEnemies.Add(new Enemy(RandomEnemyType(), _currentScene, map  ));
 
         }
 
@@ -116,24 +120,15 @@ namespace TangoGames.RoadFighter.Levels
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime) 
         {
-            //tempodecorrido += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            timepass += (int) gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (_lanes.Count == 2)
-            {
-                maxEnemies = 1;
-            }
-            else if (_lanes.Count == 3)
-            {
-                maxEnemies = 2;
-            }
-            else
-            {
-                maxEnemies = 3;
-            }
+            if (_lanes.Count == 2) { maxEnemies = 3; interval = (EnemiesActive.Count() * 2000) ; }
+            else if (_lanes.Count == 3) { maxEnemies = 6; interval = (EnemiesActive.Count() * 1000); }
+            else { maxEnemies = 9; interval = (EnemiesActive.Count() * 500); }
 
-            if ( EnemiesActive.Count() <  maxEnemies && EnemiesNotActive.Count() >  0 )
+            if ( EnemiesActive.Count() <  maxEnemies &&  timepass > interval && EnemiesNotActive.Count() >  0 )
             {
-                //tempodecorrido = 0;
+                timepass = 0;
 
                 IEnemy ene = EnemiesNotActive.ElementAtOrDefault( random.Next (EnemiesNotActive.Count()));
                 IDrawableActor enemyDraw = (IDrawableActor)ene;
@@ -157,7 +152,6 @@ namespace TangoGames.RoadFighter.Levels
 
                     ene.Active = true;
 
-                    Console.WriteLine("gerou" + ene);
                 }
 
             }

@@ -116,25 +116,11 @@ namespace TangoGames.RoadFighter.Actors
             //optamos em colocar 16 milisegundos fixos baseado em 60 FPS fixo para não afetar a contagem de pixel do calculo da distancia percorrida
             float ElapseTime = 16;
 
-            // Aceleracao
-            if (!checkPointReach && !endOfGas)
-            {
-                velocity = new Vector2(velocity.X, velocity.Y + _acceleration);
-                if (velocity.Y > _maxSpeed) velocity = new Vector2(velocity.X, _maxSpeed);
-            }
-            else if ( HeroiStopping || endOfGas )
-            {
-                velocity = new Vector2(velocity.X, velocity.Y - 0.037F );
-                if (velocity.Y < 0) { velocity = new Vector2(velocity.X, 0); }
-            }
-            else
-            {
-                if (velocity.Y > _checkPointSpeed) { velocity = new Vector2(velocity.X, velocity.Y - _acceleration); }
-                else { velocity = new Vector2(velocity.X, velocity.Y + _acceleration); }
-            }
+            // Atualiza velocidade
+            velocity = UpdateSpeed();
 
             //atualiza o tempo decorrido do checkPoint
-            timerCount += ElapseTime;
+            if (!checkPointReach) { timerCount += ElapseTime; }
 
             //verifica se alcançou o checkPoint
             if ( pixelsCount > _checkPointPixelDistance ) { checkPointReach = true; }
@@ -144,6 +130,8 @@ namespace TangoGames.RoadFighter.Actors
 
             //Atualiza rolagem das estradas e background
             UpdateRoads(gameTime);
+
+            if (checkPointReach && HeroiStopping && velocity.Y == 0.0F) { FillGasCheckPoint(gameTime); }
 
             foreach (IDrawableActor actor in actors)
             {
@@ -228,7 +216,69 @@ namespace TangoGames.RoadFighter.Actors
 
         }
 
+        private Vector2 UpdateSpeed()
+        {
+            float speed = velocity.Y;
+            float speedinc = speed * _acceleration;
+            if (speedinc < _acceleration) { speedinc = _acceleration; }
 
+            if (!checkPointReach && !endOfGas) { speed += speedinc; }
+            else if (endOfGas) { speed -= speedinc; }
+            else if (HeroiStopping)
+            {
+                speed -= speedinc;
+                if (speed <= 1 && pixelCheckPoint > pixelsCount) { speed += speedinc * 1.5F; }
+            }
+            else
+            {
+                if (speed > _checkPointSpeed) { speed -= speedinc; }
+                else { speed += speedinc; }
+            }
+
+            if ( speed > _maxSpeed ) { speed = _maxSpeed;}
+            if ( speed < 0 ) {speed = 0.0F;}
+
+            return new Vector2 (velocity.X, speed);
+        }
+
+
+        /// <summary>
+        /// Encher o tanque
+        /// </summary>
+        /// <param name="gameTime"></param>
+        private void FillGasCheckPoint(GameTime gameTime)
+        {
+            float time = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+
+            temptimer += (int)time; 
+
+            int timewait = 3000 - temptimer ;
+
+            float fill = timerCount;
+
+            if (timewait >0 ) {fill = (timerCount) * ( time / timewait ); }
+
+            timerCount -= fill;
+
+
+            if (timerCount<=0) { RestartCheckPoint();}
+
+        }
+
+        private void RestartCheckPoint()
+        {
+            temptimer = 0;
+            timerCount = 0;
+            checkPointReach = false;
+            CheckPointHeroiReady = false;
+            HeroiStopping = false;
+            _checkPointRoadMark = false;
+            endOfGas = false;
+            _checkPointPixelDistance += (int) (_checkPointPixelBase) ;
+            _checkPointPixelBase += 5000; 
+            _maxSpeed += 2;
+            if (_maxSpeed > _maxSpeedGlobal) _maxSpeed = _maxSpeedGlobal;
+        }
         #endregion
 
         #region metodos Interface IMAP
@@ -291,6 +341,8 @@ namespace TangoGames.RoadFighter.Actors
                         { 
                             ckproad.CheckPoint = true;
                             _checkPointRoadMark = true;
+                            //salva o ponto de parada do heroi no checkpoint
+                            pixelCheckPoint = ckproad.GlobalPixelPosition + ((IDrawableActor)ckproad).Bounds.Height / 2;
                         }
                         fifo.Enqueue((IDrawableActor)ckproad);
 
@@ -375,13 +427,21 @@ namespace TangoGames.RoadFighter.Actors
         private MyFifo FifoBackground;
         private MyFifo FifoRoad;
 
-        //private SpriteBatch spritebatch;
-        private float _acceleration = 0.05F;
+        //==============================================================
+        //testes com pista vazia
+        //_maxSpeed=14 /checkPointTime = 90000 ==> resultado 3886 pontos
+        //_maxSpeed=16 /checkPointTime = 90000 ==> resultado 4545 pontos
+        //_maxSpeed=18 /checkPointTime = 90000 ==> resultado 5120 pontos
+        //_maxSpeed=20 /checkPointTime = 90000 ==> resultado 5696 pontos
+        //==============================================================
+
+        private float _acceleration = 0.01F;
         private int _maxSpeed = 14;
         private int _maxSpeedGlobal = 20;
         //distancia em pixel para o checkpoint
-        private int _checkPointPixelDistance = 10000;
+        private int _checkPointPixelDistance = 60000;  // 3000 * 20
 
+        private int _checkPointPixelBase = 65000;
         private List<IDrawableActor> _safeRemoveList;
 
         //controle de alcançe do checkPoint
@@ -393,7 +453,7 @@ namespace TangoGames.RoadFighter.Actors
         private bool _checkPointRoadMark;
 
         //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos)
-        private float checkPointTime = 9000;
+        private float checkPointTime = 90000;
 
         //Contador do tempo decorrido em milisegundos
         private float timerCount = 0;
@@ -412,6 +472,10 @@ namespace TangoGames.RoadFighter.Actors
 
         //lista de ouvinte do evento de troca de pista
         private List<IChangeLanelistener> listenersChangeLane;
+
+        private int temptimer = 0;
+
+        private float pixelCheckPoint;
 
         #endregion
 
