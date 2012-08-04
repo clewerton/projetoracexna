@@ -160,7 +160,7 @@ namespace TangoGames.RoadFighter.Levels
         private void calculaparametros(GameTime gametime) 
         {
             //calcula percentual de gasolina
-            gas = ((map.CheckPointTimer - map.TimerCount) * 100) / map.CheckPointTimer;
+            gas = ((map.CheckPointTime - map.TimerCount) * 100) / map.CheckPointTime;
 
             //atualiza contador de pontos ( razão 20 pixel por metros )
             pontos = (int) ( map.PixelsCount / map.RatioPxMt ); //pontos em metros
