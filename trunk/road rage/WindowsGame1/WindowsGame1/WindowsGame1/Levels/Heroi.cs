@@ -78,7 +78,7 @@ namespace TangoGames.RoadFighter.Levels
                 {
                     targetLane = _lanes.LastIndex;
                     timeCount = 0;
-                    if (_lanes.Road.CheckPoint) { map.CheckPointHeroiReady2 = true; }
+                    if (_lanes.Road.CheckPoint) { map.HeroiStopping = true; }
                 }
                 
                 
@@ -133,7 +133,7 @@ namespace TangoGames.RoadFighter.Levels
 
             int dif = Math.Abs(targetX - (int)Location.X);
 
-            if (dif < ratioSpeed())
+            if (dif < (7 * ratioSpeed()))
             {
                 Location = new Vector2((float)targetX, Location.Y);
                 angulo = 0;
@@ -144,12 +144,12 @@ namespace TangoGames.RoadFighter.Levels
 
             if ( Location.X < targetX )
             {
-                Move(new Vector2(ratioSpeed(), 0));
+                Move(new Vector2( 7 * ratioSpeed(), 0));
                 angulo = (float)0.1;
             }
             else if ( Location.X > targetX )
             {
-                Move(new Vector2(-ratioSpeed(), 0));
+                Move(new Vector2(-7 * ratioSpeed(), 0));
                 angulo = -(float)0.1;
             }
 
@@ -157,7 +157,7 @@ namespace TangoGames.RoadFighter.Levels
 
         private float ratioSpeed()
         {
-            return (1 + map.Velocity.Y / 4);
+            return ( map.Velocity.Y / map.MaxSpeedGlobal );
         }
 
         #region Controle de Pistas

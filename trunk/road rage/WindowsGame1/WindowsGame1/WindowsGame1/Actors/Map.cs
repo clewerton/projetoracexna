@@ -27,12 +27,14 @@ namespace TangoGames.RoadFighter.Actors
         int MaxSpeed { get; set; }
         int MaxSpeedGlobal { get; set; }
         int CheckPointPixelDistance { get; set; }
-        float CheckPointTimer { get; set; }    //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos
+        float CheckPointTime { get; set; }    //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos
         float TimerCount { get; set; }         //Contador do tempo decorrido em milisegundos
         //controle de alcançe do checkPoint
         bool CheckPointReach { get; }
         bool CheckPointHeroiReady { get; set; }
-        bool CheckPointHeroiReady2 { get; set; }
+        bool HeroiStopping { get; set; }
+        bool EndOfGas { get; set; }
+
         event EventHandler<CollisionEventArgs> ColisionsOccours;
         event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
         event EventHandler<ChangeRoadEventArgs> ChangeRoadType;
@@ -83,9 +85,9 @@ namespace TangoGames.RoadFighter.Actors
             //indica se o ponto de controle já alcançado
             checkPointReach = false;
             CheckPointHeroiReady = false;
-            CheckPointHeroiReady2 = false;
+            HeroiStopping = false;
             _checkPointRoadMark = false;
-
+            endOfGas = false;
         }
 
         /// <summary>
@@ -115,12 +117,12 @@ namespace TangoGames.RoadFighter.Actors
             float ElapseTime = 16;
 
             // Aceleracao
-            if (!checkPointReach)
+            if (!checkPointReach && !endOfGas)
             {
                 velocity = new Vector2(velocity.X, velocity.Y + _acceleration);
                 if (velocity.Y > _maxSpeed) velocity = new Vector2(velocity.X, _maxSpeed);
             }
-            else if ( CheckPointHeroiReady2 )
+            else if ( HeroiStopping || endOfGas )
             {
                 velocity = new Vector2(velocity.X, velocity.Y - 0.037F );
                 if (velocity.Y < 0) { velocity = new Vector2(velocity.X, 0); }
@@ -136,6 +138,9 @@ namespace TangoGames.RoadFighter.Actors
 
             //verifica se alcançou o checkPoint
             if ( pixelsCount > _checkPointPixelDistance ) { checkPointReach = true; }
+
+            //verifica se o tempo acabou
+            if (timerCount > checkPointTime) { endOfGas = true; }
 
             //Atualiza rolagem das estradas e background
             UpdateRoads(gameTime);
@@ -343,10 +348,12 @@ namespace TangoGames.RoadFighter.Actors
         public bool CheckPointReach { get { return checkPointReach; } }
 
         public bool CheckPointHeroiReady { get; set; }
-        public bool CheckPointHeroiReady2 { get; set; }
+        public bool HeroiStopping { get; set; }
 
-        public float CheckPointTimer { get { return checkPointTimer; } set {checkPointTimer=value;} }    //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos
-        public float TimerCount { get { return timerCount; } set { timerCount=value; } }  
+        public float CheckPointTime { get { return checkPointTime; } set {checkPointTime=value;} }    //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos
+        public float TimerCount { get { return timerCount; } set { timerCount=value; } }
+
+        public bool EndOfGas { get { return endOfGas; } set { endOfGas = value; } }
 
         /// <summary>
         /// Contado de pixes percorridos
@@ -386,10 +393,13 @@ namespace TangoGames.RoadFighter.Actors
         private bool _checkPointRoadMark;
 
         //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos)
-        private float checkPointTimer = 90000;
+        private float checkPointTime = 9000;
 
         //Contador do tempo decorrido em milisegundos
-        private float timerCount = 0;             
+        private float timerCount = 0;
+
+        //final do combustivel (tempo)
+        private bool endOfGas;
 
         //Quantidade e pixels percorridos 
         float pixelsCount;
