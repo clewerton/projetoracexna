@@ -74,11 +74,13 @@ namespace TangoGames.RoadFighter.Levels
             if (map.CheckPointReach)
             {
                 timeCount += gameTime.ElapsedGameTime.TotalMilliseconds;
-                if (timeCount > 2000 || _lanes.Road.CheckPoint ) 
+                if (timeCount > 2000 || _lanes.Road.CheckPoint  ) 
                 {
                     targetLane = _lanes.LastIndex;
                     timeCount = 0;
+                    if (_lanes.Road.CheckPoint) { map.CheckPointHeroiReady2 = true; }
                 }
+                
                 
             }
             else
