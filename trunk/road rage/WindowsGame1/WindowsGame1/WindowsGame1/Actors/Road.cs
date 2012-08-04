@@ -115,7 +115,7 @@ namespace TangoGames.RoadFighter.Actors
             GlobalPixelPosition = nextroad.GlobalPixelPosition + ((IDrawableActor)nextroad).Bounds.Height;
             nextroad.prevroad = this;
 
-            //coloca a marcação de distancia do check point
+            //coloca a marcação de distancia do check point a cada 1000m e quando menor que 1000m coloca a marca de 500m também
             int Y1 = map.CheckPointPixelDistance - GlobalPixelPosition;
             int Y2 = map.CheckPointPixelDistance - GlobalPixelPosition - Bounds.Height;
             int div = 1000;
@@ -234,6 +234,7 @@ namespace TangoGames.RoadFighter.Actors
     public interface IRoadManager 
     {
         StraightRoad NextRoad();
+        StraightRoad NextRoadFinal();
         StraightRoad CurrentRoad { get; }
     }
 
@@ -308,21 +309,18 @@ namespace TangoGames.RoadFighter.Actors
 
             //estrada 4 p/ 3 pistas
             AddInNextList(RoadTypes.Road4to3, new RoadTypes[] { RoadTypes.Road3});
-            //AddInNextList(RoadTypes.Road4to3, new RoadTypes[] { RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3to4 });
 
             //estrada 3 pistas
             AddInNextList(RoadTypes.Road3, new RoadTypes[] { RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3, RoadTypes.Road3to2, RoadTypes.Road3, RoadTypes.Road3to2, RoadTypes.Road3to4, RoadTypes.Road3to4, RoadTypes.Road3to4 });
 
             //estrada 3 p/ 2 pistas
-            AddInNextList(RoadTypes.Road3to2, new RoadTypes[] { RoadTypes.Road2 , RoadTypes.Road2to3  });
-            //AddInNextList(RoadTypes.Road3to2, new RoadTypes[] { RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2to3 });
+            AddInNextList(RoadTypes.Road3to2, new RoadTypes[] { RoadTypes.Road2 });
 
             //estrada 2 pistas
             AddInNextList(RoadTypes.Road2, new RoadTypes[] { RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2, RoadTypes.Road2to3 });
 
             //estrada 2 p/ 3 pistas
             AddInNextList(RoadTypes.Road2to3, new RoadTypes[] { RoadTypes.Road3});
-            //AddInNextList(RoadTypes.Road2to3, new RoadTypes[] { RoadTypes.Road3, RoadTypes.Road3to2 });
 
             //estrada 3 p/ 4 pistas
             AddInNextList(RoadTypes.Road3to4, new RoadTypes[] { RoadTypes.Road4});
@@ -360,6 +358,39 @@ namespace TangoGames.RoadFighter.Actors
         }
 
         public StraightRoad CurrentRoad { get { return RoadList [current ].Clone()  ; } }
+
+
+        public StraightRoad NextRoadFinal()
+        {
+            RoadTypes targetRoad = RoadTypes.Road4;
+
+            current = NextList[current].NextRoads[0];
+
+            if (current != targetRoad)
+            {
+                foreach (RoadTypes road in NextList[current].NextRoads)
+                {
+                    if (road == targetRoad)
+                    {
+                        current = road;
+                        break;
+                    }
+                }
+                if (current != targetRoad)
+                {
+                    foreach (RoadTypes road in NextList[current].NextRoads)
+                    {
+                        if (RoadList[road].Lanes.Count > RoadList[current].Lanes.Count)
+                        {
+                            current = road;
+                            break;
+                        }
+                    }
+                }
+            }
+            return RoadList[current].Clone();
+        }
+
 
         #endregion 
 

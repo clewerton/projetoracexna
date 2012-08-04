@@ -33,8 +33,6 @@ namespace TangoGames.RoadFighter.Levels
 
         private float timerCount = 0;             //Contador do tempo decorrido em milisegundos
 
-        private float pixelsCount = 0;            //Quantidade e pixels percorridos 
-
         private Vector2 speedMap;                 //Velocidade do atual do rolamento
 
         private float maxSpeed = 20.0F;           //Velocidade Máxima;
@@ -167,14 +165,11 @@ namespace TangoGames.RoadFighter.Levels
             //atualiza o tempo decorrido do checkPoint
             timerCount +=  ElapseTime;
 
-            //acumula quantidade de pixels de deslocamento
-            pixelsCount += speedMap.Y;
-
             //calcula percentual de gasolina
             gas = ( ( checkPointTimer - timerCount) * 100) / checkPointTimer;
 
             //atualiza contador de pontos ( razão 20 pixel por metros )
-            pontos = (int) ( pixelsCount / map.RatioPxMt ); //pontos em metros
+            pontos = (int) ( map.PixelsCount / map.RatioPxMt ); //pontos em metros
 
         }
 
