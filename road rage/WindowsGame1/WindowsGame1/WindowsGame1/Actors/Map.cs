@@ -30,6 +30,7 @@ namespace TangoGames.RoadFighter.Actors
         //controle de alcançe do checkPoint
         bool CheckPointReach { get; }
         bool CheckPointHeroiReady { get; set; }
+        bool CheckPointHeroiReady2 { get; set; }
         event EventHandler<CollisionEventArgs> ColisionsOccours;
         event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
         event EventHandler<ChangeRoadEventArgs> ChangeRoadType;
@@ -80,6 +81,7 @@ namespace TangoGames.RoadFighter.Actors
             //indica se o ponto de controle já alcançado
             checkPointReach = false;
             CheckPointHeroiReady = false;
+            CheckPointHeroiReady2 = false;
             _checkPointRoadMark = false;
 
         }
@@ -110,6 +112,11 @@ namespace TangoGames.RoadFighter.Actors
             {
                 velocity = new Vector2(velocity.X, velocity.Y + _acceleration);
                 if (velocity.Y > _maxSpeed) velocity = new Vector2(velocity.X, _maxSpeed);
+            }
+            else if ( CheckPointHeroiReady2 )
+            {
+                velocity = new Vector2(velocity.X, velocity.Y - 0.037F );
+                if (velocity.Y < 0) { velocity = new Vector2(velocity.X, 0); }
             }
             else
             {
@@ -326,6 +333,7 @@ namespace TangoGames.RoadFighter.Actors
         public bool CheckPointReach { get { return checkPointReach; } }
 
         public bool CheckPointHeroiReady { get; set; }
+        public bool CheckPointHeroiReady2 { get; set; }
 
         /// <summary>
         /// Contado de pixes percorridos
@@ -360,7 +368,7 @@ namespace TangoGames.RoadFighter.Actors
         private bool checkPointReach;
 
         //velocidade para entrar no posto do chepoint
-        private int _checkPointSpeed = 5;
+        private int _checkPointSpeed = 7;
 
         private bool _checkPointRoadMark;
 
