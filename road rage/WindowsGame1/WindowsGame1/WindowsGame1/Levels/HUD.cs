@@ -29,10 +29,6 @@ namespace TangoGames.RoadFighter.Levels
 
         private float gas = 0;                    //percentual de gasolina do heroi ( é o percentual de tempo decorrido)
 
-        private float checkPointTimer = 90000;    //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos)
-
-        private float timerCount = 0;             //Contador do tempo decorrido em milisegundos
-
         private Vector2 speedMap;                 //Velocidade do atual do rolamento
 
         private float maxSpeed = 20.0F;           //Velocidade Máxima;
@@ -157,16 +153,8 @@ namespace TangoGames.RoadFighter.Levels
         /// <param name="gametime"></param>
         private void calculaparametros(GameTime gametime) 
         {
-            //milisegundo decorridos desde o último frame 
-            //deveria ser (float)gametime.ElapsedGameTime.TotalMilliseconds mas teriamos que ajusta a velocidade de pixels de acordo com a performace de tempo de cada frame.
-            //optamos em colocar 16 milisegundos fixos baseado em 60 FPS fixo para não afetar a contagem de pixel do calculo da distancia percorrida
-            float ElapseTime = 16;
-
-            //atualiza o tempo decorrido do checkPoint
-            timerCount +=  ElapseTime;
-
             //calcula percentual de gasolina
-            gas = ( ( checkPointTimer - timerCount) * 100) / checkPointTimer;
+            gas = ((map.CheckPointTimer - map.TimerCount) * 100) / map.CheckPointTimer;
 
             //atualiza contador de pontos ( razão 20 pixel por metros )
             pontos = (int) ( map.PixelsCount / map.RatioPxMt ); //pontos em metros

@@ -27,6 +27,8 @@ namespace TangoGames.RoadFighter.Actors
         int MaxSpeed { get; set; }
         int MaxSpeedGlobal { get; set; }
         int CheckPointPixelDistance { get; set; }
+        float CheckPointTimer { get; set; }    //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos
+        float TimerCount { get; set; }         //Contador do tempo decorrido em milisegundos
         //controle de alcançe do checkPoint
         bool CheckPointReach { get; }
         bool CheckPointHeroiReady { get; set; }
@@ -107,6 +109,11 @@ namespace TangoGames.RoadFighter.Actors
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
+            //milisegundo decorridos desde o último frame 
+            //deveria ser (float)gametime.ElapsedGameTime.TotalMilliseconds mas teriamos que ajusta a velocidade de pixels de acordo com a performace de tempo de cada frame.
+            //optamos em colocar 16 milisegundos fixos baseado em 60 FPS fixo para não afetar a contagem de pixel do calculo da distancia percorrida
+            float ElapseTime = 16;
+
             // Aceleracao
             if (!checkPointReach)
             {
@@ -123,6 +130,9 @@ namespace TangoGames.RoadFighter.Actors
                 if (velocity.Y > _checkPointSpeed) { velocity = new Vector2(velocity.X, velocity.Y - _acceleration); }
                 else { velocity = new Vector2(velocity.X, velocity.Y + _acceleration); }
             }
+
+            //atualiza o tempo decorrido do checkPoint
+            timerCount += ElapseTime;
 
             //verifica se alcançou o checkPoint
             if ( pixelsCount > _checkPointPixelDistance ) { checkPointReach = true; }
@@ -335,6 +345,9 @@ namespace TangoGames.RoadFighter.Actors
         public bool CheckPointHeroiReady { get; set; }
         public bool CheckPointHeroiReady2 { get; set; }
 
+        public float CheckPointTimer { get { return checkPointTimer; } set {checkPointTimer=value;} }    //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos
+        public float TimerCount { get { return timerCount; } set { timerCount=value; } }  
+
         /// <summary>
         /// Contado de pixes percorridos
         /// </summary>
@@ -372,6 +385,11 @@ namespace TangoGames.RoadFighter.Actors
 
         private bool _checkPointRoadMark;
 
+        //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos)
+        private float checkPointTimer = 90000;
+
+        //Contador do tempo decorrido em milisegundos
+        private float timerCount = 0;             
 
         //Quantidade e pixels percorridos 
         float pixelsCount;
