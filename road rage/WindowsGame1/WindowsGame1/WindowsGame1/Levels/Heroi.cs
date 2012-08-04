@@ -23,9 +23,6 @@ namespace TangoGames.RoadFighter.Levels
         private Rectangle retDireita;
 
         private float angulo = 0;
-        //0.261
-        //private IList<int> listadepistas;
-        //private int numeroPistas = 4;
 
         private int targetLane = 1;
  
@@ -34,6 +31,8 @@ namespace TangoGames.RoadFighter.Levels
         private IInputService input;
 
         private Random random;
+
+        private double timeCount;
 
         private IMap map;
 
@@ -60,6 +59,8 @@ namespace TangoGames.RoadFighter.Levels
 
             int TheSeed = (int)DateTime.Now.Ticks;
             random = new Random(TheSeed);
+
+            timeCount = 0;
         }
 
 
@@ -67,9 +68,23 @@ namespace TangoGames.RoadFighter.Levels
         {
             base.Update(gameTime);
 
+
             this.Location = new Vector2(this.Location.X, _fixY);
 
-            controleHeroi();
+            if (map.CheckPointReach)
+            {
+                timeCount += gameTime.ElapsedGameTime.TotalMilliseconds;
+                if (timeCount > 2000) 
+                {
+                    targetLane = _lanes.LastIndex;
+                    timeCount = 0;
+                }
+
+            }
+            else
+            {
+                controleHeroi();
+            }
 
             movimentaHeroi();
 

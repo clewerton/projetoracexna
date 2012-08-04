@@ -27,6 +27,8 @@ namespace TangoGames.RoadFighter.Actors
         int MaxSpeed { get; set; }
         int MaxSpeedGlobal { get; set; }
         int CheckPointPixelDistance { get; set; }
+        //controle de alcançe do checkPoint
+        bool CheckPointReach { get; }
         event EventHandler<CollisionEventArgs> ColisionsOccours;
         event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
         event EventHandler<ChangeRoadEventArgs> ChangeRoadType;
@@ -34,6 +36,10 @@ namespace TangoGames.RoadFighter.Actors
         void ChangeLaneRegister(IChangeLanelistener listener);
         void ChangeLaneUnRegister(IChangeLanelistener listener);
         float RatioPxMt { get; }        //razão 20 pixel por metros
+
+        //Quantidade e pixels percorridos 
+        float PixelsCount { get; }
+
     }
 
     /// <summary>
@@ -70,6 +76,8 @@ namespace TangoGames.RoadFighter.Actors
 
             listenersChangeLane = new List<IChangeLanelistener>() ;
 
+            //indica se o ponto de controle já alcançado
+            checkPointReach = false;
         }
 
         /// <summary>
@@ -96,6 +104,9 @@ namespace TangoGames.RoadFighter.Actors
             // Aceleracao
             velocity = new Vector2(velocity.X, velocity.Y + _acceleration);
             if (velocity.Y > _maxSpeed) velocity = new Vector2(velocity.X, _maxSpeed);
+
+            //verifica se alcançou o checkPoint
+            if ( pixelsCount > _checkPointPixelDistance ) { checkPointReach = true; }
 
             //Atualiza rolagem das estradas e background
             UpdateRoads(gameTime);
@@ -135,6 +146,8 @@ namespace TangoGames.RoadFighter.Actors
             }
 
             base.Update(gameTime);
+
+            pixelsCount += velocity.Y;
 
             //remover com segurança os atores 
             SafeRemove();
@@ -235,7 +248,14 @@ namespace TangoGames.RoadFighter.Actors
                 { 
                     //GERAÇÃO DE ESTRADAS
                     fifo.Dequeue();
-                    fifo.Enqueue(roads.NextRoad());
+                    if (checkPointReach)
+                    {
+                        fifo.Enqueue(roads.NextRoadFinal());
+                    }
+                    else
+                    {
+                        fifo.Enqueue(roads.NextRoad());
+                    }
                     //Verifica sinalização das estradas
                     CheckRoadSign (fifo);
                 }
@@ -276,7 +296,14 @@ namespace TangoGames.RoadFighter.Actors
         public int MaxSpeedGlobal  { get { return _maxSpeedGlobal; } set { _maxSpeedGlobal = value; } }
 
         public int CheckPointPixelDistance { get { return _checkPointPixelDistance; } set{ _checkPointPixelDistance=value;} }
-        
+
+        public bool CheckPointReach { get { return checkPointReach; } }
+
+        /// <summary>
+        /// Contado de pixes percorridos
+        /// </summary>
+        public float PixelsCount { get { return pixelsCount; } }
+
         //razão 20 pixel por metros
         public float RatioPxMt { get { return 20.0F; } }  
 
@@ -297,9 +324,15 @@ namespace TangoGames.RoadFighter.Actors
         private int _maxSpeed = 14;
         private int _maxSpeedGlobal = 20;
         //distancia em pixel para o checkpoint
-        private int _checkPointPixelDistance = 60000;
+        private int _checkPointPixelDistance = 30000;
 
         private List<IDrawableActor> _safeRemoveList;
+
+        //controle de alcançe do checkPoint
+        private bool checkPointReach;
+
+        //Quantidade e pixels percorridos 
+        float pixelsCount;
 
         //roads manager
         private IRoadManager roads;
