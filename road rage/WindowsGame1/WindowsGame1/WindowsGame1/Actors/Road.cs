@@ -19,8 +19,10 @@ namespace TangoGames.RoadFighter.Actors
         private int ajuste;
         int roadsign = 0 ;
         int distance = 0;
+        private bool checkpoint;
         private BasicDrawingActor sign1;
         private Sign2 sign2;
+        private BasicDrawingActor gasStation;
 
         public RoadTypes RoadType { get { return roadtype; } }
 
@@ -55,6 +57,8 @@ namespace TangoGames.RoadFighter.Actors
             ajuste += (int) ValorAjuste();
             sign1  = new Sign1(scene.Game,scene.currentSpriteBatch );
             sign2  = new Sign2(scene.Game, scene.currentSpriteBatch);
+            gasStation = new GasStation(scene.Game, scene.currentSpriteBatch);
+            checkpoint = false;
         }
 
 
@@ -67,7 +71,7 @@ namespace TangoGames.RoadFighter.Actors
         {
             SpriteBatch.Draw(Texture, new Rectangle((int)(Location.X + ajuste), (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
 
-            if ( roadsign > 0 ) 
+            if (roadsign > 0 && !CheckPoint) 
             {
                 sign1.Location = new Vector2((float)roadsign, Location.Y + Bounds.Height / 3);
                 sign1.Draw(gameTime);
@@ -75,7 +79,7 @@ namespace TangoGames.RoadFighter.Actors
                 sign1.Draw(gameTime);
             }
 
-            if (distance  > 0)
+            if (distance  > 0  )
             {
                 sign2.V = distance;
                 foreach (float item in lanes.LanesList )
@@ -85,7 +89,11 @@ namespace TangoGames.RoadFighter.Actors
                     
                 }
             }
-
+            if (CheckPoint)
+            {
+                gasStation.Location = new Vector2( lanes.LanesList [lanes.LastIndex ] -31 , Location.Y);
+                gasStation.Draw(gameTime);
+            }
         }
 
         public StraightRoad Clone()
@@ -126,6 +134,13 @@ namespace TangoGames.RoadFighter.Actors
             if (Y1 >= markpx && Y2 < markpx) { this.Distance = mark * div;}
         }
 
+        public bool CheckPoint 
+        { get { return checkpoint; }
+          set {
+                checkpoint = value;
+                if (checkpoint) { lanes = new FourLanesCheckPoint(this, ajuste); }
+                }
+        }
 
         #endregion
 
@@ -157,25 +172,25 @@ namespace TangoGames.RoadFighter.Actors
             switch (roadtype)
             {
                 case RoadTypes.Road4:
-                    lanes = new FourLanes(ajuste);
+                    lanes = new FourLanes(this,ajuste);
                     return 0.0F;
                 case RoadTypes.Road4to3:
-                    lanes = new TreeLanes(ajuste);
+                    lanes = new TreeLanes(this,ajuste);
                     return 0.0F;
                 case RoadTypes.Road3:
-                    lanes = new TreeLanes(ajuste);
+                    lanes = new TreeLanes(this,ajuste);
                     return 0.0F;
                 case RoadTypes.Road3to2:
-                    lanes = new TwoLanes(ajuste);
+                    lanes = new TwoLanes(this,ajuste);
                     return 0.0F;
                 case RoadTypes.Road2:
-                    lanes = new TwoLanes(ajuste);
+                    lanes = new TwoLanes(this,ajuste);
                     return 0.0F;
                 case RoadTypes.Road2to3:
-                    lanes = new TreeLanes(ajuste);
+                    lanes = new TreeLanes(this,ajuste);
                     return 0.0F;
                 case RoadTypes.Road3to4:
-                    lanes = new FourLanes(ajuste);
+                    lanes = new FourLanes(this,ajuste);
                     return 0.0F;
                 default:
                     return 0.0F;
@@ -220,6 +235,19 @@ namespace TangoGames.RoadFighter.Actors
             }
         }
 
+        private class GasStation : BasicDrawingActor
+        {
+            public GasStation(Game game, SpriteBatch spriteBatch)
+                : base(game, game.Content.Load<Texture2D>("Textures/posto"))
+            {
+                this.SpriteBatch = spriteBatch;
+            }
+            public override void Draw(GameTime gameTime)
+            {
+                SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
+            }
+        }
+
     }
 
     #region RoadManager
@@ -234,7 +262,8 @@ namespace TangoGames.RoadFighter.Actors
     public interface IRoadManager 
     {
         StraightRoad NextRoad();
-        StraightRoad NextRoadFinal();
+        StraightRoad NextRoadCheckPoint();
+        RoadTypes CheckPointTargetRoad { get; set; }
         StraightRoad CurrentRoad { get; }
     }
 
@@ -259,6 +288,9 @@ namespace TangoGames.RoadFighter.Actors
 
         //estrada corrente
         private RoadTypes current;
+
+        //estrada alvo parada do checkpoint
+        private RoadTypes checkPointTargetRoad;
 
         private Random random;
 
@@ -300,6 +332,9 @@ namespace TangoGames.RoadFighter.Actors
 
             //define o tipo de estrada inicial
             current = RoadList.FirstOrDefault().Key;
+
+            //define a pista para checkpoint
+            checkPointTargetRoad = RoadTypes.Road4;
 
             #region sequencia das estradas
             //define a sequencia das estradas
@@ -357,10 +392,7 @@ namespace TangoGames.RoadFighter.Actors
             return RoadList[current].Clone();
         }
 
-        public StraightRoad CurrentRoad { get { return RoadList [current ].Clone()  ; } }
-
-
-        public StraightRoad NextRoadFinal()
+        public StraightRoad NextRoadCheckPoint()
         {
             RoadTypes targetRoad = RoadTypes.Road4;
 
@@ -391,6 +423,9 @@ namespace TangoGames.RoadFighter.Actors
             return RoadList[current].Clone();
         }
 
+        public StraightRoad CurrentRoad { get { return RoadList[current].Clone(); } }
+
+        public RoadTypes CheckPointTargetRoad { get { return checkPointTargetRoad; } set { checkPointTargetRoad=value; } }
 
         #endregion 
 
@@ -430,6 +465,8 @@ namespace TangoGames.RoadFighter.Actors
         ILanes Lanes { get; set; }
         int RoadSign { get; set; }
         int Distance { get; set; }
+        bool CheckPoint { get; set; }
+        RoadTypes RoadType { get; }
         void UpdateRoadSequence(IRoad nextroad);
         int GlobalPixelPosition { get; set; }
         IRoad nextroad { get; set; }
@@ -438,20 +475,23 @@ namespace TangoGames.RoadFighter.Actors
 
     public interface ILanes
     {
+        IRoad Road { get; }
         List<int> LanesList { get; set; }
         int Count { get; set; }
         int StartIndex { get; set; }
         int LastIndex { get; set; }
+
     }
     public class FourLanes : ILanes
     {
+        private IRoad road;
         private List<int> _laneslist;
         private int _starindex = 0;
         private int _lastindex = 0;
         private int _count = 4;
-
-        public FourLanes(int ajuste)
+        public FourLanes( IRoad road,int ajuste)
         {
+            this.road = road;
             _laneslist = new List<int>();
             for (int i = _starindex; i < _count; i++)
             {
@@ -460,6 +500,7 @@ namespace TangoGames.RoadFighter.Actors
             }
         }
 
+        public IRoad Road { get { return road; } }
         public List<int> LanesList { get { return _laneslist; } set { _laneslist = value; } }
         public int Count { get { return _count; } set { _count = value; } }
         public int StartIndex { get { return _starindex; } set { _starindex = value; } }
@@ -467,15 +508,45 @@ namespace TangoGames.RoadFighter.Actors
 
     }
 
+    public class FourLanesCheckPoint : ILanes
+    {
+        private IRoad road;
+        private List<int> _laneslist;
+        private int _starindex = 0;
+        private int _lastindex = 0;
+        private int _count = 5;
+        public FourLanesCheckPoint(IRoad road, int ajuste)
+        {
+            this.road = road;
+            _laneslist = new List<int>();
+            for (int i = _starindex; i < _count; i++)
+            {
+                _laneslist.Add(ajuste + 270 + 130 * i);
+                _lastindex = i;
+            }
+            //_laneslist[_lastindex] = _laneslist[_lastindex]-10
+        }
+
+        public IRoad Road { get { return road; } }
+        public List<int> LanesList { get { return _laneslist; } set { _laneslist = value; } }
+        public int Count { get { return _count; } set { _count = value; } }
+        public int StartIndex { get { return _starindex; } set { _starindex = value; } }
+        public int LastIndex { get { return _lastindex; } set { _lastindex = value; } }
+
+    }
+
+
     public class TreeLanes : ILanes
     {
+        private IRoad road;
         private List<int> _laneslist;
         private int _starindex = 0;
         private int _lastindex = 0;
         private int _count = 3;
 
-        public TreeLanes(int ajuste)
+        public TreeLanes(IRoad road, int ajuste)
         {
+            this.road = road;
             _laneslist = new List<int>();
             for (int i = _starindex; i < _count; i++)
             {
@@ -483,7 +554,7 @@ namespace TangoGames.RoadFighter.Actors
                 _lastindex = i;
             }
         }
-
+        public IRoad Road { get { return road; } }
         public List<int> LanesList { get { return _laneslist; } set { _laneslist = value; } }
         public int Count { get { return _count; } set { _count = value; } }
         public int StartIndex { get { return _starindex; } set { _starindex = value; } }
@@ -492,13 +563,15 @@ namespace TangoGames.RoadFighter.Actors
     }
     public class TwoLanes : ILanes
     {
+        private IRoad road;
         private List<int> _laneslist;
         private int _starindex = 0;
         private int _lastindex = 0;
         private int _count = 2;
 
-        public TwoLanes(int ajuste)
+        public TwoLanes(IRoad road, int ajuste)
         {
+            this.road = road;
             _laneslist = new List<int>();
             for (int i = _starindex; i < _count; i++)
             {
@@ -507,6 +580,7 @@ namespace TangoGames.RoadFighter.Actors
             }
         }
 
+        public IRoad Road { get { return road; } }
         public List<int> LanesList { get { return _laneslist; } set { _laneslist = value; } }
         public int Count { get { return _count; } set { _count = value; } }
         public int StartIndex { get { return _starindex; } set { _starindex = value; } }

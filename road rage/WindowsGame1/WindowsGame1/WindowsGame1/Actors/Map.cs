@@ -29,6 +29,7 @@ namespace TangoGames.RoadFighter.Actors
         int CheckPointPixelDistance { get; set; }
         //controle de alcançe do checkPoint
         bool CheckPointReach { get; }
+        bool CheckPointHeroiReady { get; set; }
         event EventHandler<CollisionEventArgs> ColisionsOccours;
         event EventHandler<OutOfBoundsEventArgs> OutOfBounds;
         event EventHandler<ChangeRoadEventArgs> ChangeRoadType;
@@ -78,6 +79,9 @@ namespace TangoGames.RoadFighter.Actors
 
             //indica se o ponto de controle já alcançado
             checkPointReach = false;
+            CheckPointHeroiReady = false;
+            _checkPointRoadMark = false;
+
         }
 
         /// <summary>
@@ -102,8 +106,16 @@ namespace TangoGames.RoadFighter.Actors
         public override void Update(GameTime gameTime)
         {
             // Aceleracao
-            velocity = new Vector2(velocity.X, velocity.Y + _acceleration);
-            if (velocity.Y > _maxSpeed) velocity = new Vector2(velocity.X, _maxSpeed);
+            if (!checkPointReach)
+            {
+                velocity = new Vector2(velocity.X, velocity.Y + _acceleration);
+                if (velocity.Y > _maxSpeed) velocity = new Vector2(velocity.X, _maxSpeed);
+            }
+            else
+            {
+                if (velocity.Y > _checkPointSpeed) { velocity = new Vector2(velocity.X, velocity.Y - _acceleration); }
+                else { velocity = new Vector2(velocity.X, velocity.Y + _acceleration); }
+            }
 
             //verifica se alcançou o checkPoint
             if ( pixelsCount > _checkPointPixelDistance ) { checkPointReach = true; }
@@ -248,9 +260,18 @@ namespace TangoGames.RoadFighter.Actors
                 { 
                     //GERAÇÃO DE ESTRADAS
                     fifo.Dequeue();
+
+                    //ação de entrada no checkpoint automática
                     if (checkPointReach)
                     {
-                        fifo.Enqueue(roads.NextRoadFinal());
+                        IRoad ckproad = roads.NextRoadCheckPoint();
+                        if (ckproad.RoadType == roads.CheckPointTargetRoad && CheckPointHeroiReady && !_checkPointRoadMark ) 
+                        { 
+                            ckproad.CheckPoint = true;
+                            _checkPointRoadMark = true;
+                        }
+                        fifo.Enqueue((IDrawableActor)ckproad);
+
                     }
                     else
                     {
@@ -299,6 +320,8 @@ namespace TangoGames.RoadFighter.Actors
 
         public bool CheckPointReach { get { return checkPointReach; } }
 
+        public bool CheckPointHeroiReady { get; set; }
+
         /// <summary>
         /// Contado de pixes percorridos
         /// </summary>
@@ -324,12 +347,18 @@ namespace TangoGames.RoadFighter.Actors
         private int _maxSpeed = 14;
         private int _maxSpeedGlobal = 20;
         //distancia em pixel para o checkpoint
-        private int _checkPointPixelDistance = 30000;
+        private int _checkPointPixelDistance = 10000;
 
         private List<IDrawableActor> _safeRemoveList;
 
         //controle de alcançe do checkPoint
         private bool checkPointReach;
+
+        //velocidade para entrar no posto do chepoint
+        private int _checkPointSpeed = 5;
+
+        private bool _checkPointRoadMark;
+
 
         //Quantidade e pixels percorridos 
         float pixelsCount;
