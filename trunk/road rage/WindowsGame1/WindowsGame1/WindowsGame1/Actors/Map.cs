@@ -273,6 +273,11 @@ namespace TangoGames.RoadFighter.Actors
                         fifo.Enqueue((IDrawableActor)ckproad);
 
                     }
+                    // regra do honorato
+                    else if ( (pixelsCount + scene.Game.Window.ClientBounds.Height * 4)  > _checkPointPixelDistance)
+                    {
+                        fifo.Enqueue(roads.NextRoadCheckPoint());
+                    }
                     else
                     {
                         fifo.Enqueue(roads.NextRoad());

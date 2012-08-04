@@ -60,7 +60,7 @@ namespace TangoGames.RoadFighter.Levels
             int TheSeed = (int)DateTime.Now.Ticks;
             random = new Random(TheSeed);
 
-            timeCount = 0;
+            timeCount = 1000;
         }
 
 
@@ -74,11 +74,12 @@ namespace TangoGames.RoadFighter.Levels
             if (map.CheckPointReach)
             {
                 timeCount += gameTime.ElapsedGameTime.TotalMilliseconds;
-                if (timeCount > 2000) 
+                if (timeCount > 2000 || _lanes.Road.CheckPoint ) 
                 {
                     targetLane = _lanes.LastIndex;
                     timeCount = 0;
                 }
+                
             }
             else
             {
