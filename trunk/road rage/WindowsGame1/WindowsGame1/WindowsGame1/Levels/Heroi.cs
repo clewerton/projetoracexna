@@ -24,7 +24,7 @@ namespace TangoGames.RoadFighter.Levels
 
         private float angulo = 0;
 
-        private int targetLane = 1;
+        private int targetLane = -1;
  
         private int _fixY;
 
@@ -68,6 +68,12 @@ namespace TangoGames.RoadFighter.Levels
         {
             base.Update(gameTime);
 
+            if (targetLane == -1)
+            {
+                targetLane = XtoLane(Location.X);
+                Location = new Vector2(_lanes.LanesList[targetLane], Location.Y);
+                angulo = 0;
+            }
 
             this.Location = new Vector2(this.Location.X, _fixY);
 
@@ -145,12 +151,12 @@ namespace TangoGames.RoadFighter.Levels
             if ( Location.X < targetX )
             {
                 Move(new Vector2( 7 * ratioSpeed(), 0));
-                angulo = (float)0.1;
+                angulo = (float)((0.1F * ratioSpeed()) + 0.05F);
             }
             else if ( Location.X > targetX )
             {
                 Move(new Vector2(-7 * ratioSpeed(), 0));
-                angulo = -(float)0.1;
+                angulo = -(float)((0.1F * ratioSpeed()) + 0.05F);
             }
 
         }

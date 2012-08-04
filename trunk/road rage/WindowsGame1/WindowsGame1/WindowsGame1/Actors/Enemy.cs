@@ -15,17 +15,19 @@ namespace TangoGames.RoadFighter.Actors
         public enum EnemyTypes { Inimigo1, Inimigo2, Inimigo3, Inimigo4, Inimigo5, Inimigo6, Inimigo7, Inimigo8 }
 
         private Scene scene;
+        private IMap map;
         private EnemyTypes etype;
 
         private float angulo = 0;
 
-        private int targetLane = 1;
+        private int targetLane = -1;
 
 
-        public Enemy(EnemyTypes etype, Scene scene)
+        public Enemy(EnemyTypes etype, Scene scene, IMap map)
             : base(scene.Game, TextureEnemy(scene.Game, etype))
         {
             this.scene = scene;
+            this.map = map;
             this.etype = etype;
             this.SpriteBatch = scene.currentSpriteBatch;
             Collidable = true;
@@ -38,12 +40,17 @@ namespace TangoGames.RoadFighter.Actors
             if (targetLane == -1)
             {
                 targetLane = XtoLane(Location.X);
+                
             }
 
             movimenta();
 
         }
 
+        private float ratioSpeed()
+        {
+            return ( -Velocity.Y / map.MaxSpeedGlobal);
+        }
 
         private void movimenta()
         {
@@ -55,20 +62,23 @@ namespace TangoGames.RoadFighter.Actors
 
             int dif = Math.Abs(targetX - (int)Location.X);
 
-            if (Location.X < targetX)
-            {
-                Move(new Vector2(3, 0));
-                angulo = (float)0.1;
-            }
-            else if (Location.X > targetX)
-            {
-                Move(new Vector2(-3, 0));
-                angulo = -(float)0.1;
-            }
-            if (dif < 3)
+            if (dif < (7 * ratioSpeed()))
             {
                 Location = new Vector2((float)targetX, Location.Y);
                 angulo = 0;
+                return;
+            }
+
+
+            if (Location.X < targetX)
+            {
+                Move(new Vector2(7 * ratioSpeed(), 0));
+                angulo = (float)((0.1F * ratioSpeed()) + 0.05F);
+            }
+            else if (Location.X > targetX)
+            {
+                Move(new Vector2(-7 * ratioSpeed(), 0));
+                angulo = -(float)((0.1F * ratioSpeed()) + 0.05F);
             }
 
         }
@@ -145,8 +155,6 @@ namespace TangoGames.RoadFighter.Actors
         }
 
         #endregion
-
-
 
         #region Collision implementation
         /// <summary>
