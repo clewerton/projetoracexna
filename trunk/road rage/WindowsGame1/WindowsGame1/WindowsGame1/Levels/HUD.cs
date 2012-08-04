@@ -41,6 +41,7 @@ namespace TangoGames.RoadFighter.Levels
         private Texture2D velocimetro;
         private Texture2D ponteiro1;                // ponteiro do indicador de gasolina
         private Texture2D ponteiro2;                // ponteiro para o velocimetro
+        private Texture2D indicadordeabastecimento;
         private SpriteFont Arial;
 
         #endregion
@@ -63,6 +64,7 @@ namespace TangoGames.RoadFighter.Levels
             ponteiro1 = scene.Game.Content.Load<Texture2D>("HUDElementos/ponteiro");
             velocimetro = scene.Game.Content.Load<Texture2D>("HUDElementos/velocimetro");
             ponteiro2 = scene.Game.Content.Load<Texture2D>("HUDElementos/ponteirovelocimetro");
+            indicadordeabastecimento = scene.Game.Content.Load<Texture2D>("HUDElementos/Indicadorabast");
 
         }
 
@@ -93,22 +95,26 @@ namespace TangoGames.RoadFighter.Levels
         /// <param name="gameTime"></param>
         /// <param name="spriteBatch"></param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-            
         {
-            
-            spriteBatch.DrawString(Arial, " " +pontos, new Vector2(10, 140), Color.Red);
+
+            spriteBatch.DrawString(Arial, " " + pontos, new Vector2(10, 140), Color.Red);
 
             spriteBatch.Draw(marcadorPontos, new Rectangle(0, 100, 204, 53), new Rectangle(18, 10, 204, 53), Color.White);
 
             spriteBatch.Draw(indicadorCombustivel, new Rectangle(30, 195, indicadorCombustivel.Width, indicadorCombustivel.Height), new Rectangle(0, 0, indicadorCombustivel.Width, indicadorCombustivel.Height), Color.White);
-            
-            spriteBatch.Draw(ponteiro1, new Rectangle(65,305, 78, 6), null, Color.White, angponteiro1, new Vector2(0, ponteiro1.Height/2), SpriteEffects.None, 0);
+
+            spriteBatch.Draw(ponteiro1, new Rectangle(65, 305, 78, 6), null, Color.White, angponteiro1, new Vector2(0, ponteiro1.Height / 2), SpriteEffects.None, 0);
 
             spriteBatch.Draw(velocimetro, new Rectangle(0, 200 + indicadorCombustivel.Height, velocimetro.Width, velocimetro.Height), Color.White);
 
-            spriteBatch.Draw(ponteiro2, new Rectangle(velocimetro.Width / 2 - ponteiro2.Width/2, 200 + indicadorCombustivel.Height + ponteiro2.Height + 45, ponteiro2.Width, ponteiro2.Height),null, Color.White,angponteiro2,new Vector2(ponteiro2.Width/2,ponteiro2.Height), SpriteEffects.None, 0);
-            
-        }
+            spriteBatch.Draw(ponteiro2, new Rectangle(velocimetro.Width / 2 - ponteiro2.Width / 2, 200 + indicadorCombustivel.Height + ponteiro2.Height + 45, ponteiro2.Width, ponteiro2.Height), null, Color.White, angponteiro2, new Vector2(ponteiro2.Width / 2, ponteiro2.Height), SpriteEffects.None, 0);
+
+            if (map.CheckPointReach == true)
+            {
+                spriteBatch.Draw(indicadordeabastecimento, new Rectangle(scene.Game.Window.ClientBounds.Width - indicadordeabastecimento.Width - 25, scene.Game.Window.ClientBounds.Height / 2, indicadordeabastecimento.Width, indicadordeabastecimento.Height), Color.White);
+            }
+        }        
+          
 
         #endregion
 
@@ -159,6 +165,7 @@ namespace TangoGames.RoadFighter.Levels
             //atualiza contador de pontos ( razão 20 pixel por metros )
             pontos = (int) ( map.PixelsCount / map.RatioPxMt ); //pontos em metros
 
+            
         }
 
         #endregion

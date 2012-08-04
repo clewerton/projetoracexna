@@ -274,7 +274,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\indicadorabast.png">
+    <Compile Include="HUDElementos\indicadorabast.png">
       <Name>indicadorabast</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
