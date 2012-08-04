@@ -37,9 +37,6 @@ namespace TangoGames.RoadFighter.Levels
         {
             _currentScene = scene;
 
-            //cria definicão de pistas inicial deve ser atualizado pelo método CurrentRoad
-            _lanes = new FourLanes(0); 
-
             //lista de inimigos fora de ação
             _ListofEnemies = new List<IEnemy>();
 

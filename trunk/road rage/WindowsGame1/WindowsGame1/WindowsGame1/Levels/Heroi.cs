@@ -79,7 +79,6 @@ namespace TangoGames.RoadFighter.Levels
                     targetLane = _lanes.LastIndex;
                     timeCount = 0;
                 }
-
             }
             else
             {
@@ -135,6 +134,7 @@ namespace TangoGames.RoadFighter.Levels
             {
                 Location = new Vector2((float)targetX, Location.Y);
                 angulo = 0;
+                if (map.CheckPointReach && _lanes.LastIndex == targetLane) { map.CheckPointHeroiReady = true; } 
                 return;
             }
 
