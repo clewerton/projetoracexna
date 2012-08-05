@@ -126,6 +126,9 @@ namespace TangoGames.RoadFighter.Actors
             // Atualiza velocidade
             velocity = UpdateSpeed();
 
+            // atualiza a contagem da diatancia
+            pixelsCount += velocity.Y;
+
             //atualiza o tempo decorrido do checkPoint
             if (!checkPointReach) { timerCount += ElapseTime; }
 
@@ -175,8 +178,6 @@ namespace TangoGames.RoadFighter.Actors
             }
 
             base.Update(gameTime);
-
-            pixelsCount += velocity.Y;
 
             //remover com segurança os atores 
             SafeRemove();
@@ -383,8 +384,8 @@ namespace TangoGames.RoadFighter.Actors
                         fifo.Enqueue((IDrawableActor)ckproad);
                         if (ckproad.CheckPoint ) 
                         {
-                            //salva o ponto de parada do heroi no checkpoint
-                            pixelCheckPoint = ckproad.GlobalPixelPosition + (((IDrawableActor)ckproad).Bounds.Height / 2) - 155;
+                            //salva o ponto de parada do heroi no checkpoint (ajuste 139)
+                            pixelCheckPoint = ckproad.GlobalPixelPosition + (((IDrawableActor)ckproad).Bounds.Height / 2) - 139;
                         }
 
                     }
