@@ -385,7 +385,7 @@ namespace TangoGames.RoadFighter.Actors
                         if (ckproad.CheckPoint ) 
                         {
                             //salva o ponto de parada do heroi no checkpoint (ajuste 139)
-                            pixelCheckPoint = ckproad.GlobalPixelPosition + (((IDrawableActor)ckproad).Bounds.Height / 2) - 139;
+                            pixelCheckPoint = ckproad.GlobalPixelPosition + (((IDrawableActor)ckproad).Bounds.Height / 2) - 112;
                         }
 
                     }
@@ -492,7 +492,7 @@ namespace TangoGames.RoadFighter.Actors
         private bool checkPointReach;
 
         //velocidade para entrar no posto do chepoint
-        private int _checkPointSpeed = 7;
+        private int _checkPointSpeed = 12;
 
         private bool _checkPointRoadMark;
 
