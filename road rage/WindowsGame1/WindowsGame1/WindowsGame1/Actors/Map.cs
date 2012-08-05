@@ -384,8 +384,10 @@ namespace TangoGames.RoadFighter.Actors
                         fifo.Enqueue((IDrawableActor)ckproad);
                         if (ckproad.CheckPoint ) 
                         {
-                            //salva o ponto de parada do heroi no checkpoint (ajuste 139)
-                            pixelCheckPoint = ckproad.GlobalPixelPosition + (((IDrawableActor)ckproad).Bounds.Height / 2) - 112;
+                            //salva o ponto de parada do heroi no checkpoint (ajuste 110 na resolução 1080 linhas )
+                            //ajusta para outras resoluções
+                            int dif = 1080 - scene.Game.GraphicsDevice.DisplayMode.Height;
+                            pixelCheckPoint = ckproad.GlobalPixelPosition + (((IDrawableActor)ckproad).Bounds.Height / 2) - 110 - dif;
                         }
 
                     }
