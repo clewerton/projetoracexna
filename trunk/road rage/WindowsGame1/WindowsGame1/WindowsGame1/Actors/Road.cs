@@ -116,7 +116,7 @@ namespace TangoGames.RoadFighter.Actors
         {
             if (nextroad == null)
             {
-                GlobalPixelPosition = 0;
+                GlobalPixelPosition = - Bounds.Y; ;
                 return;
             }
             this.nextroad = nextroad;

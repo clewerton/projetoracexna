@@ -232,7 +232,6 @@ namespace TangoGames.RoadFighter.Levels
                     ((IEnemy)args.OutActor).Active = false;
                     _currentMap.Remove(args.OutActor);
                     _currentMap.ChangeLaneUnRegister((IChangeLanelistener)args.OutActor);
-                    Console.WriteLine("Tirou" + args.OutActor);
                 }
                 else
                 {

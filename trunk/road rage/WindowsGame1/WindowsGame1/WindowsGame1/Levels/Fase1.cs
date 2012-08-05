@@ -84,8 +84,6 @@ namespace TangoGames.RoadFighter.Levels
 
         public void OnColisionsOccours(Object sender, CollisionEventArgs args)
         {
-            //Console.WriteLine(args.ColliderA + " bateu no ator " + args.ColliderB);
-
             #region colisão do heroi com carro inimigo
             if (args.ColliderA is IEnemy && args.ColliderB is Heroi) 
             {
