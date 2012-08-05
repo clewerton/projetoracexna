@@ -19,11 +19,13 @@ namespace TangoGames.RoadFighter.Levels
     public interface IEnemy
     {
         bool Active { get; set; }
+        bool ChangeLane(int swicth);
     }
 
     public class EnemiesManager: GameComponent, IEnemiesManager
     {
         private Random random;
+
         private int _maxSpeed = 9;
 
         private int maxEnemies = 3;
@@ -126,7 +128,7 @@ namespace TangoGames.RoadFighter.Levels
             else if (_lanes.Count == 3) { maxEnemies = 6; interval = (EnemiesActive.Count() * 1000); }
             else { maxEnemies = 9; interval = (EnemiesActive.Count() * 500); }
 
-            if ( EnemiesActive.Count() <  maxEnemies &&  timepass > interval && EnemiesNotActive.Count() >  0 )
+            if ( EnemiesActive.Count() <  maxEnemies &&  timepass > interval && EnemiesNotActive.Count() >  0  && !_currentMap.CheckPointReach )
             {
                 timepass = 0;
 
