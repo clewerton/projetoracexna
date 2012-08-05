@@ -72,7 +72,7 @@ namespace TangoGames.RoadFighter.Actors
             //gera instancia de gestor de estradas
             roads = new RoadManager(scene, this);
             FifoRoad = new MyFifo();
-            //gera a fila de estradas pelo gerenciado de extradas 
+            //gera a fila de estradas pelo gerenciado de extradas
             FifoRoad.Enqueue(roads.CurrentRoad);
             FifoRoad.Enqueue(roads.NextRoad());
             FifoRoad.Enqueue(roads.NextRoad());
@@ -95,6 +95,8 @@ namespace TangoGames.RoadFighter.Actors
             //distancia do checkpoint
             _checkPointPixelBase = 60000;
             _checkPointPixelDistance = _checkPointPixelBase;
+
+            temptimer = 0;
         }
 
         /// <summary>
@@ -132,23 +134,23 @@ namespace TangoGames.RoadFighter.Actors
             //atualiza o tempo decorrido do checkPoint
             if (!checkPointReach) { timerCount += ElapseTime; }
 
-            //verifica se alcançou o checkPoint
-            if ( pixelsCount > _checkPointPixelDistance ) { checkPointReach = true; }
-
             //verifica se o tempo acabou
             if (timerCount > checkPointTime) { endOfGas = true; }
+
+            //verifica se alcançou o checkPoint
+            if (pixelsCount > _checkPointPixelDistance) { checkPointReach = true; endOfGas = false; }
 
             //Atualiza rolagem das estradas e background
             UpdateRoads(gameTime);
 
-            if (checkPointReach && HeroiStopping && velocity.Y == 0.0F) { FillGasCheckPoint(gameTime); }
+
+            if (checkPointReach && HeroiStopping && (int)velocity.Y == 0) { FillGasCheckPoint(gameTime); }
 
             foreach (IDrawableActor actor in actors)
             {
 
                 actor.Location += velocity;
                 actor.Update(gameTime);
-
 
                 //Testa se ator saiu da tela e dispara evento OutOfBounds
                 if (!actor.Outofscreen && ! scene.Game.Window.ClientBounds.Intersects (actor.Bounds))
@@ -260,31 +262,18 @@ namespace TangoGames.RoadFighter.Actors
         /// <param name="gameTime"></param>
         private void FillGasCheckPoint(GameTime gameTime)
         {
-            //manobrista
-            int dif = (int)(pixelCheckPoint - pixelsCount);
-            if (dif > 3)
-            {
-                velocity -= new Vector2(0, 1.0F);
-                return;
-            }
-            else if (dif < -3)
-            {
-                velocity += new Vector2(0, 1.0F);
-                return;
-            }
 
             float time = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            temptimer += (int)time; 
+            temptimer += time; 
 
-            int timewait = 3000 - temptimer ;
+            float timewait = 3000 - temptimer ;
 
             float fill = timerCount;
 
-            if (timewait >0 ) {fill = (timerCount) * ( time / timewait ); }
+            if ( timewait > 0 ) { fill = (timerCount) * ( time / timewait ); }
 
             timerCount -= fill;
-
 
             if (timerCount<=0) { RestartCheckPoint();}
 
@@ -359,7 +348,7 @@ namespace TangoGames.RoadFighter.Actors
         /// <returns></returns>
         private bool adjustPosition(MyFifo fifo, bool enqueue)
         {
-            if ( fifo.Peek().Bounds.Top > scene.Game.Window.ClientBounds.Bottom)
+            if ( fifo.Peek().Bounds.Top > scene.Game.Window.ClientBounds.Bottom - 1)
             {
 
                 if (enqueue) 
@@ -522,7 +511,7 @@ namespace TangoGames.RoadFighter.Actors
         //lista de ouvinte do evento de troca de pista
         private List<IChangeLanelistener> listenersChangeLane;
 
-        private int temptimer = 0;
+        private float temptimer = 0;
 
         private float pixelCheckPoint;
 
@@ -589,10 +578,11 @@ namespace TangoGames.RoadFighter.Actors
         {
             public IDrawableActor Last { get; private set; }
             public IDrawableActor SecondLast { get; private set; }
-            public IDrawableActor Fist { get { return base.Peek(); } }
+            public IDrawableActor First { get { return base.Peek(); } }
 
             public new void Enqueue(IDrawableActor item) 
             {
+                if (Last == null) adjustFirst(item);
                 SecondLast = Last;
                 Last = item;
                 if (item is IRoad) { ((IRoad)item).UpdateRoadSequence((IRoad)SecondLast); }
@@ -601,8 +591,13 @@ namespace TangoGames.RoadFighter.Actors
             }
             private void adjustNext()
             {
-                Last.Location = new Vector2(Last.Bounds.X, SecondLast.Location.Y - Last.Bounds.Height - 1);
+                Last.Location = new Vector2(Last.Location.X, SecondLast.Location.Y - Last.Bounds.Height - 1);
             }
+            private void adjustFirst(IDrawableActor item)
+            {
+                item.Location = new Vector2(item.Location.X, item.Bounds.Height);
+            }
+
 
         }
 
