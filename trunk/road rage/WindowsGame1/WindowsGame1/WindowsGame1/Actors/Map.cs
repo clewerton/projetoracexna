@@ -32,6 +32,7 @@ namespace TangoGames.RoadFighter.Actors
         //controle de alcançe do checkPoint
         bool CheckPointReach { get; }
         bool CheckPointHeroiReady { get; set; }
+        int CheckPointCount { get; set; }
         bool HeroiStopping { get; set; }
         bool EndOfGas { get; set; }
 
@@ -84,10 +85,16 @@ namespace TangoGames.RoadFighter.Actors
 
             //indica se o ponto de controle já alcançado
             checkPointReach = false;
+
             CheckPointHeroiReady = false;
             HeroiStopping = false;
             _checkPointRoadMark = false;
             endOfGas = false;
+            checkPointCount = 0;
+
+            //distancia do checkpoint
+            _checkPointPixelBase = 60000;
+            _checkPointPixelDistance = _checkPointPixelBase;
         }
 
         /// <summary>
@@ -216,6 +223,10 @@ namespace TangoGames.RoadFighter.Actors
 
         }
 
+        /// <summary>
+        /// Calcula a velocidade do carro heroi (= velocidade de atualização da rolagem da tela)
+        /// </summary>
+        /// <returns>Vetor de velocidade</returns>
         private Vector2 UpdateSpeed()
         {
             float speed = velocity.Y;
@@ -227,7 +238,8 @@ namespace TangoGames.RoadFighter.Actors
             else if (HeroiStopping)
             {
                 speed -= speedinc;
-                if (speed <= 1 && pixelCheckPoint > pixelsCount) { speed += speedinc * 1.5F; }
+                if (speed <= 2 && pixelCheckPoint > pixelsCount) { speed = 2; }
+                if ( (pixelCheckPoint)  < pixelsCount) { speed = 0; }
             }
             else
             {
@@ -241,13 +253,25 @@ namespace TangoGames.RoadFighter.Actors
             return new Vector2 (velocity.X, speed);
         }
 
-
         /// <summary>
         /// Encher o tanque
         /// </summary>
         /// <param name="gameTime"></param>
         private void FillGasCheckPoint(GameTime gameTime)
         {
+            //manobrista
+            int dif = (int)(pixelCheckPoint - pixelsCount);
+            if (dif > 3)
+            {
+                velocity -= new Vector2(0, 1.0F);
+                return;
+            }
+            else if (dif < -3)
+            {
+                velocity += new Vector2(0, 1.0F);
+                return;
+            }
+
             float time = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             temptimer += (int)time; 
@@ -265,6 +289,9 @@ namespace TangoGames.RoadFighter.Actors
 
         }
 
+        /// <summary>
+        /// Reinicia CheckPoint
+        /// </summary>
         private void RestartCheckPoint()
         {
             temptimer = 0;
@@ -274,11 +301,22 @@ namespace TangoGames.RoadFighter.Actors
             HeroiStopping = false;
             _checkPointRoadMark = false;
             endOfGas = false;
-            _checkPointPixelDistance += (int) (_checkPointPixelBase) ;
-            _checkPointPixelBase += 5000; 
+
+            //aumenta o valor base da distancia do posto em 15% a cada checkpoint
+            //se não for superior ao máximo 5600m ( 5000 * 20 = 100000) 
+            if (_checkPointPixelBase < 100000) { _checkPointPixelBase += (int)(_checkPointPixelBase * 0.15F); }
+            else { _checkPointPixelBase = 100000; }
+
+            _checkPointPixelDistance += _checkPointPixelBase;
+
+            //aumneta a velocidade final a cada checkpoint
             _maxSpeed += 2;
             if (_maxSpeed > _maxSpeedGlobal) _maxSpeed = _maxSpeedGlobal;
+
+            //incrementa o contador de checkpoint
+            checkPointCount++;
         }
+  
         #endregion
 
         #region metodos Interface IMAP
@@ -341,10 +379,13 @@ namespace TangoGames.RoadFighter.Actors
                         { 
                             ckproad.CheckPoint = true;
                             _checkPointRoadMark = true;
-                            //salva o ponto de parada do heroi no checkpoint
-                            pixelCheckPoint = ckproad.GlobalPixelPosition + ((IDrawableActor)ckproad).Bounds.Height / 2;
                         }
                         fifo.Enqueue((IDrawableActor)ckproad);
+                        if (ckproad.CheckPoint ) 
+                        {
+                            //salva o ponto de parada do heroi no checkpoint
+                            pixelCheckPoint = ckproad.GlobalPixelPosition + (((IDrawableActor)ckproad).Bounds.Height / 2) - 155;
+                        }
 
                     }
                     // regra do honorato
@@ -363,7 +404,6 @@ namespace TangoGames.RoadFighter.Actors
             }
             return false;
         }
-
 
         /// <summary>
         /// Atualiza a Estada que conterá a sinalização no chão
@@ -400,6 +440,9 @@ namespace TangoGames.RoadFighter.Actors
         public bool CheckPointReach { get { return checkPointReach; } }
 
         public bool CheckPointHeroiReady { get; set; }
+
+        public int CheckPointCount {  get { return checkPointCount; } set{ checkPointCount=value;} }
+
         public bool HeroiStopping { get; set; }
 
         public float CheckPointTime { get { return checkPointTime; } set {checkPointTime=value;} }    //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos
@@ -441,7 +484,7 @@ namespace TangoGames.RoadFighter.Actors
         //distancia em pixel para o checkpoint
         private int _checkPointPixelDistance = 60000;  // 3000 * 20
 
-        private int _checkPointPixelBase = 65000;
+        private int _checkPointPixelBase = 60000;  //3000 * 20
         private List<IDrawableActor> _safeRemoveList;
 
         //controle de alcançe do checkPoint
@@ -454,6 +497,9 @@ namespace TangoGames.RoadFighter.Actors
 
         //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos)
         private float checkPointTime = 90000;
+
+        //contador de checkpoints
+        private int checkPointCount = 0;
 
         //Contador do tempo decorrido em milisegundos
         private float timerCount = 0;
@@ -552,7 +598,7 @@ namespace TangoGames.RoadFighter.Actors
             }
             private void adjustNext()
             {
-                Last.Location = new Vector2(Last.Bounds.X, SecondLast.Location.Y - Last.Bounds.Height);
+                Last.Location = new Vector2(Last.Bounds.X, SecondLast.Location.Y - Last.Bounds.Height - 1);
             }
 
         }

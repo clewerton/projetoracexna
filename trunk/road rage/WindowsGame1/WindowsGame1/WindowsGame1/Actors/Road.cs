@@ -120,7 +120,7 @@ namespace TangoGames.RoadFighter.Actors
                 return;
             }
             this.nextroad = nextroad;
-            GlobalPixelPosition = nextroad.GlobalPixelPosition + ((IDrawableActor)nextroad).Bounds.Height;
+            GlobalPixelPosition = nextroad.GlobalPixelPosition + ((IDrawableActor)nextroad).Bounds.Height + 1;
             nextroad.prevroad = this;
 
             //coloca a marcação de distancia do check point a cada 1000m e quando menor que 1000m coloca a marca de 500m também
@@ -394,21 +394,20 @@ namespace TangoGames.RoadFighter.Actors
 
         public StraightRoad NextRoadCheckPoint()
         {
-            RoadTypes targetRoad = RoadTypes.Road4;
-
+    
             current = NextList[current].NextRoads[0];
 
-            if (current != targetRoad)
+            if (current != checkPointTargetRoad)
             {
                 foreach (RoadTypes road in NextList[current].NextRoads)
                 {
-                    if (road == targetRoad)
+                    if (road == checkPointTargetRoad)
                     {
                         current = road;
                         break;
                     }
                 }
-                if (current != targetRoad)
+                if (current != checkPointTargetRoad)
                 {
                     foreach (RoadTypes road in NextList[current].NextRoads)
                     {

@@ -13,6 +13,7 @@ namespace TangoGames.RoadFighter.Levels
             TextArea = new TextArea(game);
             TextArea.Text = "Desenvolvedores:\n"
                 + "    Arthur Figueiredo\n"
+                + "    Arthur Werneck\n"
                 + "    Clewerton Coelho\n"
                 + "    Diogo Honorato\n"
                 + "    Humberto Anjos\n"

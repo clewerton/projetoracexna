@@ -210,6 +210,12 @@ namespace TangoGames.RoadFighter.Levels
 
         public bool Collidable { get; set; }
 
+
+        /// <summary>
+        /// Trata a colisão entre o heroi e o carro inimigo
+        /// </summary>
+        /// <param name="enemy"></param>
+        /// <param name="map"></param>
         public void EnemyCollide(Enemy enemy, IMap map)
         {
             if (enemy.Location.Y < Location.Y)
@@ -235,9 +241,38 @@ namespace TangoGames.RoadFighter.Levels
                 targetLane = XtoLane(enemy.Location.X) + 1;
             }
            
-            if ( (targetLane > _lanes.LastIndex) || (targetLane< _lanes.StartIndex) )
-            {    
-                    map.Velocity = new Vector2(map.Velocity.X , 0);
+            if (targetLane > _lanes.LastIndex) 
+            {
+                if (!enemy.ChangeLane(-1)) 
+                {
+                    //inimigo esta atras do heroi
+                    if (enemy.Location.Y > Location.Y)
+                    {
+                        enemy.Velocity = new Vector2(enemy.Velocity.X, 0);
+                    }
+                    else
+                    {
+                        enemy.Velocity += new Vector2(0, -(float)random.NextDouble());
+                        map.Velocity = new Vector2(map.Velocity.X, 0);
+                    }
+                }
+               
+            }
+            if (targetLane < _lanes.StartIndex)
+            {
+                if (!enemy.ChangeLane(1))
+                {
+                    //inimigo esta atras do heroi
+                    if (enemy.Location.Y > Location.Y)
+                    {
+                        enemy.Velocity = new Vector2(enemy.Velocity.X, 0);
+                    }
+                    else
+                    {
+                        enemy.Velocity += new Vector2(0, -(float)random.NextDouble());
+                        map.Velocity = new Vector2(map.Velocity.X, 0);
+                    }
+                }
             }
         }
 
