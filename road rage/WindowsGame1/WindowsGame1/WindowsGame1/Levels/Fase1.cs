@@ -145,7 +145,7 @@ namespace TangoGames.RoadFighter.Levels
         private IDrawableActor hero;
         private HUD hud;
         private bool gameIsOver = false;
-        private float timer = 3000;
+        private float timer = 1000;
         private Texture2D gameOverTexture;
         private bool highScore = true;
 
