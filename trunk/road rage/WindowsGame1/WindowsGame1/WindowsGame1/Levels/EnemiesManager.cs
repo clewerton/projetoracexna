@@ -68,7 +68,7 @@ namespace TangoGames.RoadFighter.Levels
 
             _maxSpeed = (int)(map.MaxSpeed * 0.85);
 
-            _minSpeed = 1;
+            _minSpeed = (int)(map.MaxSpeed * 0.15); ;
 
             _currentMap.OutOfBounds += OnOutOfBound;
 
@@ -76,7 +76,12 @@ namespace TangoGames.RoadFighter.Levels
 
             var actorFactory = (IActorFactory<MainGame.ActorTypes, IDrawableActor>)Game.Services.GetService(typeof(IActorFactory<MainGame.ActorTypes, IDrawableActor>));
 
-            for (int i = 0; i < 16; i++) _ListofEnemies.Add(new Enemy(RandomEnemyType(), _currentScene, map  ));
+
+            //Carrega a lista de tipos de carro para garantir a presença de todos os tipos
+            foreach (Enemy.EnemyTypes typeenemy in Enum.GetValues(typeof(Enemy.EnemyTypes))) { _ListofEnemies.Add(new Enemy(typeenemy, _currentScene, map)); }
+
+
+            for (int i = 0; i < 7; i++) _ListofEnemies.Add(new Enemy(RandomEnemyType(), _currentScene, map  ));
 
             lineCount = 0;
 
@@ -141,6 +146,7 @@ namespace TangoGames.RoadFighter.Levels
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime) 
         {
+
             _minSpeed = (int)(_currentMap.Velocity.Y * 0.15);
 
             pixelpass += (int)_currentMap.Velocity.Y;  
@@ -150,7 +156,7 @@ namespace TangoGames.RoadFighter.Levels
             int frameTrigger = 400;
             if (_currentMap.Velocity.Y > 0) frameTrigger = random.Next((int)( 400 / _currentMap.Velocity.Y));  
 
-            if (_currentMap.CheckPointCount < 4)
+            if (_currentMap.CheckPointCount < 5)
             {
                 if (maxLanes == 2) { maxEnemies = 2; interval = 2500 ; }
                 else if (maxLanes == 3) { maxEnemies = 4; interval = 2000; }
@@ -160,7 +166,7 @@ namespace TangoGames.RoadFighter.Levels
             {
                 if (maxLanes == 2) { maxEnemies = 3; interval = 2000; }
                 else if (maxLanes == 3) { maxEnemies = 5; interval = 1500; }
-                else { maxEnemies = 7; interval = 1000; }
+                else { maxEnemies = 6; interval = 1000; }
             }
 
             if ( pixelpass < interval) { frameCount = 0; }

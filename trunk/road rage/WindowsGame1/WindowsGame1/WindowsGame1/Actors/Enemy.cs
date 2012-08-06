@@ -22,6 +22,21 @@ namespace TangoGames.RoadFighter.Actors
 
         private int targetLane = -1;
 
+        private float _acceleration = 0;
+
+        private float maxSpeed;
+
+        private float targetSpeed=0;
+
+        private bool LaneChanger;
+
+        private int sortChange;
+
+        private int countChange;
+
+        private float minSpeed;
+
+        private Random random;
 
         public Enemy(EnemyTypes etype, Scene scene, IMap map)
             : base(scene.Game, TextureEnemy(scene.Game, etype))
@@ -31,20 +46,109 @@ namespace TangoGames.RoadFighter.Actors
             this.etype = etype;
             this.SpriteBatch = scene.currentSpriteBatch;
             Collidable = true;
+
+            maxSpeed = (float)(map.MaxSpeed * 0.85);
+
+            minSpeed = (float)(map.MaxSpeed * 0.15);
+
+            int TheSeed = (int)DateTime.Now.Ticks;
+            random = new Random(TheSeed);
+
+            LaneChanger = false;
+
+            InitBehavior();
+
+            sortChange = random.Next(100, 300);
+
         }
 
         public override void Update(GameTime gameTime)
         {
+            Velocity = UpdateSpeed();
+
             base.Update(gameTime);
 
-            if (targetLane == -1)
+            if (map.CheckPointReach) { targetSpeed = -minSpeed; }
+
+            if (targetSpeed != 0)
             {
-                targetLane = XtoLane(Location.X);
-                
+                if (Velocity.Y > targetSpeed) { _acceleration = 0.01F; }
+                else { _acceleration = -0.01F; }
+            }
+            else { targetSpeed = Velocity.Y; }
+
+            if (targetLane == -1) { targetLane = XtoLane(Location.X); }
+
+            countChange++;
+
+            if (LaneChanger)
+            {
+                if ( sortChange < countChange  )
+                {
+                    if (ChangeLane(random.Next(-1,2))) 
+                    {
+                        countChange = 0;
+
+                        sortChange = random.Next(100, 300);
+
+                    }
+                }
             }
 
             movimenta();
 
+        }
+
+        private void InitBehavior()
+        {
+            switch (etype)
+            {
+                case EnemyTypes.Inimigo1:
+                    LaneChanger = true;
+                    break;
+                case EnemyTypes.Inimigo2:
+                    break;
+                case EnemyTypes.Inimigo3:
+                    break;
+                case EnemyTypes.Inimigo4:
+                    break;
+                case EnemyTypes.Inimigo5:
+                    LaneChanger = true;
+                    break;
+                case EnemyTypes.Inimigo6:
+                    break;
+                case EnemyTypes.Inimigo7:
+                    targetSpeed = -(float)(map.MaxSpeed * 0.9);
+                    break;              
+                case EnemyTypes.Inimigo8:
+                    targetSpeed = -(float)(map.MaxSpeed * 0.10); 
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        /// <summary>
+        /// Calcula a velocidade do inimigo
+        /// </summary>
+        /// <returns>Vetor de velocidade</returns>
+        private Vector2 UpdateSpeed()
+        {
+            float speed = Velocity.Y;
+            float speedinc = speed * _acceleration;
+            if (-speedinc < _acceleration) { speedinc = -_acceleration; }
+
+            speed += speedinc;
+
+            if (speed < -maxSpeed )  { speed = - maxSpeed;}
+            if (speed >= 0 ) 
+            { 
+                speed = 0.0F;
+                targetSpeed = -minSpeed;
+            }
+
+            return new Vector2(Velocity.X, speed);
         }
 
         private float ratioSpeed()

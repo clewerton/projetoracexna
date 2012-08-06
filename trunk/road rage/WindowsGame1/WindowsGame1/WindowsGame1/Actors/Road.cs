@@ -61,7 +61,6 @@ namespace TangoGames.RoadFighter.Actors
             checkpoint = false;
         }
 
-
         public override void Update(GameTime gameTime) 
         {
             //sign1.Location = new Vector2((float)roadsign, Location.Y + Bounds.Height / 2);
@@ -116,11 +115,11 @@ namespace TangoGames.RoadFighter.Actors
         {
             if (nextroad == null)
             {
-                GlobalPixelPosition = - Bounds.Y; ;
+                GlobalPixelPosition = - Bounds.Y;
                 return;
             }
             this.nextroad = nextroad;
-            GlobalPixelPosition = nextroad.GlobalPixelPosition + ((IDrawableActor)nextroad).Bounds.Height + 1;
+            GlobalPixelPosition = nextroad.GlobalPixelPosition + ((IDrawableActor)nextroad).Bounds.Height;
             nextroad.prevroad = this;
 
             //coloca a marcação de distancia do check point a cada 1000m e quando menor que 1000m coloca a marca de 500m também
@@ -217,21 +216,29 @@ namespace TangoGames.RoadFighter.Actors
 
         private class Sign2 : BasicDrawingActor
         {
-            SpriteFont Arial;
+            SpriteFont ArialBold;
 
             int v ;
-            public int V { set { v = value; } }
+            string s;
+            public int V { 
+                set 
+                {
+                    v = value;
+                    if (v < 1000) { s = v + " m "; }
+                    else { s = v/1000 + " Km "; }
+                } 
+            }
 
             public Sign2(Game game, SpriteBatch spriteBatch)
                 : base(game, game.Content.Load<Texture2D>("Textures/sinalgasolina"))
             {
                 this.SpriteBatch = spriteBatch;
-                Arial = game.Content.Load<SpriteFont>("arial");
+                ArialBold = game.Content.Load<SpriteFont>("Fonts/arialbold");
             }
             public override void Draw(GameTime gameTime)
             {
                 SpriteBatch.Draw(Texture, new Rectangle((int)Location.X, (int)Location.Y, Bounds.Width, Bounds.Height), Color.White);
-                SpriteBatch.DrawString(Arial, v + " m", new Vector2(Location.X, Location.Y + Bounds.Height), Color.White);
+                SpriteBatch.DrawString(ArialBold, s, new Vector2(Location.X, Location.Y + Bounds.Height+3), Color.White);
             }
         }
 
@@ -331,7 +338,7 @@ namespace TangoGames.RoadFighter.Actors
             }
 
             //define o tipo de estrada inicial
-            current = RoadList.FirstOrDefault().Key;
+            current = RoadTypes.Road4;  //RoadList.FirstOrDefault().Key;
 
             //define a pista para checkpoint
             checkPointTargetRoad = RoadTypes.Road4;
