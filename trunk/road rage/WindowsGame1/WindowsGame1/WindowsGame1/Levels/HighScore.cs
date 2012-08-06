@@ -29,6 +29,7 @@ namespace TangoGames.RoadFighter.Levels
 
             Button letterA = new Button(Game);
             letterA.OnClick += (sender, args) => playerName += 'A';
+            letterA.Bounds = new Rectangle(0, 0, 40, 40);
             letterA.Location = new Point((clientBounds.Width - ButtonWidth) / 2, (clientBounds.Height - ButtonHeight) / 2 - 2 * ButtonHeight - 2 * Padding);
             letterA.Size = new Vector2(ButtonWidth, ButtonHeight);
             letterA.Text = "[A]";
@@ -43,8 +44,8 @@ namespace TangoGames.RoadFighter.Levels
 
             if (input.MouseClick(Game.Window.ClientBounds)) // se clicou dentro da tela, vá para o menu
             {
-                sceneManager.GoTo(MainGame.Scenes.Menu);
-                return;
+                //sceneManager.GoTo(MainGame.Scenes.Menu);
+                //return;
             }
 
             base.Update(gameTime);
@@ -60,8 +61,8 @@ namespace TangoGames.RoadFighter.Levels
         }
 
         private Texture2D BackgroundImage { get; set; }
-        private const int ButtonWidth = 150;
-        private const int ButtonHeight = 60;
+        private const int ButtonWidth = 40;
+        private const int ButtonHeight = 40;
         private const int Padding = 5;
         private String playerName;
         private int startX;
