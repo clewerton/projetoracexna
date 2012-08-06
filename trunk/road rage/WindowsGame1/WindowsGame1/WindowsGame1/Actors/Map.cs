@@ -105,6 +105,13 @@ namespace TangoGames.RoadFighter.Actors
             //_checkPointPixelBase = 100000;
             //_checkPointPixelDistance = _checkPointPixelBase;
             //_maxSpeed = 20;
+
+            //teste erro do reset playmorolla
+            //_checkPointPixelBase = 10000;
+            //_checkPointPixelDistance = _checkPointPixelBase;
+            //_maxSpeed = 20;
+            // checkPointTime = 15000;
+
         }
 
         /// <summary>
