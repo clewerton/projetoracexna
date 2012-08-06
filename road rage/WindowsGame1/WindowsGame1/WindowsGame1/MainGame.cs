@@ -18,7 +18,7 @@ namespace TangoGames.RoadFighter
         /// <summary>
         /// Serão usados pelo gerenciador de cenas para identificar as cenas.
         /// </summary>
-        public enum Scenes { Intro, End, Fase, Menu, Credits }
+        public enum Scenes { Intro, End, Fase, Menu, Credits, HighScore }
         public enum ActorTypes { Car, Truck, Hero }
 
         private GraphicsDeviceManager _graphics;
@@ -31,10 +31,10 @@ namespace TangoGames.RoadFighter
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            if (!_graphics.IsFullScreen)
-            {
-                _graphics.ToggleFullScreen();
-            }
+            //if (!_graphics.IsFullScreen)
+            //{
+                //_graphics.ToggleFullScreen();
+            //}
             _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -97,6 +97,7 @@ namespace TangoGames.RoadFighter
             sceneManager[Scenes.Fase] = new Fase1(this);
             sceneManager[Scenes.Menu] = new Menu(this);
             sceneManager[Scenes.Credits] = new Credits(this);
+            sceneManager[Scenes.HighScore] = new HighScore(this);
 
             // a Intro começa como a cena atual
             sceneManager.GoTo(Scenes.Intro);
