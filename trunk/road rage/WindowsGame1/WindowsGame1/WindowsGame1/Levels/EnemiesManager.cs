@@ -36,7 +36,11 @@ namespace TangoGames.RoadFighter.Levels
 
         private int interval = 1000;
 
-        private int timepass = 0;
+        private int pixelpass = 0;
+
+        private int lineCount;
+
+        private int frameCount;
 
         /// <summary>
         /// Contrutor do controle de inimigos
@@ -73,6 +77,12 @@ namespace TangoGames.RoadFighter.Levels
             var actorFactory = (IActorFactory<MainGame.ActorTypes, IDrawableActor>)Game.Services.GetService(typeof(IActorFactory<MainGame.ActorTypes, IDrawableActor>));
 
             for (int i = 0; i < 16; i++) _ListofEnemies.Add(new Enemy(RandomEnemyType(), _currentScene, map  ));
+
+            lineCount = 0;
+
+            frameCount = 0;
+
+            pixelpass = 2000;
 
         }
 
@@ -131,64 +141,77 @@ namespace TangoGames.RoadFighter.Levels
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime) 
         {
-            _minSpeed= (int)(_currentMap.Velocity.Y * 0.15);
+            _minSpeed = (int)(_currentMap.Velocity.Y * 0.15);
 
-            timepass += (int) gameTime.ElapsedGameTime.TotalMilliseconds;
+            pixelpass += (int)_currentMap.Velocity.Y;  
 
-            if (_currentMap.CheckPointCount < 3)
+            frameCount++;
+
+            int frameTrigger = 400;
+            if (_currentMap.Velocity.Y > 0) frameTrigger = random.Next((int)( 400 / _currentMap.Velocity.Y));  
+
+            if (_currentMap.CheckPointCount < 4)
             {
-                if (currLanes.Count == 2) { maxEnemies = 3; interval = (EnemiesActive.Count() * 4000); }
-                else if (currLanes.Count == 3) { maxEnemies = 6; interval = (EnemiesActive.Count() * 3000); }
-                else { maxEnemies = 9; interval = (EnemiesActive.Count() * 2000); }
+                if (maxLanes == 2) { maxEnemies = 2; interval = 2500 ; }
+                else if (maxLanes == 3) { maxEnemies = 4; interval = 2000; }
+                else { maxEnemies = 5; interval = 1500; }
             }
             else 
             {
-                if (currLanes.Count == 2) { maxEnemies = 4; interval = (EnemiesActive.Count() * 2000); }
-                else if (currLanes.Count == 3) { maxEnemies = 8; interval = (EnemiesActive.Count() * 1000); }
-                else { maxEnemies = 12; interval = (EnemiesActive.Count() * 500); }
+                if (maxLanes == 2) { maxEnemies = 3; interval = 1500; }
+                else if (maxLanes == 3) { maxEnemies = 5; interval = 1200; }
+                else { maxEnemies = 7; interval = 1000; }
             }
 
+            if ( pixelpass < interval) { frameCount = 0; }
+
             //gera inimigos
-            if (timepass > interval && !_currentMap.CheckPointReach) {
+            if ( frameCount > frameTrigger && !_currentMap.CheckPointReach && EnemiesActive.Count() < maxEnemies && EnemiesNotActive.Count() > 0 ) {
 
-                for (int i = 0; i < maxLanes -1 ; i++)
+                frameCount = 0;
+
+                lineCount++;
+
+                if (lineCount < maxLanes)
                 {
+                    CreateEnemy();
+                }
+                else
+                {
+                    lineCount = 0;
+                    pixelpass = 0;
+                }
 
-                    if (EnemiesActive.Count() < maxEnemies && EnemiesNotActive.Count() > 0 )
-                    {
-                        timepass = 0;
-
-                        IEnemy ene = EnemiesNotActive.ElementAtOrDefault(random.Next(EnemiesNotActive.Count()));
-                        IDrawableActor enemyDraw = (IDrawableActor)ene;
-
-                        int count = 0;
-                        bool collid = true;
-                        do
-                        {
-                            RandomizeEnemy(enemyDraw);
-                            collid = CollisionTest((ICollidable)enemyDraw);
-                            count++;
-
-                        } while ((collid) && (count < 10));
-
-                        if (!collid)
-                        {
-                            enemyDraw.Outofscreen = false;
-
-                            _currentMap.Add(enemyDraw);
-                            _currentMap.ChangeLaneRegister((IChangeLanelistener)ene);
-
-                            ene.Active = true;
-
-                        }
-
-                    }
-
-                }   
-           
             }
 
         }
+
+        private void CreateEnemy()
+        {
+            IEnemy ene = EnemiesNotActive.ElementAtOrDefault(random.Next(EnemiesNotActive.Count()));
+            IDrawableActor enemyDraw = (IDrawableActor)ene;
+
+            int count = 0;
+            bool collid = true;
+            do
+            {
+                RandomizeEnemy(enemyDraw);
+                collid = CollisionTest((ICollidable)enemyDraw);
+                count++;
+
+            } while ((collid) && (count < 10));
+
+            if (!collid)
+            {
+                enemyDraw.Outofscreen = false;
+
+                _currentMap.Add(enemyDraw);
+                _currentMap.ChangeLaneRegister((IChangeLanelistener)ene);
+
+                ene.Active = true;
+            }
+        }
+
 
         public bool CollisionTest(ICollidable enemyBase)
         {
