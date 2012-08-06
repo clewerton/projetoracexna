@@ -60,7 +60,23 @@ namespace TangoGames.RoadFighter.Actors
         public Map(Scene scene)
             : base(scene.Game)
         {
+
             this.scene=scene;
+
+            //indica se o ponto de controle já alcançado
+            checkPointReach = false;
+
+            CheckPointHeroiReady = false;
+            HeroiStopping = false;
+            _checkPointRoadMark = false;
+            endOfGas = false;
+            checkPointCount = 0;
+
+            temptimer = 0;
+
+            //distancia do checkpoint ( 3000m * 20 px/m)
+            _checkPointPixelBase = 60000;
+            _checkPointPixelDistance = _checkPointPixelBase;
 
             //gera background
             FifoBackground = new MyFifo();
@@ -76,6 +92,7 @@ namespace TangoGames.RoadFighter.Actors
             FifoRoad.Enqueue(roads.CurrentRoad);
             FifoRoad.Enqueue(roads.NextRoad());
             FifoRoad.Enqueue(roads.NextRoad());
+            CheckRoadSign(FifoRoad);
 
             actors = new DrawAbleActorCollection(scene.Game);
 
@@ -83,20 +100,11 @@ namespace TangoGames.RoadFighter.Actors
 
             listenersChangeLane = new List<IChangeLanelistener>() ;
 
-            //indica se o ponto de controle já alcançado
-            checkPointReach = false;
 
-            CheckPointHeroiReady = false;
-            HeroiStopping = false;
-            _checkPointRoadMark = false;
-            endOfGas = false;
-            checkPointCount = 0;
-
-            //distancia do checkpoint
-            _checkPointPixelBase = 60000;
-            _checkPointPixelDistance = _checkPointPixelBase;
-
-            temptimer = 0;
+            //teste último nivel
+            //_checkPointPixelBase = 100000;
+            //_checkPointPixelDistance = _checkPointPixelBase;
+            //_maxSpeed = 20;
         }
 
         /// <summary>
@@ -348,7 +356,7 @@ namespace TangoGames.RoadFighter.Actors
         /// <returns></returns>
         private bool adjustPosition(MyFifo fifo, bool enqueue)
         {
-            if ( fifo.Peek().Bounds.Top > scene.Game.Window.ClientBounds.Bottom - 1)
+            if (fifo.Peek().Bounds.Top > scene.Game.Window.ClientBounds.Bottom )
             {
 
                 if (enqueue) 
@@ -467,16 +475,16 @@ namespace TangoGames.RoadFighter.Actors
         //_maxSpeed=14 /checkPointTime = 90000 ==> resultado 3886 pontos
         //_maxSpeed=16 /checkPointTime = 90000 ==> resultado 4545 pontos
         //_maxSpeed=18 /checkPointTime = 90000 ==> resultado 5120 pontos
-        //_maxSpeed=20 /checkPointTime = 90000 ==> resultado 5696 pontos
+        //_maxSpeed=20 /checkPointTime = 90000 ==> resultado 5420 pontos
         //==============================================================
 
         private float _acceleration = 0.01F;
         private int _maxSpeed = 14;
         private int _maxSpeedGlobal = 20;
         //distancia em pixel para o checkpoint
-        private int _checkPointPixelDistance = 60000;  // 3000 * 20
+        private int _checkPointPixelDistance = 0;  
 
-        private int _checkPointPixelBase = 60000;  //3000 * 20
+        private int _checkPointPixelBase = 0;  //3000 * 20
         private List<IDrawableActor> _safeRemoveList;
 
         //controle de alcançe do checkPoint
@@ -591,7 +599,7 @@ namespace TangoGames.RoadFighter.Actors
             }
             private void adjustNext()
             {
-                Last.Location = new Vector2(Last.Location.X, SecondLast.Location.Y - Last.Bounds.Height - 1);
+                Last.Location = new Vector2(Last.Location.X, SecondLast.Location.Y - Last.Bounds.Height);
             }
             private void adjustFirst(IDrawableActor item)
             {
