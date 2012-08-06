@@ -31,10 +31,10 @@ namespace TangoGames.RoadFighter
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            //if (!_graphics.IsFullScreen)
-            //{
-                //_graphics.ToggleFullScreen();
-            //}
+            if (!_graphics.IsFullScreen)
+            {
+                _graphics.ToggleFullScreen();
+            }
             _graphics.ApplyChanges();
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
