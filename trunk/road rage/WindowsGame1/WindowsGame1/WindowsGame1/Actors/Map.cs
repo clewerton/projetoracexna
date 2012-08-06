@@ -503,7 +503,7 @@ namespace TangoGames.RoadFighter.Actors
         private bool _checkPointRoadMark;
 
         //tempo em milisegundos de duração da gasolina (90000 = 1 min e 30 segundos)
-        private float checkPointTime = 90000;
+        private float checkPointTime = 10000;
 
         //contador de checkpoints
         private int checkPointCount = 0;
