@@ -25,7 +25,9 @@ namespace TangoGames.RoadFighter.Levels
 
     class HighScore : Scene
     {
-        public const int HIGHSCORE_NUMBER = 10;
+        private const int HIGHSCORE_NUMBER = 10;
+        private const int MAX_CHAR = 15;
+
         public HighScore(Game game) : base(game) 
         {
             characters = new String[5];
@@ -39,11 +41,12 @@ namespace TangoGames.RoadFighter.Levels
             startY = game.Window.ClientBounds.Height / 2;
 
             highScores = new List<HighscoreLine>(HIGHSCORE_NUMBER);
+
             // Setando os valores dos highscores
-            for(int i = 0; i < HIGHSCORE_NUMBER; i++)
-            {
-                highScores.Add(new HighscoreLine("", 0));
-            }
+            //for(int i = 0; i < HIGHSCORE_NUMBER; i++)
+            //{
+                //highScores.Add(new HighscoreLine("", 0));
+            //}
             // TODO: ler os highcores do arquivo (se houver)
 
         }
@@ -65,7 +68,13 @@ namespace TangoGames.RoadFighter.Levels
                 {
                     Button letterButton = new Button(Game);
                     Char currentLetter = characters[i].ElementAt(j);
-                    letterButton.OnClick += (sender, args) => playerName += currentLetter;
+                    letterButton.OnClick += (sender, args) =>
+                    {
+                        if (playerName.Length < MAX_CHAR)
+                        {
+                            playerName += currentLetter;
+                        }
+                    };
                     letterButton.Bounds = new Rectangle(0, 0, ButtonWidth, ButtonWidth);
                     letterButton.Location = new Point(startX + 50 * j + Padding, startY + 50 * i + Padding);
                     letterButton.Size = new Vector2(ButtonWidth, ButtonHeight);
@@ -77,7 +86,13 @@ namespace TangoGames.RoadFighter.Levels
             // Tecla de espaço
             Button spaceButton = new Button(Game);
             Char space = ' ';
-            spaceButton.OnClick += (sender, args) => playerName += space;
+            spaceButton.OnClick += (sender, args) =>
+            {
+                if (playerName.Length < MAX_CHAR)
+                {
+                    playerName += space;
+                }
+            };
             spaceButton.Bounds = new Rectangle(0, 0, ButtonWidth, ButtonWidth);
             spaceButton.Location = new Point(startX + 50 * 8 + Padding, startY + 50 * 4 + Padding);
             spaceButton.Size = new Vector2(ButtonWidth, ButtonHeight);
@@ -104,7 +119,7 @@ namespace TangoGames.RoadFighter.Levels
             ToFase.OnClick += (sender, args) =>
             {
                 int index = HighScoreIndex(((MainGame)Game).HighScore);
-                highScores[index] = new HighscoreLine(playerName, ((MainGame)Game).HighScore); ;
+                highScores.Insert(index, new HighscoreLine(playerName, ((MainGame)Game).HighScore));
 
                 GetService<ISceneManagerService<MainGame.Scenes>>().GoTo(MainGame.Scenes.Fase);
             };
@@ -121,10 +136,16 @@ namespace TangoGames.RoadFighter.Levels
         {
             base.Enter();
             playerName = "";
+            int theScore = ((MainGame)Game).HighScore;
+            int index = HighScoreIndex(theScore);
         }
 
         public static bool insideHighscores(int score)
         {
+            if (highScores.Count == 0)
+            {
+                return true;
+            }
             foreach (HighscoreLine item in highScores)
             {
                 if (score > item.value)
@@ -137,6 +158,10 @@ namespace TangoGames.RoadFighter.Levels
 
         private int HighScoreIndex(int score)
         {
+            if (highScores.Count == 0)
+            {
+                return 0;
+            }
             for(int i = 0; i < highScores.Count; i++)
             {
                 if (score > highScores.ElementAt(i).value)
@@ -172,16 +197,23 @@ namespace TangoGames.RoadFighter.Levels
             SpriteBatch.Begin();
 
             Vector2 size = font.MeasureString(playerName);
+            int theScore = ((MainGame)Game).HighScore;
+            int index = HighScoreIndex(theScore);
             var location = new Vector2(Game.Window.ClientBounds.Width / 2 - ButtonWidth - 200, 100);
 
             SpriteBatch.Draw(BackgroundImage, Game.Window.ClientBounds, Color.White);
-            SpriteBatch.DrawString(font, "[" + playerName + "]", location, Color.White);
-            int i = 1;
+            int i = 0;
             foreach (HighscoreLine item in highScores)
             {
-                if (item.value > 0)
+                if (i == index)
                 {
-                    SpriteBatch.DrawString(font, "Posicao " + i + ": " + item.name + " -> " + item.value, new Vector2(300 + Game.Window.ClientBounds.Width / 2 - ButtonWidth, i * 50), Color.White);
+                    SpriteBatch.DrawString(font, "[" + playerName + "]", new Vector2(300 + Game.Window.ClientBounds.Width / 2 - ButtonWidth, (i + 1) * 50), Color.White);
+                    SpriteBatch.DrawString(font, "[" + theScore + "]", new Vector2(600 + Game.Window.ClientBounds.Width / 2 - ButtonWidth, (i + 1) * 50), Color.White);
+                }
+                else
+                {
+                    SpriteBatch.DrawString(font, item.name, new Vector2(300 + Game.Window.ClientBounds.Width / 2 - ButtonWidth, (i + 1) * 50), Color.White);
+                    SpriteBatch.DrawString(font, item.value.ToString(), new Vector2(600 + Game.Window.ClientBounds.Width / 2 - ButtonWidth, (i + 1) * 50), Color.White);
                 }
                 i++; ;
             }
