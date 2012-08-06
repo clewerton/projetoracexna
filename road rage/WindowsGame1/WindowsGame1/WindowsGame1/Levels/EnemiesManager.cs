@@ -28,6 +28,10 @@ namespace TangoGames.RoadFighter.Levels
 
         private int _maxSpeed = 9;
 
+        private int _minSpeed = 1;
+
+        private int maxLanes;
+
         private int maxEnemies = 3;
 
         private int interval = 1000;
@@ -58,6 +62,10 @@ namespace TangoGames.RoadFighter.Levels
         {
             _currentMap = map;
 
+            _maxSpeed = (int)(map.MaxSpeed * 0.85);
+
+            _minSpeed = 1;
+
             _currentMap.OutOfBounds += OnOutOfBound;
 
             Game.Components.Add(this);
@@ -79,7 +87,9 @@ namespace TangoGames.RoadFighter.Levels
         {
 
             //calcula da velocidade do carro
-            float speed = ( 1 + (float)( random.NextDouble() * (_maxSpeed-1) ) ) ;
+            float speed = (float) ( random.NextDouble() * _maxSpeed );
+
+            if (speed < _minSpeed) speed = _minSpeed;
 
             float LocY;
 
@@ -91,17 +101,16 @@ namespace TangoGames.RoadFighter.Levels
             if (_currentMap.Velocity.Y < speed ) 
             {
                 LocY = _currentScene.Game.Window.ClientBounds.Bottom - 1;
-                numlane = random.Next(_lanes.StartIndex, _lanes.LastIndex + 1);
+                numlane = random.Next(maxLanes);
 
             }
             else
             {
                 LocY = -enemy.Bounds.Height;
-                numlane = random.Next(_lanes.StartIndex, _lanes.LastIndex + 1);
-
+                numlane = random.Next(maxLanes);
             }
 
-            enemy.Location = new Vector2(_lanes.LanesList[numlane], LocY);
+            enemy.Location = new Vector2(currLanes.LanesList[numlane], LocY);
 
         }
 
@@ -122,40 +131,61 @@ namespace TangoGames.RoadFighter.Levels
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime) 
         {
+            _minSpeed= (int)(_currentMap.Velocity.Y * 0.15);
+
             timepass += (int) gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (_lanes.Count == 2) { maxEnemies = 3; interval = (EnemiesActive.Count() * 2000) ; }
-            else if (_lanes.Count == 3) { maxEnemies = 6; interval = (EnemiesActive.Count() * 1000); }
-            else { maxEnemies = 9; interval = (EnemiesActive.Count() * 500); }
-
-            if ( EnemiesActive.Count() <  maxEnemies &&  timepass > interval && EnemiesNotActive.Count() >  0  && !_currentMap.CheckPointReach )
+            if (_currentMap.CheckPointCount < 3)
             {
-                timepass = 0;
+                if (currLanes.Count == 2) { maxEnemies = 3; interval = (EnemiesActive.Count() * 4000); }
+                else if (currLanes.Count == 3) { maxEnemies = 6; interval = (EnemiesActive.Count() * 3000); }
+                else { maxEnemies = 9; interval = (EnemiesActive.Count() * 2000); }
+            }
+            else 
+            {
+                if (currLanes.Count == 2) { maxEnemies = 4; interval = (EnemiesActive.Count() * 2000); }
+                else if (currLanes.Count == 3) { maxEnemies = 8; interval = (EnemiesActive.Count() * 1000); }
+                else { maxEnemies = 12; interval = (EnemiesActive.Count() * 500); }
+            }
 
-                IEnemy ene = EnemiesNotActive.ElementAtOrDefault( random.Next (EnemiesNotActive.Count()));
-                IDrawableActor enemyDraw = (IDrawableActor)ene;
+            //gera inimigos
+            if (timepass > interval && !_currentMap.CheckPointReach) {
 
-                int count = 0;
-                bool collid = true;
-                do
+                for (int i = 0; i < maxLanes -1 ; i++)
                 {
-                  RandomizeEnemy( enemyDraw );
-                  collid = CollisionTest((ICollidable)enemyDraw);
-                  count++;
 
-                } while ((collid) && (count < 10));
+                    if (EnemiesActive.Count() < maxEnemies && EnemiesNotActive.Count() > 0 )
+                    {
+                        timepass = 0;
 
-                if (!collid)
-                {
-                    enemyDraw.Outofscreen = false;
+                        IEnemy ene = EnemiesNotActive.ElementAtOrDefault(random.Next(EnemiesNotActive.Count()));
+                        IDrawableActor enemyDraw = (IDrawableActor)ene;
 
-                    _currentMap.Add(enemyDraw);
-                    _currentMap.ChangeLaneRegister((IChangeLanelistener)ene);
+                        int count = 0;
+                        bool collid = true;
+                        do
+                        {
+                            RandomizeEnemy(enemyDraw);
+                            collid = CollisionTest((ICollidable)enemyDraw);
+                            count++;
 
-                    ene.Active = true;
+                        } while ((collid) && (count < 10));
 
-                }
+                        if (!collid)
+                        {
+                            enemyDraw.Outofscreen = false;
 
+                            _currentMap.Add(enemyDraw);
+                            _currentMap.ChangeLaneRegister((IChangeLanelistener)ene);
+
+                            ene.Active = true;
+
+                        }
+
+                    }
+
+                }   
+           
             }
 
         }
@@ -279,8 +309,25 @@ namespace TangoGames.RoadFighter.Levels
 
         #region Controle de Pistas
 
-        private ILanes _lanes;
-        public ILanes CurrentRoad { get { return _lanes; } set { _lanes = value; } }
+        private ILanes prevLanes;
+        private ILanes currLanes;
+        private ILanes nextLanes;
+
+        public ILanes CurrentRoad 
+        { 
+            get { return currLanes ; } 
+            set 
+            { 
+                currLanes = value;
+                IRoad road = currLanes.Road;
+                if (road.nextroad == null) { nextLanes = currLanes; }
+                else { nextLanes = road.nextroad.Lanes; }
+                prevLanes = road.prevroad.Lanes;
+                maxLanes = currLanes.Count;
+                maxLanes = Math.Min(maxLanes, nextLanes.Count);
+                maxLanes = Math.Min(maxLanes, prevLanes.Count);
+            }
+        }
 
         #endregion
 
