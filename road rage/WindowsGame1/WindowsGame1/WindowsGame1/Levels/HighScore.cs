@@ -10,26 +10,48 @@ using TangoGames.RoadFighter.Input;
 
 namespace TangoGames.RoadFighter.Levels
 {
+    struct HighscoreLine
+    {
+        public String name;
+        public int value;
+
+        public HighscoreLine(String name, int value)
+        {
+            this.name = name;
+            this.value = value;
+        }
+
+    }
+
     class HighScore : Scene
     {
-        private String[] characters;
-
+        public const int HIGHSCORE_NUMBER = 10;
         public HighScore(Game game) : base(game) 
         {
-            characters = new String[4];
+            characters = new String[5];
             characters[0] = "0123456789";
             characters[1] = "ABCDEFGHIJ";
             characters[2] = "KLMNOPQRST";
             characters[3] = "UVWXYZ";
+            characters[4] = "!@#$%&*?";
 
             startX = game.Window.ClientBounds.Width / 4;
             startY = game.Window.ClientBounds.Height / 2;
+
+            highScores = new List<HighscoreLine>(HIGHSCORE_NUMBER);
+            // Setando os valores dos highscores
+            for(int i = 0; i < HIGHSCORE_NUMBER; i++)
+            {
+                highScores.Add(new HighscoreLine("", 0));
+            }
+            // TODO: ler os highcores do arquivo (se houver)
+
         }
 
         protected override void LoadContent()
         {
             // configurando o fundo
-            BackgroundImage = Game.Content.Load<Texture2D>("Textures/menu-background");
+            BackgroundImage = Game.Content.Load<Texture2D>("Textures/grass1920");
             font = Game.Content.Load<SpriteFont>("arial");
             playerName = "";
 
@@ -57,7 +79,7 @@ namespace TangoGames.RoadFighter.Levels
             Char space = ' ';
             spaceButton.OnClick += (sender, args) => playerName += space;
             spaceButton.Bounds = new Rectangle(0, 0, ButtonWidth, ButtonWidth);
-            spaceButton.Location = new Point(startX + 50 * 6 + Padding, startY + 50 * 3 + Padding);
+            spaceButton.Location = new Point(startX + 50 * 8 + Padding, startY + 50 * 4 + Padding);
             spaceButton.Size = new Vector2(ButtonWidth, ButtonHeight);
             spaceButton.Text = "[" + space + "]";
             Elements.Add(spaceButton);
@@ -73,12 +95,61 @@ namespace TangoGames.RoadFighter.Levels
                 }
             };
             bckButton.Bounds = new Rectangle(0, 0, ButtonWidth, ButtonWidth);
-            bckButton.Location = new Point(startX + 50 * 7 + Padding, startY + 50 * 3 + Padding);
+            bckButton.Location = new Point(startX + 50 * 9 + Padding, startY + 50 * 4 + Padding);
             bckButton.Size = new Vector2(ButtonWidth, ButtonHeight);
             bckButton.Text = "[" + back + "]";
             Elements.Add(bckButton);
 
+            Button ToFase = new Button(Game);
+            ToFase.OnClick += (sender, args) =>
+            {
+                int index = HighScoreIndex(((MainGame)Game).HighScore);
+                highScores[index] = new HighscoreLine(playerName, ((MainGame)Game).HighScore); ;
+
+                GetService<ISceneManagerService<MainGame.Scenes>>().GoTo(MainGame.Scenes.Fase);
+            };
+            ToFase.Location = new Point((clientBounds.Width - ButtonWidth) / 2, 500 + (clientBounds.Height - ButtonHeight) / 2 - ButtonHeight - Padding);
+            ToFase.Size = new Vector2(ButtonWidth, ButtonHeight);
+            ToFase.Text = "Salvar recorde";
+            ToFase.Texture = Game.Content.Load<Texture2D>("Widgets/Button");
+            ToFase.Background = Color.White;
+            Elements.Add(ToFase);
+
         }
+
+        public override void Enter()
+        {
+            base.Enter();
+            playerName = "";
+        }
+
+        public static bool insideHighscores(int score)
+        {
+            foreach (HighscoreLine item in highScores)
+            {
+                if (score > item.value)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private int HighScoreIndex(int score)
+        {
+            for(int i = 0; i < highScores.Count; i++)
+            {
+                if (score > highScores.ElementAt(i).value)
+                {
+                    return i;
+                }
+            }
+            return highScores.Count + 1;
+        }
+
+        //public override void Enter()
+        //{
+        //}
 
         public override void Update(GameTime gameTime)
         {
@@ -101,13 +172,19 @@ namespace TangoGames.RoadFighter.Levels
             SpriteBatch.Begin();
 
             Vector2 size = font.MeasureString(playerName);
-            var location = new Vector2(
-                startX + (ButtonWidth - size.X) / 2,
-                startY - 100 + (ButtonHeight - size.Y) / 2
-            );
+            var location = new Vector2(Game.Window.ClientBounds.Width / 2 - ButtonWidth - 200, 100);
 
             SpriteBatch.Draw(BackgroundImage, Game.Window.ClientBounds, Color.White);
-            SpriteBatch.DrawString(font, playerName, location, Color.White);
+            SpriteBatch.DrawString(font, "[" + playerName + "]", location, Color.White);
+            int i = 1;
+            foreach (HighscoreLine item in highScores)
+            {
+                if (item.value > 0)
+                {
+                    SpriteBatch.DrawString(font, "Posicao " + i + ": " + item.name + " -> " + item.value, new Vector2(300 + Game.Window.ClientBounds.Width / 2 - ButtonWidth, i * 50), Color.White);
+                }
+                i++; ;
+            }
             SpriteBatch.End();
         }
 
@@ -119,5 +196,8 @@ namespace TangoGames.RoadFighter.Levels
         private int startX;
         private int startY;
         private SpriteFont font;
+        private static IList<HighscoreLine> highScores;
+        private String[] characters;
+
     }
 }

@@ -16,7 +16,12 @@ namespace TangoGames.RoadFighter.Levels
             _arial = Game.Content.Load<SpriteFont>("arial");
             gameOverTexture = Game.Content.Load<Texture2D>("Textures/gameover");
 
-            var actorFactory = GetService<IActorFactory<MainGame.ActorTypes, IDrawableActor>>();
+            Reset();
+        }
+
+        public override void Reset() 
+        {
+            base.Reset();
 
             map = new Map(this);
             hud = new HUD(this, map);
@@ -30,9 +35,9 @@ namespace TangoGames.RoadFighter.Levels
             hero.Velocity = Vector2.Zero;
             hero.Scrollable = true;
             map.Add(hero);
-            map.ChangeLaneRegister( (IChangeLanelistener )hero);
+            map.ChangeLaneRegister((IChangeLanelistener)hero);
             map.Velocity = Vector2.Zero;
-            
+
             base.LoadContent();
 
             map.ColisionsOccours += OnColisionsOccours;
@@ -40,6 +45,8 @@ namespace TangoGames.RoadFighter.Levels
 
             //inicia a geração de inimigos na estrada
             enemies.startGeneration(map);
+            gameIsOver = false;
+            timer = 3000;
         }
 
         public override void Update(GameTime gameTime)
@@ -72,9 +79,17 @@ namespace TangoGames.RoadFighter.Levels
                 }
                 else 
                 {
-                    if (highScore)
+                    int score = (int) map.PixelsCount / 20;
+                    if (HighScore.insideHighscores(score))
                     {
+                        MainGame game = (MainGame)Game;
+                        game.HighScore = score;
+                        Reset();
                         sceneManager.GoTo(MainGame.Scenes.HighScore);
+                    }
+                    else
+                    {
+                        Reset();
                     }
                 }
             }
@@ -106,7 +121,6 @@ namespace TangoGames.RoadFighter.Levels
         {
             enemies.CurrentRoad = args.CurrentLanes;
         }
-
 
         #region colision
 
@@ -144,10 +158,9 @@ namespace TangoGames.RoadFighter.Levels
         private IMap map;
         private IDrawableActor hero;
         private HUD hud;
-        private bool gameIsOver = false;
-        private float timer = 1000;
+        private bool gameIsOver;
+        private float timer;
         private Texture2D gameOverTexture;
-        private bool highScore = true;
 
 
         /// <summary>

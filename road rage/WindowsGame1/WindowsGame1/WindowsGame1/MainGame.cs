@@ -7,6 +7,7 @@ using TangoGames.RoadFighter.Input;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using TangoGames.RoadFighter.Shared;
+using System.Collections.Generic;
 
 namespace TangoGames.RoadFighter
 {
@@ -23,6 +24,18 @@ namespace TangoGames.RoadFighter
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private int highscore;
+        public int HighScore
+        {
+            get
+            {
+                return highscore;
+            }
+            set
+            {
+                highscore = value;
+            }
+        }
 
         public MainGame()
         {
