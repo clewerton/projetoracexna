@@ -158,8 +158,8 @@ namespace TangoGames.RoadFighter.Levels
             }
             else 
             {
-                if (maxLanes == 2) { maxEnemies = 3; interval = 1500; }
-                else if (maxLanes == 3) { maxEnemies = 5; interval = 1200; }
+                if (maxLanes == 2) { maxEnemies = 3; interval = 2000; }
+                else if (maxLanes == 3) { maxEnemies = 5; interval = 1500; }
                 else { maxEnemies = 7; interval = 1000; }
             }
 
