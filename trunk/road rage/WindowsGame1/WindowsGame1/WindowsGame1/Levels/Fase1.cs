@@ -14,6 +14,7 @@ namespace TangoGames.RoadFighter.Levels
         protected override void LoadContent()
         {
             _arial = Game.Content.Load<SpriteFont>("arial");
+            gameOverTexture = Game.Content.Load<Texture2D>("Textures/gameover");
 
             var actorFactory = GetService<IActorFactory<MainGame.ActorTypes, IDrawableActor>>();
 
@@ -44,16 +45,39 @@ namespace TangoGames.RoadFighter.Levels
         public override void Update(GameTime gameTime)
         {
             var sceneManager = GetService<ISceneManagerService<MainGame.Scenes>>();
-
-            if (Keyboard.GetState().IsKeyDown(Keys.K))
+            if (!gameIsOver)
             {
-                sceneManager.GoTo(MainGame.Scenes.Menu);
+
+                if (Keyboard.GetState().IsKeyDown(Keys.K))
+                {
+                    sceneManager.GoTo(MainGame.Scenes.Menu);
+                }
+
+                map.Update(gameTime);
+
+                //update da HUD deve ser feito depois do calcula da velocidade do mapa
+                hud.Update(gameTime);
+
+                if ((map.Velocity.Y <= 0) && map.EndOfGas)
+                {
+                    gameIsOver = true;
+                }
+
             }
-
-            map.Update(gameTime);
-
-            //update da HUD deve ser feito depois do calcula da velocidade do mapa
-            hud.Update(gameTime);
+            else
+            {
+                if (timer > 0)
+                {
+                    timer -= gameTime.ElapsedGameTime.Milliseconds;
+                }
+                else 
+                {
+                    if (highScore)
+                    {
+                        sceneManager.GoTo(MainGame.Scenes.HighScore);
+                    }
+                }
+            }
 
         }
 
@@ -66,11 +90,15 @@ namespace TangoGames.RoadFighter.Levels
         {
             SpriteBatch.Begin();
 
-            SpriteBatch.DrawString(_arial, "In FASE; press K to go to MENU", new Vector2(300), Color.BurlyWood);
-
             map.Draw(gameTime);
             hud.Draw(gameTime, SpriteBatch);
 
+            if (gameIsOver)
+            {
+                SpriteBatch.Draw(gameOverTexture, new Rectangle((Game.Window.ClientBounds.Width - gameOverTexture.Bounds.Width) / 2, 
+                    (Game.Window.ClientBounds.Height - gameOverTexture.Bounds.Height) / 2, 
+                    gameOverTexture.Width, gameOverTexture.Height), Color.White);
+            }
             SpriteBatch.End();
         }
 
@@ -116,6 +144,10 @@ namespace TangoGames.RoadFighter.Levels
         private IMap map;
         private IDrawableActor hero;
         private HUD hud;
+        private bool gameIsOver = false;
+        private float timer = 3000;
+        private Texture2D gameOverTexture;
+        private bool highScore = true;
 
 
         /// <summary>
