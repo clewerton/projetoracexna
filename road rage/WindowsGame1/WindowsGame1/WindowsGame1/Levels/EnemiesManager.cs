@@ -158,16 +158,17 @@ namespace TangoGames.RoadFighter.Levels
 
             if (_currentMap.CheckPointCount < 5)
             {
-                if (maxLanes == 2) { maxEnemies = 2; interval = 2500 ; }
-                else if (maxLanes == 3) { maxEnemies = 4; interval = 2000; }
+                if (maxLanes == 2) { maxEnemies = 2; interval = 1500 ; }
+                else if (maxLanes == 3) { maxEnemies = 4; interval = 1500; }
                 else { maxEnemies = 5; interval = 1500; }
             }
             else 
             {
-                if (maxLanes == 2) { maxEnemies = 3; interval = 2000; }
-                else if (maxLanes == 3) { maxEnemies = 5; interval = 1500; }
+                if (maxLanes == 2) { maxEnemies = 3; interval = 1000; }
+                else if (maxLanes == 3) { maxEnemies = 5; interval = 1000; }
                 else { maxEnemies = 6; interval = 1000; }
             }
+            if (EnemiesActive.Count() >= maxLanes) { interval = interval * 2; }
 
             if ( pixelpass < interval) { frameCount = 0; }
 
