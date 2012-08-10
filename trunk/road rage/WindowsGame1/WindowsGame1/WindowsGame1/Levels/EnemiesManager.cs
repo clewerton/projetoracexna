@@ -154,7 +154,7 @@ namespace TangoGames.RoadFighter.Levels
             frameCount++;
 
             int frameTrigger = 400;
-            if (_currentMap.Velocity.Y > 0) frameTrigger = random.Next((int)( 400 / _currentMap.Velocity.Y));  
+            if (_currentMap.Velocity.Y > 0) frameTrigger = random.Next((int)( 400 / (_currentMap.Velocity.Y + 1)));  
 
             if (_currentMap.CheckPointCount < 5)
             {

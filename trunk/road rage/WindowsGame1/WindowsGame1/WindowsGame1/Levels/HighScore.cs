@@ -42,13 +42,6 @@ namespace TangoGames.RoadFighter.Levels
 
             highScores = new List<HighscoreLine>(HIGHSCORE_NUMBER);
 
-            // Setando os valores dos highscores
-            //for(int i = 0; i < HIGHSCORE_NUMBER; i++)
-            //{
-                //highScores.Add(new HighscoreLine("", 0));
-            //}
-            // TODO: ler os highcores do arquivo (se houver)
-
         }
 
         protected override void LoadContent()
@@ -118,10 +111,11 @@ namespace TangoGames.RoadFighter.Levels
             Button ToFase = new Button(Game);
             ToFase.OnClick += (sender, args) =>
             {
-                int index = HighScoreIndex(((MainGame)Game).HighScore);
-                highScores.Insert(index, new HighscoreLine(playerName, ((MainGame)Game).HighScore));
-
-                GetService<ISceneManagerService<MainGame.Scenes>>().GoTo(MainGame.Scenes.Fase);
+                if (playerName.Length > 0)
+                {
+                    highScores[newIndex] = new HighscoreLine(playerName, ((MainGame)Game).HighScore);
+                    GetService<ISceneManagerService<MainGame.Scenes>>().GoTo(MainGame.Scenes.Fase);
+                }
             };
             ToFase.Location = new Point((clientBounds.Width - ButtonWidth) / 2, 500 + (clientBounds.Height - ButtonHeight) / 2 - ButtonHeight - Padding);
             ToFase.Size = new Vector2(ButtonWidth, ButtonHeight);
@@ -137,7 +131,19 @@ namespace TangoGames.RoadFighter.Levels
             base.Enter();
             playerName = "";
             int theScore = ((MainGame)Game).HighScore;
-            int index = HighScoreIndex(theScore);
+            if (highScores.Count == 0)
+            {
+                highScores.Add(new HighscoreLine(playerName, ((MainGame)Game).HighScore));
+            }
+            else
+            {
+                newIndex = HighScoreIndex(theScore);
+                highScores.Insert(newIndex, new HighscoreLine(playerName, ((MainGame)Game).HighScore));
+                if (highScores.Count > HIGHSCORE_NUMBER)
+                {
+                    highScores.RemoveAt(HIGHSCORE_NUMBER);
+                }
+            }
         }
 
         public static bool insideHighscores(int score)
@@ -146,22 +152,20 @@ namespace TangoGames.RoadFighter.Levels
             {
                 return true;
             }
+            int i = 0;
             foreach (HighscoreLine item in highScores)
             {
                 if (score > item.value)
                 {
                     return true;
                 }
+                i++;
             }
-            return false;
+            return (i >= HIGHSCORE_NUMBER) ? false : true;
         }
 
         private int HighScoreIndex(int score)
         {
-            if (highScores.Count == 0)
-            {
-                return 0;
-            }
             for(int i = 0; i < highScores.Count; i++)
             {
                 if (score > highScores.ElementAt(i).value)
@@ -169,7 +173,7 @@ namespace TangoGames.RoadFighter.Levels
                     return i;
                 }
             }
-            return highScores.Count + 1;
+            return highScores.Count;
         }
 
         //public override void Enter()
@@ -198,14 +202,13 @@ namespace TangoGames.RoadFighter.Levels
 
             Vector2 size = font.MeasureString(playerName);
             int theScore = ((MainGame)Game).HighScore;
-            int index = HighScoreIndex(theScore);
+           
             var location = new Vector2(Game.Window.ClientBounds.Width / 2 - ButtonWidth - 200, 100);
-
             SpriteBatch.Draw(BackgroundImage, Game.Window.ClientBounds, Color.White);
             int i = 0;
             foreach (HighscoreLine item in highScores)
             {
-                if (i == index)
+                if (i == newIndex)
                 {
                     SpriteBatch.DrawString(font, "[" + playerName + "]", new Vector2(300 + Game.Window.ClientBounds.Width / 2 - ButtonWidth, (i + 1) * 50), Color.White);
                     SpriteBatch.DrawString(font, "[" + theScore + "]", new Vector2(600 + Game.Window.ClientBounds.Width / 2 - ButtonWidth, (i + 1) * 50), Color.White);
@@ -215,7 +218,7 @@ namespace TangoGames.RoadFighter.Levels
                     SpriteBatch.DrawString(font, item.name, new Vector2(300 + Game.Window.ClientBounds.Width / 2 - ButtonWidth, (i + 1) * 50), Color.White);
                     SpriteBatch.DrawString(font, item.value.ToString(), new Vector2(600 + Game.Window.ClientBounds.Width / 2 - ButtonWidth, (i + 1) * 50), Color.White);
                 }
-                i++; ;
+                i++;
             }
             SpriteBatch.End();
         }
@@ -229,6 +232,7 @@ namespace TangoGames.RoadFighter.Levels
         private int startY;
         private SpriteFont font;
         private static IList<HighscoreLine> highScores;
+        private int newIndex;
         private String[] characters;
 
     }
