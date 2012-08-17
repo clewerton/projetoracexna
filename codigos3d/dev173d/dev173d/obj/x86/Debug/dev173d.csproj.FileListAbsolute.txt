@@ -1,0 +1,28 @@
+C:\Users\thiago.game\Desktop\dev173d\dev173d\bin\x86\Debug\Content\GameThumbnail.xnb
+C:\Users\thiago.game\Desktop\dev173d\dev173d\bin\x86\Debug\dev173d.exe
+C:\Users\thiago.game\Desktop\dev173d\dev173d\bin\x86\Debug\dev173d.pdb
+C:\Users\thiago.game\Desktop\dev173d\dev173d\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\thiago.game\Desktop\dev173d\dev173d\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\thiago.game\Desktop\dev173d\dev173d\obj\x86\Debug\dev173d.exe
+C:\Users\thiago.game\Desktop\dev173d\dev173d\obj\x86\Debug\dev173d.pdb
+C:\Users\thiago.game\Desktop\codigos 3d\dev173d\dev173d\bin\x86\Debug\Content\GameThumbnail.xnb
+C:\Users\thiago.game\Desktop\codigos 3d\dev173d\dev173d\bin\x86\Debug\dev173d.exe
+C:\Users\thiago.game\Desktop\codigos 3d\dev173d\dev173d\bin\x86\Debug\dev173d.pdb
+C:\Users\thiago.game\Desktop\codigos 3d\dev173d\dev173d\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\thiago.game\Desktop\codigos 3d\dev173d\dev173d\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\thiago.game\Desktop\codigos 3d\dev173d\dev173d\obj\x86\Debug\dev173d.exe
+C:\Users\thiago.game\Desktop\codigos 3d\dev173d\dev173d\obj\x86\Debug\dev173d.pdb
+D:\work_local\SEVEN\XNA\codigos 3d\codigos 3d\dev173d\dev173d\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\work_local\SEVEN\XNA\codigos 3d\codigos 3d\dev173d\dev173d\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+D:\work_local\SEVEN\XNA\codigos 3d\codigos 3d\dev173d\dev173d\obj\x86\Debug\dev173d.exe
+D:\work_local\SEVEN\XNA\codigos 3d\codigos 3d\dev173d\dev173d\bin\x86\Debug\Content\GameThumbnail.xnb
+D:\work_local\SEVEN\XNA\codigos 3d\codigos 3d\dev173d\dev173d\bin\x86\Debug\dev173d.exe
+D:\work_local\SEVEN\XNA\codigos 3d\codigos 3d\dev173d\dev173d\bin\x86\Debug\dev173d.pdb
+D:\work_local\SEVEN\XNA\codigos 3d\codigos 3d\dev173d\dev173d\obj\x86\Debug\dev173d.pdb
+D:\work_local\SEVEN\XNA\codigos3d\dev173d\dev173d\bin\x86\Debug\Content\GameThumbnail.xnb
+D:\work_local\SEVEN\XNA\codigos3d\dev173d\dev173d\bin\x86\Debug\dev173d.exe
+D:\work_local\SEVEN\XNA\codigos3d\dev173d\dev173d\bin\x86\Debug\dev173d.pdb
+D:\work_local\SEVEN\XNA\codigos3d\dev173d\dev173d\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\work_local\SEVEN\XNA\codigos3d\dev173d\dev173d\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+D:\work_local\SEVEN\XNA\codigos3d\dev173d\dev173d\obj\x86\Debug\dev173d.exe
+D:\work_local\SEVEN\XNA\codigos3d\dev173d\dev173d\obj\x86\Debug\dev173d.pdb
