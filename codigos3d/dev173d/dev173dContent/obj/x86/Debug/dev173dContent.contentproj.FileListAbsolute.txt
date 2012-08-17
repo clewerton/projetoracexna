@@ -1,4 +1,0 @@
-C:\Users\thiago.game\Desktop\dev173d\dev173dContent\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\thiago.game\Desktop\codigos 3d\dev173d\dev173dContent\obj\x86\Debug\ResolveAssemblyReference.cache
-D:\work_local\SEVEN\XNA\codigos 3d\codigos 3d\dev173d\dev173dContent\obj\x86\Debug\ResolveAssemblyReference.cache
-D:\work_local\SEVEN\XNA\codigos3d\dev173d\dev173dContent\obj\x86\Debug\ResolveAssemblyReference.cache
